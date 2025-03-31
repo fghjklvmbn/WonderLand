@@ -5,5 +5,8 @@
 
 
 # 업무 흐름도
+## ver0.2
+![업무 흐름도 ver0 2](https://github.com/user-attachments/assets/7df790f2-eaed-4560-8f26-98f67e9efc40)
+
 ## ver0.1
 ![업무 흐름도](https://github.com/user-attachments/assets/f889125c-a275-4b6f-a57f-b067849ea54f)
