@@ -1,5 +1,6 @@
 # WonderLand
-![Logo ver1 3](https://github.com/user-attachments/assets/bd9802a7-b467-4262-9cc4-01e4340fd7e2)
+![Logo ver1 3 축소](https://github.com/user-attachments/assets/7e46480b-4390-405e-8d09-5d9f8a54ad8b)
+
 
 캡스톤디자인 2 팀 원더랜드 결과물 저장소 / capstone design 2 Team:WonderLand's results
 
