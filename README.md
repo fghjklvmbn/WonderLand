@@ -1,4 +1,6 @@
 # WonderLand
+![Logo ver1 3](https://github.com/user-attachments/assets/bd9802a7-b467-4262-9cc4-01e4340fd7e2)
+
 캡스톤디자인 2 팀 원더랜드 결과물 저장소 / capstone design 2 Team:WonderLand's results
 
 브랜치 : 산출물(main)
