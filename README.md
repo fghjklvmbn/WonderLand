@@ -21,5 +21,8 @@
 
 # 시스템 구성도
 ## ver0.1
-
 ![Image](https://github.com/user-attachments/assets/9396f321-3a33-49ef-a8c9-7187bf388353)
+
+# Application Architecture
+## ver0.1
+![Image](https://github.com/user-attachments/assets/6b2351ac-be5c-4f6c-9730-268d79a8acb1)
