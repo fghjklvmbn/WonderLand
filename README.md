@@ -13,3 +13,7 @@
 
 ## ver0.1
 ![업무 흐름도](https://github.com/user-attachments/assets/f889125c-a275-4b6f-a57f-b067849ea54f)
+
+# SW 구성도
+## ver0.1
+![Image](https://github.com/user-attachments/assets/113ea6b5-a4c8-459c-a46c-2c12c437a7ca)
