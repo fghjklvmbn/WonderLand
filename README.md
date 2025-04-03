@@ -19,7 +19,7 @@
 ![Image](https://github.com/user-attachments/assets/113ea6b5-a4c8-459c-a46c-2c12c437a7ca)
 
 
-# SW 구성도
+# 시스템 구성도
 ## ver0.1
 
 ![Image](https://github.com/user-attachments/assets/9396f321-3a33-49ef-a8c9-7187bf388353)
