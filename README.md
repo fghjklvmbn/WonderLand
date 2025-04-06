@@ -5,7 +5,8 @@
 캡스톤디자인 2 팀 원더랜드 결과물 저장소 / capstone design 2 Team:WonderLand's results
 
 브랜치 : 산출물(main)
-
+### Figma
+[피그마 주소](https://www.figma.com/design/u6YK03mZF5mum4Gvrbcv9v/WonderLand?node-id=0-1&t=JByndxUTiUFZwHn8-1)
 
 # 업무 흐름도
 ## ver0.2
