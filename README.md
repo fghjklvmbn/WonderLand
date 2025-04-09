@@ -27,3 +27,8 @@
 # Application Architecture
 ## ver0.1
 ![Image](https://github.com/user-attachments/assets/6b2351ac-be5c-4f6c-9730-268d79a8acb1)
+
+# 업무 흐름도 (25.04.09)
+## ver0.1
+![업무 흐름도 ver_0 3](https://github.com/user-attachments/assets/532d4963-2b67-4a27-9213-b3ae0bbc1685)
+
