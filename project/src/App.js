@@ -1,88 +1,112 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css'; // 필요시 커스텀 CSS
+import './App.css';
+import Header from './pages/Header';
+import Footer from './pages/Footer';
+import { Tabs, Tab, Container, Row, Col, Button } from 'react-bootstrap';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MyLibraryTabs from './pages/MyLibraryTabs';
 
-const Header = () => (
-  <header className="bg-light py-3 px-4 d-flex justify-content-between align-items-center">
-    <div className="d-flex align-items-center gap-2">
-      <img src="https://placehold.co/40x40" alt="로고 이미지" />
-      <span className="fs-4 fw-bold text-primary">원더랜드</span>
-    </div>
-    <div className="w-50 position-relative">
-      <input type="text" className="form-control rounded-pill ps-4" placeholder="검색어를 입력하세요" />
-      <i className="fas fa-search position-absolute top-50 end-0 translate-middle-y pe-3 text-muted"></i>
-    </div>
-    <button className="btn btn-outline-dark btn-sm">로그인</button>
-  </header>
-);
+const Banner = () => {
+  const banners = ['광고판 1', '광고판 2', '광고판 3'];
+  const [index, setIndex] = useState(0);
 
-const Banner = () => (
-  <section className="bg-primary text-white text-center py-5 position-relative">
-    <div className="position-absolute top-50 start-0 translate-middle-y fs-2 px-3 cursor-pointer">&#10094;</div>
-    <h1 className="display-4 fw-bold">광고판</h1>
-    <div className="position-absolute top-50 end-0 translate-middle-y fs-2 px-3 cursor-pointer">&#10095;</div>
-    <div className="mt-3 d-flex justify-content-center gap-2">
-      <span className="bg-white rounded-circle" style={{ width: 10, height: 10 }}></span>
-      <span className="bg-white opacity-50 rounded-circle" style={{ width: 10, height: 10 }}></span>
-      <span className="bg-white opacity-50 rounded-circle" style={{ width: 10, height: 10 }}></span>
-    </div>
-  </section>
-);
+  const prev = () => setIndex((index - 1 + banners.length) % banners.length);
+  const next = () => setIndex((index + 1) % banners.length);
 
-const CategoryTabs = () => {
-  const categories = ['전체', '인기', '동물', '문학', '과학', '역사', '모험', '교훈', '자연'];
   return (
-    <nav className="d-flex justify-content-center gap-3 py-4 border-bottom">
-      {categories.map((cat, i) => (
-        <div
-          key={cat}
-          className={`text-dark small d-flex align-items-center gap-1 ${i === 1 ? 'fw-bold border-bottom border-2 border-dark' : ''}`}
-          role="button"
-        >
-          <i className="fas fa-star"></i>
-          <span>{cat}</span>
+    <div className="container">
+      <section style={{backgroundColor : "#FFFACD"}} className="text-black text-center py-5 position-relative rounded">
+        <Button variant="light" onClick={prev} className="position-absolute top-50 start-0 translate-middle-y px-3">
+          &#10094;
+        </Button>
+        <h1 className="display-4 fw-bold">{banners[index]}</h1>
+        <Button variant="light" onClick={next} className="position-absolute top-50 end-0 translate-middle-y px-3">
+          &#10095;
+        </Button>
+        <div className="mt-3 d-flex justify-content-center gap-2">
+          {banners.map((_, i) => (
+            <span
+              key={i}
+              className={`rounded-circle ${i === index ? 'bg-black' : 'bg-dark opacity-50'}`}
+              style={{ width: 10, height: 10 }}
+            ></span>
+          ))}
         </div>
-      ))}
-      <button className="btn btn-sm btn-outline-secondary ms-3">Filters</button>
-    </nav>
+      </section>
+    </div>
   );
 };
 
 const BookCard = ({ image, title, author, likes }) => (
-  <div className="text-center small">
-    <img src={image} alt={title} className="img-fluid rounded mb-2" />
-    <div>{title}</div>
-    <div className="text-muted">{author}</div>
-    <div><i className="fas fa-heart text-danger"></i> {likes}</div>
+  <div className="text-center small" style={{ maxWidth: '100%' }}>
+    <img src={image} alt={title} className="w-100 rounded mb-2" style={{ aspectRatio: '1 / 1', objectFit: 'cover', borderRadius: '10px' }} />
+    <div className="fw-semibold">{title}</div>
+    <div className="text-muted small">{author}</div>
+    <div className="text-secondary"><i className="fas fa-heart text-danger"></i> {likes}</div>
   </div>
 );
 
-const books = new Array(16).fill(0).map((_, i) => ({
-  image: 'https://placehold.co/200x200',
-  title: `제목`,
-  author: `작가이름`,
-  likes: '좋아요 수'
-}));
+const TabbedBookGrid = () => {
+  const renderBooks = (label) => new Array(30).fill(0).map((_, i) => ({
+    image: 'https://placehold.co/300x300',
+    title: `${label} ${i + 1}`,
+    author: `작가 ${i + 1}`,
+    likes: 50 + i
+  }));
 
-const BookGrid = () => (
-  <main className="container py-4">
-    <div className="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
+  const renderGrid = (books) => (
+    <Row xs={2} md={3} lg={5} className="g-3 py-4">
       {books.map((book, i) => (
-        <div key={i} className="col">
+        <Col key={i}>
           <BookCard {...book} />
-        </div>
+        </Col>
       ))}
-    </div>
-  </main>
+    </Row>
+  );
+
+  return (
+    <Container className="py-4">
+      <Tabs defaultActiveKey="popular" id="story-tabs" className="mb-3">
+        <Tab eventKey="popular" title="🔥 인기">
+          {renderGrid(renderBooks('인기'))}
+        </Tab>
+        <Tab eventKey="latest" title="🆕 최신">
+          {renderGrid(renderBooks('최신'))}
+        </Tab>
+        <Tab eventKey="recommended" title="🎯 추천">
+          {renderGrid(renderBooks('추천'))}
+        </Tab>
+        <Tab eventKey="adventure" title="🗺️ 모험">
+          {renderGrid(renderBooks('모험'))}
+        </Tab>
+        <Tab eventKey="fantasy" title="🧙 판타지">
+          {renderGrid(renderBooks('판타지'))}
+        </Tab>
+        <Tab eventKey="healing" title="🌿 힐링">
+          {renderGrid(renderBooks('힐링'))}
+        </Tab>
+      </Tabs>
+    </Container>
+  );
+};
+
+const MainPage = () => (
+  <>
+    <Header />
+    <Banner />
+    <TabbedBookGrid />
+    <Footer />
+  </>
 );
 
 const App = () => (
-  <div>
-    <Header />
-    <Banner />
-    <CategoryTabs />
-    <BookGrid />
-  </div>
+  <Router>
+    <Routes>
+      <Route path="/" element={<MainPage />} />
+      <Route path="/my-library" element={<MyLibraryTabs />} />
+    </Routes>
+  </Router>
 );
 
 export default App;
