@@ -1,4 +1,4 @@
-# WonderLand
+[# WonderLand](https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=10&height=200&text=WonderLand&fontSize=50&animation=twinkling&fontAlign=68&fontAlignY=36)
 ![Logo ver1 3 축소](https://github.com/user-attachments/assets/7e46480b-4390-405e-8d09-5d9f8a54ad8b)
 
 
@@ -11,7 +11,7 @@
 ## 팀원 소개
 
 |최효동|전용태|박경환|정우빈|정현호|
-|123|---|---|---|---|
+|------|---|---|---|---|
 |테스트1|테스트2|테스트3|테스트3|테스트3|
 |테스트1|테스트2|테스트3|테스트3|테스트3|
 |테스트1|테스트2|테스트3|테스트3|테스트3|
