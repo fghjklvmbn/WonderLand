@@ -17,7 +17,7 @@
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href="https://github.com/tine1117"><img src="width="100px;" alt="![66707337](https://github.com/user-attachments/assets/7ee48b5f-51b6-44eb-90dd-e9dce48b974e)"/><br /><sub><b>팀장 : 전용태</b></sub></a><br /></td>
+      <td align="center"><a href="https://github.com/tine1117"><img src="width="100px;" alt=""/>![66707337](https://github.com/user-attachments/assets/7ee48b5f-51b6-44eb-90dd-e9dce48b974e)<br /><sub><b>팀장 : 전용태</b></sub></a><br /></td>
       <td align="center"><a href="https://github.com/fghjklvmbn"><img src="" width="100px;" alt=""/><br /><sub><b>팀원 : 박경환</b></sub></a><br /></td>
       <td align="center"><a href="https://github.com/chlgyehd123"><img src="" width="100px;" alt=""/><br /><sub><b>팀원 : 최효동</b></sub></a><br /></td>
       <td align="center"><a href="https://github.com/WOOBI-BOY"><img src="" width="100px;" alt=""/><br /><sub><b>FE 팀원 : 정우빈</b></sub></a><br /></td>
