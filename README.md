@@ -1,4 +1,3 @@
-![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=10&height=200&text=WonderLand&fontSize=50&animation=twinkling&fontAlign=68&fontAlignY=36)
 ![Logo ver1 3 축소](https://github.com/user-attachments/assets/7e46480b-4390-405e-8d09-5d9f8a54ad8b)
 
 
