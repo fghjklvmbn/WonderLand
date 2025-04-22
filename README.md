@@ -8,6 +8,14 @@
 ## Figma
 [피그마 주소](https://www.figma.com/design/u6YK03mZF5mum4Gvrbcv9v/WonderLand?node-id=0-1&t=JByndxUTiUFZwHn8-1)
 
+## 팀원 소개
+
+|제목|내용|설명|
+|------|---|---|
+|테스트1|테스트2|테스트3|
+|테스트1|테스트2|테스트3|
+|테스트1|테스트2|테스트3|
+
 # 업무 흐름도
 ## ver0.2
 ![업무 흐름도 ver0 2](https://github.com/user-attachments/assets/7df790f2-eaed-4560-8f26-98f67e9efc40)
