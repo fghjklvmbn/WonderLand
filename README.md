@@ -16,13 +16,13 @@
   <tbody>
     <tr>
       <td align="center">
-        <a href="https://github.com/tine1117">
+        <a href="https://github.com/fghjklvmbn">
           <img src="https://github.com/user-attachments/assets/31d18b57-dc38-4c39-9c17-1c4ecb75460a" width="200px" alt="박경환"/><br />
           <sub><b>팀원 : 박경환</b></sub>
         </a><br />
       </td>
       <td align="center">
-        <a href="https://github.com/fghjklvmbn">
+        <a href="https://github.com/tine1117">
           <img src="https://github.com/user-attachments/assets/06b6d5ed-e8bf-42c0-a242-ca0435f66300" width="200px" alt="전용태"/><br />
           <sub><b>팀원 : 전용태</b></sub>
         </a><br />
