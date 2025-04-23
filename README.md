@@ -28,19 +28,19 @@
         </a><br />
       </td>
       <td align="center">
-        <a href="https://github.com/chlgyehd123">
+        <a href="https://github.com/WOOBI-BOY">
           <img src="https://github.com/user-attachments/assets/048ef833-a344-41c7-9850-1d9d3267719f" width="200px" alt="정우빈"/><br />
           <sub><b>팀원 : 정우빈</b></sub>
         </a><br />
       </td>
       <td align="center">
-        <a href="https://github.com/WOOBI-BOY">
+        <a href="https://github.com/18ho">
           <img src="https://github.com/user-attachments/assets/b0d4150b-a8fa-4cb6-9d82-7955a9b7f709" width="200px" alt="정현호"/><br />
           <sub><b>팀원 : 정현호</b></sub>
         </a><br />
       </td>
       <td align="center">
-        <a href="https://github.com/18ho">
+        <a href="https://github.com/chlgyehd123">
           <img src="https://github.com/user-attachments/assets/e39073e5-952a-44b6-acb1-9ae401a99ce3" width="200px" alt="최효동"/><br />
           <sub><b>팀원 : 최효동</b></sub>
         </a><br />
