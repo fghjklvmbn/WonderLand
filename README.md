@@ -72,6 +72,12 @@
 
 <br><br><br><br><br>
 
+# ERD
+![원더랜드 ERD ver0 2](https://github.com/user-attachments/assets/d1eb2780-e8e3-484a-94fc-153c0f5e6f40)
+
+
+<br><br><br><br><br>
+
 # SW 구성도
 ## ver0.1
 ![Image](https://github.com/user-attachments/assets/113ea6b5-a4c8-459c-a46c-2c12c437a7ca)
