@@ -32,7 +32,8 @@
 ![원더랜드 ERD ver0 2](https://github.com/user-attachments/assets/ea5a864a-2b0a-4b8a-a8ea-287accd866cc)
 
 ## ver0.1
-![ERD ver0 1](https://github.com/user-attachments/assets/bb67eab1-660b-4316-9079-3667847b3b3c)
+![원더랜드 ERD ver0 1](https://github.com/user-attachments/assets/c9d715d6-299e-425d-a399-3a18b845af11)
+
 
 <br><br><br><br>
 
