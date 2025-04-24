@@ -73,7 +73,8 @@
 <br><br><br><br><br>
 
 # ERD
-![원더랜드 ERD ver0 2](https://github.com/user-attachments/assets/d1eb2780-e8e3-484a-94fc-153c0f5e6f40)
+![원더랜드 ERD ver0 2](https://github.com/user-attachments/assets/256e1ab9-ba0d-4794-ab3a-c3aa5f306873)
+
 
 
 <br><br><br><br><br>
