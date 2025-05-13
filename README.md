@@ -1,53 +1,64 @@
-# WonderLand
-![Logo ver1 3 축소](https://github.com/user-attachments/assets/7e46480b-4390-405e-8d09-5d9f8a54ad8b)
+# AITrainer
+인공지능 학습 모듈(연습용)
 
+![image](https://github.com/user-attachments/assets/2501d559-aada-431b-995e-48c11372ce9d)
 
-캡스톤디자인 2 팀 원더랜드 결과물 저장소 / capstone design 2 Team:WonderLand's results
+HuggingFace 기반의 학습도구(transformer, peft, datasets)로 제작되었으며, 모델은 Qwen 2.5 버전 기반으로 FineTuning 하는 코드입니다.
+추후 학습에 필요한 변수는 변경 가능하도록 UI 혹은 yaml 파일로 바꿀 예정이며, 차후 데이터 모델이 충족된다면 Hugging Face으로 올릴 예정입니다.
 
-브랜치 : 산출물(main), 백엔드(backend), 프론트엔드(frontend)
-## Figma
-[피그마 주소](https://www.figma.com/design/u6YK03mZF5mum4Gvrbcv9v/WonderLand?node-id=0-1&t=JByndxUTiUFZwHn8-1)
+**준비사항**
+ - 아나콘다(권장)
+ - python 3.12+
 
-<br><br><br><br>
+**가이드**
+1. 다운로드 후 압축을 푼다.
+2. cmd, ssh등을 통해 압축을 푼 폴더로 들어간다.
+3. ``` pip install -r requirements.txt ``` 명령어를 이용해서 설치해 준다.
+4. python *.py를 통해 파이썬 파일을 실행한다.
 
-# 업무 흐름도
+**config 적용방법**
+ - config 파일은 오로지 train.py 파일으로만 사용할 수 있습니다.
+ - train.py 파일은 config파일이 없으면 실행이 불가하니 이점 유의해주시기 바랍니다.
+ - 명령어 : 
+```python train.py -c ./config/config_0.5b.yaml```
+```python train.py -c ./config/config_7b.yaml```
+```python train.py -c ./config/config_14b.yaml```
+ - 이러한 명령어로 train.py를 실행시킬수 있습니다.
 
-## ver0.4 (25.04.10)
-![업무 흐름도 ver0 4](https://github.com/user-attachments/assets/fd1c5bf5-265f-4028-b390-e7ecc0d7d9f2)
+파일설명
+ - **requirements.txt** - 학습에 필요한 모듈과 API 구동 모듈을 모두 모아 놓은 파일입니다, 
+가이드에 말한 것 처럼 ``` pip install -r requirements.txt ``` 명령어로 필요한 모듈을 모두 설치해서 쓸 수 있습니다.
 
-## ver0.3 (25.04.09)
-![업무 흐름도 ver_0 3](https://github.com/user-attachments/assets/532d4963-2b67-4a27-9213-b3ae0bbc1685)
+ - **train.py** - 학습용 파이썬 파일입니다.
 
-## ver0.2
-![업무 흐름도 ver0 2](https://github.com/user-attachments/assets/7df790f2-eaed-4560-8f26-98f67e9efc40)
+ - **model_run.py** - 학습 완료시 모델을 구동 가능하게 하는 파이썬 모델입니다.
 
-## ver0.1
-![업무 흐름도](https://github.com/user-attachments/assets/f889125c-a275-4b6f-a57f-b067849ea54f)
+ - **train_beta.py** - (테스트중)차세대 코드가 포함된 학습파일입니다.
 
-<br><br><br><br>
+data폴더
 
-# ERD
+ - **data_all.py** - 학습에 필요한 목업 데이터 파일입니다.
 
-## ver0.2(수정 중)
-![원더랜드 ERD ver0 2](https://github.com/user-attachments/assets/ea5a864a-2b0a-4b8a-a8ea-287accd866cc)
+ - **load_json.py** - (테스트중)json 파일을 파이썬이 지원하는 데이터셋으로 바꿔주는 함수가 집약된 파이썬 파일입니다.
 
-## ver0.1
-![원더랜드 ERD ver0 1](https://github.com/user-attachments/assets/c9d715d6-299e-425d-a399-3a18b845af11)
+json_files 폴더
 
+ - **character.json** - 각 인물의 성격을 구체적으로 구현하는데 도움이 되도록 등장인물의 상세정보를 모두 집약시킨 데이터셋 파일입니다.
+   
+ - **story.json** - 각 제목과 줄거리, 태그를 원활하게 생성하도록 도움을 주는 데이터셋 파일입니다.
 
-<br><br><br><br>
+ - **write_style.json** - 동화가 생성될때 문체를 학습시키도록 유도하고 도움을 주는 데이터셋 파일입니다.
 
-# SW 구성도
-## ver0.1
-![Image](https://github.com/user-attachments/assets/113ea6b5-a4c8-459c-a46c-2c12c437a7ca)
+server_model 폴더
 
-<br><br><br><br>
+ - **app.py** - flask를 이용한 API 가동 파일입니다.
 
-# 시스템 구성도
-## ver0.1
-![Image](https://github.com/user-attachments/assets/9396f321-3a33-49ef-a8c9-7187bf388353)
+ - **utils.py** - API 단에서 들어온 프롬프트를 모델으로 구동하고, 그 결과를 전달하는 파일입니다.
 
-# Application Architecture
-## ver0.1
-![Image](https://github.com/user-attachments/assets/6b2351ac-be5c-4f6c-9730-268d79a8acb1)
+config 폴더
 
+ - **config_0.5b.yaml** : qwen 2.5 버전 파라미터 5억개 버전의 설정파일입니다.
+
+ - **config_7b.yaml** : qwen 2.5 버전 파라미터 70억개 버전의 설정파일입니다.
+
+ - **config_14b.yaml** : qwen 2.5 버전 파라미터 140억개 버전의 설정파일입니다.
