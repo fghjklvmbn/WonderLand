@@ -51,6 +51,13 @@
 
 <br><br><br><br><br>
 
+## vscode 터미널
+cd react
+npm start
+
+cd springboot
+./mvnw spring-boot:run
+
 ## Figma
 [피그마 주소](https://www.figma.com/design/u6YK03mZF5mum4Gvrbcv9v/WonderLand?node-id=0-1&t=JByndxUTiUFZwHn8-1)
 
