@@ -30,7 +30,7 @@ const LoginPage = () => {
           <h2 className="text-center fw-bold mb-2">로그인</h2>
           <p className="text-center text-muted mb-4">
             처음 방문하셨습니까?{' '}
-            <a href="/SignupPage" className="text-decoration-underline">
+            <a href="/Signup" className="text-decoration-underline">
               회원가입
             </a>
           </p>
