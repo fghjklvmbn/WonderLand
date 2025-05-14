@@ -53,9 +53,11 @@
 
 ## vscode 터미널
 cd react
+<br>
 npm start
-
+<br><br>
 cd springboot
+<br>
 ./mvnw spring-boot:run
 
 ## Figma
