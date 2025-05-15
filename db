@@ -1,0 +1,95 @@
+CREATE DATABASE wonderland DEFAULT CHARACTER SET utf8mb4;
+
+USE wonderland;
+
+CREATE TABLE User (
+  user_id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  name VARCHAR(50),
+  nickname VARCHAR(50),
+  age INT,
+  join_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  token_balance INT DEFAULT 10
+);
+
+INSERT INTO User (email, password, name, nickname, age, join_date, token_balance)
+VALUES
+('alice@example.com', 'hashed_pw1', 'Alice', '앨리스', 23, NOW(), 50),
+('bob@example.com', 'hashed_pw2', 'Bob', '밥', 27, NOW(), 100),
+('charlie@example.com', 'hashed_pw3', 'Charlie', '찰리', 30, NOW(), 75),
+('diana@example.com', 'hashed_pw4', 'Diana', '다이애나', 21, NOW(), 20),
+('edward@example.com', 'hashed_pw5', 'Edward', '에드워드', 25, NOW(), 0);
+
+select * from user;
+
+
+
+CREATE TABLE Story (
+  story_id INT AUTO_INCREMENT PRIMARY KEY,
+  author_id INT NOT NULL,
+  title VARCHAR(200),
+  genre VARCHAR(50),
+  text_json JSON,
+  is_draft BOOLEAN DEFAULT TRUE, -- 작성 중: true, 완성됨: false
+  is_shared BOOLEAN DEFAULT FALSE, -- 공유 여부
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (author_id) REFERENCES User(user_id) ON DELETE CASCADE
+);
+
+
+INSERT INTO Story (author_id, title, genre, text_json, is_draft, is_shared, created_at, updated_at)
+VALUES
+-- 1번 이야기
+(1, '깊은 바다 이야기', '모험',
+ JSON_OBJECT('pages', JSON_ARRAY(
+     JSON_OBJECT('page_number', 1, 'text', '깊은 바다 속에 작은 물고기가 살았어요.', 'image_url', 'https://example.com/image1_1.png', 'tts_url', 'https://example.com/audio1_1.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 2, 'text', '물고기는 매일 바다를 여행했어요.', 'image_url', 'https://example.com/image1_2.png', 'tts_url', 'https://example.com/audio1_2.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 3, 'text', '어느 날, 거대한 문어를 만났어요.', 'image_url', 'https://example.com/image1_3.png', 'tts_url', 'https://example.com/audio1_3.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 4, 'text', '문어는 보물을 지키고 있었어요.', 'image_url', 'https://example.com/image1_4.png', 'tts_url', 'https://example.com/audio1_4.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 5, 'text', '용기를 낸 물고기는 친구가 되었어요.', 'image_url', 'https://example.com/image1_5.png', 'tts_url', 'https://example.com/audio1_5.mp3', 'image_generated_count', 1)
+)), FALSE, TRUE, NOW(), NOW()),
+
+-- 2번 이야기
+(2, '숲속 친구들', '동물',
+ JSON_OBJECT('pages', JSON_ARRAY(
+     JSON_OBJECT('page_number', 1, 'text', '숲 속에 토끼와 곰이 살고 있었어요.', 'image_url', 'https://example.com/image2_1.png', 'tts_url', 'https://example.com/audio2_1.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 2, 'text', '둘은 매일같이 나무 아래에서 놀았어요.', 'image_url', 'https://example.com/image2_2.png', 'tts_url', 'https://example.com/audio2_2.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 3, 'text', '어느 날 새로운 친구 다람쥐가 나타났어요.', 'image_url', 'https://example.com/image2_3.png', 'tts_url', 'https://example.com/audio2_3.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 4, 'text', '세 친구는 함께 놀이터를 만들었어요.', 'image_url', 'https://example.com/image2_4.png', 'tts_url', 'https://example.com/audio2_4.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 5, 'text', '그날 이후로 매일이 즐거운 날이 되었어요.', 'image_url', 'https://example.com/image2_5.png', 'tts_url', 'https://example.com/audio2_5.mp3', 'image_generated_count', 1)
+)), FALSE, TRUE, NOW(), NOW()),
+
+-- 3번 이야기
+(3, '마법의 물약', '판타지',
+ JSON_OBJECT('pages', JSON_ARRAY(
+     JSON_OBJECT('page_number', 1, 'text', '마녀는 특별한 물약을 만들고 있었어요.', 'image_url', 'https://example.com/image3_1.png', 'tts_url', 'https://example.com/audio3_1.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 2, 'text', '그 물약은 동물을 말하게 해준대요.', 'image_url', 'https://example.com/image3_2.png', 'tts_url', 'https://example.com/audio3_2.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 3, 'text', '하지만 재료가 아주 희귀했어요.', 'image_url', 'https://example.com/image3_3.png', 'tts_url', 'https://example.com/audio3_3.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 4, 'text', '마녀는 재료를 찾기 위한 여행을 떠났어요.', 'image_url', 'https://example.com/image3_4.png', 'tts_url', 'https://example.com/audio3_4.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 5, 'text', '드디어 물약이 완성되고 고양이가 말을 했어요.', 'image_url', 'https://example.com/image3_5.png', 'tts_url', 'https://example.com/audio3_5.mp3', 'image_generated_count', 1)
+)), TRUE, FALSE, NOW(), NOW()),
+
+-- 4번 이야기
+(1, '구름 위의 집', '동화',
+ JSON_OBJECT('pages', JSON_ARRAY(
+     JSON_OBJECT('page_number', 1, 'text', '구름 위에 작은 집이 있었어요.', 'image_url', 'https://example.com/image4_1.png', 'tts_url', 'https://example.com/audio4_1.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 2, 'text', '그 집에는 풍선으로 날아온 아이가 살았어요.', 'image_url', 'https://example.com/image4_2.png', 'tts_url', 'https://example.com/audio4_2.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 3, 'text', '아이와 새들은 매일 이야기했어요.', 'image_url', 'https://example.com/image4_3.png', 'tts_url', 'https://example.com/audio4_3.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 4, 'text', '바람이 거세지자 집이 흔들렸어요.', 'image_url', 'https://example.com/image4_4.png', 'tts_url', 'https://example.com/audio4_4.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 5, 'text', '하지만 새들이 도와줘서 다시 안정됐어요.', 'image_url', 'https://example.com/image4_5.png', 'tts_url', 'https://example.com/audio4_5.mp3', 'image_generated_count', 1)
+)), FALSE, FALSE, NOW(), NOW()),
+
+-- 5번 이야기
+(4, '달나라 여행', '우주',
+ JSON_OBJECT('pages', JSON_ARRAY(
+     JSON_OBJECT('page_number', 1, 'text', '소년은 우주선을 타고 달에 도착했어요.', 'image_url', 'https://example.com/image5_1.png', 'tts_url', 'https://example.com/audio5_1.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 2, 'text', '달에는 토끼 마을이 있었어요.', 'image_url', 'https://example.com/image5_2.png', 'tts_url', 'https://example.com/audio5_2.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 3, 'text', '토끼들과 소년은 떡을 만들었어요.', 'image_url', 'https://example.com/image5_3.png', 'tts_url', 'https://example.com/audio5_3.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 4, 'text', '달에서 지구를 바라보며 소원을 빌었어요.', 'image_url', 'https://example.com/image5_4.png', 'tts_url', 'https://example.com/audio5_4.mp3', 'image_generated_count', 1),
+     JSON_OBJECT('page_number', 5, 'text', '소년은 다시 지구로 돌아왔지만, 꿈 같았어요.', 'image_url', 'https://example.com/image5_5.png', 'tts_url', 'https://example.com/audio5_5.mp3', 'image_generated_count', 1)
+)), FALSE, TRUE, NOW(), NOW());
+
+
+select * from story;

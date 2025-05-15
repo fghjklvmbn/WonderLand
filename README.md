@@ -56,6 +56,17 @@
 
 <br><br><br><br><br>
 
+## vscode 터미널
+cd react
+<br>
+npm start
+<br><br>
+cd springboot
+<br>
+./mvnw spring-boot:run
+
+<br><br><br><br><br>
+
 # 업무 흐름도
 
 ## ver0.4
