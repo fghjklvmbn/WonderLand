@@ -1,5 +1,3 @@
-// src/pages/SignupPage.jsx
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Container, Form, Button, Card } from 'react-bootstrap';
@@ -10,20 +8,26 @@ const SignupPage = () => {
     password: '',
     name: '',
     nickname: '',
-    age: '',
+    age: ''
   });
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('📤 회원가입 전송 데이터:', formData); // 👉 확인용 로그
     try {
-      const res = await axios.post('http://localhost:8080/api/users/signup', formData);
-      alert(res.data);
+      const res = await axios.post('http://localhost:8080/api/users/signup', formData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      alert(res.data); // 백엔드 응답 메시지
     } catch (err) {
+      console.error('❌ 회원가입 오류:', err);
       alert('회원가입 실패');
     }
   };

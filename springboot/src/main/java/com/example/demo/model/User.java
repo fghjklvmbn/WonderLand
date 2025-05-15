@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,6 +26,9 @@ public class User {
     private String nickname;
     private Integer age;
 
+    @Builder.Default
     private LocalDateTime joinDate = LocalDateTime.now();
+
+    @Builder.Default
     private Integer tokenBalance = 10;
 }

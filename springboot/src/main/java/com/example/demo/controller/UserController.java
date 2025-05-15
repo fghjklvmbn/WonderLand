@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.controller;
 
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3000") // React와 포트 다를 경우 필요
+@CrossOrigin(origins = "http://localhost:3000") // React 포트 기준
 public class UserController {
 
     @Autowired
@@ -20,5 +20,19 @@ public class UserController {
         }
         userRepository.save(user);
         return "회원가입 성공";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody User loginUser) {
+        User user = userRepository.findByEmail(loginUser.getEmail()).orElse(null);
+        if (user == null || !user.getPassword().equals(loginUser.getPassword())) {
+            return "이메일 또는 비밀번호가 일치하지 않습니다.";
+        }
+        return "로그인 성공";
+    }
+
+    @PostMapping("/logout")
+    public String logout() {
+        return "로그아웃 성공";
     }
 }

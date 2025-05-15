@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.controller;
 
 import org.json.JSONObject;
 import org.springframework.http.*;
