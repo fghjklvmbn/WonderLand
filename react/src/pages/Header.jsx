@@ -1,17 +1,16 @@
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { Link, useLocation, useNavigate } from 'react-router-dom'; // 라우팅 관련 훅
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../images/Logo_ver2.0.png';
 import profile from '../images/뚱이.png';
-import { useAuth } from '../context/AuthContext'; // 로그인 상태를 관리하는 커스텀 훅
+import { useAuth } from '../context/AuthContext';
 
 const Header = () => {
-  const location = useLocation(); // 현재 경로 확인용
-  const navigate = useNavigate(); // 프로그래밍 방식으로 페이지 이동
-  const { isLoggedIn, logout } = useAuth(); // 로그인 상태 및 로그아웃 함수 가져오기
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isLoggedIn, logout } = useAuth();
 
-  // 로그인 및 회원가입 페이지에서는 검색창/버튼 숨김 처리
-  const hideExtras = location.pathname === '/login' || location.pathname === '/register';
+  const hideExtras = location.pathname === '/login' || location.pathname === '/signup';
 
   return (
     <div className="container">
@@ -19,7 +18,7 @@ const Header = () => {
         style={{ backgroundColor: '#9ED0F3' }}
         className="py-3 px-4 d-flex justify-content-between align-items-center"
       >
-        {/* 왼쪽 로고 및 제목 (클릭 시 메인페이지로 이동) */}
+        {/* 로고 클릭 시 메인 페이지 이동 */}
         <Link
           to="/"
           className="d-flex align-items-center gap-2 text-decoration-none"
@@ -30,10 +29,9 @@ const Header = () => {
           </span>
         </Link>
 
-        {/* 로그인/회원가입 페이지가 아닐 때만 표시 */}
+        {/* 로그인/회원가입 페이지에서는 검색창 숨김 */}
         {!hideExtras && (
           <>
-            {/* 중앙 검색창 */}
             <div className="w-50 position-relative">
               <input
                 type="text"
@@ -43,9 +41,8 @@ const Header = () => {
               <i className="fas fa-search position-absolute top-50 end-0 translate-middle-y pe-3 text-muted"></i>
             </div>
 
-            {/* 오른쪽 영역 - 로그인 상태에 따라 표시 */}
+            {/* 로그인 여부에 따른 오른쪽 메뉴 */}
             {isLoggedIn ? (
-              // 로그인 상태일 때: 내 서재 드롭다운
               <Dropdown align="end">
                 <Dropdown.Toggle
                   variant="light"
@@ -68,7 +65,6 @@ const Header = () => {
                 </Dropdown.Menu>
               </Dropdown>
             ) : (
-              // 로그아웃 상태일 때: 로그인 버튼
               <button
                 onClick={() => navigate('/login')}
                 className="btn btn-light fw-bold px-4 rounded-pill"
