@@ -1,0 +1,27 @@
+# JANUS 생성모델 배포 키트
+
+이 브랜치는 JANUS를 기준으로 생성모델을 로드하고, 이후 다시 base64형태로 변환해주는 모델입니다.
+지속적으로 추가 예정이오니 참고 부탁드립니다.
+
+# API 구현 목록 :
+엔드포인트 : /AI/CreatePic
+응답 : POST
+
+JSON 전송내용 :
+{
+    "prompt": "{프롬프트 내용, 인상착의 등}",
+    "seed": {시드 숫자, 42(기본값)},
+    "cfg_weight": {cfg_크기, 1~10사이 자연수},
+    "temperature": {답변 온도, 0~1사이 자연수}
+}
+
+JSON 응답 : 
+{
+    "images": [
+        {
+            "base64":"{base64로 인코딩된 파일 내용}"
+            "file_name" : "image_n.txt"
+        }, ...
+    ],
+    "success": true
+}
