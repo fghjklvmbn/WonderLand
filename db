@@ -2,10 +2,6 @@ CREATE DATABASE wonderland DEFAULT CHARACTER SET utf8mb4;
 
 USE wonderland;
 
-
-select * from books;
-
-
 CREATE TABLE User (
   user_id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(100) NOT NULL UNIQUE,
@@ -26,6 +22,8 @@ VALUES
 ('edward@example.com', 'hashed_pw5', 'Edward', '에드워드', 25, NOW(), 0);
 
 select * from user;
+
+
 
 CREATE TABLE Story (
   story_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -92,7 +90,6 @@ VALUES
      JSON_OBJECT('page_number', 4, 'text', '달에서 지구를 바라보며 소원을 빌었어요.', 'image_url', 'https://example.com/image5_4.png', 'tts_url', 'https://example.com/audio5_4.mp3', 'image_generated_count', 1),
      JSON_OBJECT('page_number', 5, 'text', '소년은 다시 지구로 돌아왔지만, 꿈 같았어요.', 'image_url', 'https://example.com/image5_5.png', 'tts_url', 'https://example.com/audio5_5.mp3', 'image_generated_count', 1)
 )), FALSE, TRUE, NOW(), NOW());
-
 
 
 select * from story;
