@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 import { Tabs, Tab, Container, Row, Col, Button, Card, Modal, Form } from 'react-bootstrap';
+import axios from 'axios';
 
-// 최근 본 이야기 탭 컴포넌트
+// 최근 본 이야기 탭 컴포넌트 (임시 구현)
 const RecentStories = () => (
   <Row className="row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
     {Array(3).fill(0).map((_, i) => (
@@ -12,56 +13,68 @@ const RecentStories = () => (
           <img src="https://placehold.co/200x200" className="img-fluid rounded mb-2" alt="story preview" />
           <div>제목</div>
           <div className="text-muted">작가이름</div>
-          <div><i className="fas fa-heart text-danger"></i> 좋아요 수</div>
+          <div><i className="fas fa-star text-warning"></i> 좋아요 수</div>
         </div>
       </Col>
     ))}
   </Row>
 );
 
-// 생성한 이야기 탭 컴포넌트
+// 생성한 이야기 탭 컴포넌트 (실제 연동)
 const MyCreatedStories = () => {
-  // 기본 이야기 목록 상태
-  const [stories, setStories] = useState([
-    { id: 1, title: '용감한 꼬마', genre: '모험 / 동화' },
-    { id: 2, title: '마법의 호수', genre: '판타지 / 연령 8~13세' },
-    { id: 3, title: '우주 탐험대', genre: 'SF / 13세 이상' },
-  ]);
-
-  // 수정 모달 상태
+  const [stories, setStories] = useState([]);
   const [showModal, setShowModal] = useState(false);
-
-  // 선택된 수정 대상 이야기
   const [selectedStory, setSelectedStory] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editGenre, setEditGenre] = useState('');
 
-  // 삭제 처리 함수
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/user/stories')
+      .then(res => setStories(res.data))
+      .catch(err => console.error('이야기 불러오기 실패:', err));
+  }, []);
+
   const handleDelete = (id) => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
-      setStories(stories.filter(s => s.id !== id));
+      axios.delete(`http://localhost:8080/api/stories/${id}`)
+        .then(() => setStories(stories.filter(s => s.storyId !== id)))
+        .catch(err => console.error('삭제 실패:', err));
     }
   };
 
-  // 수정 버튼 클릭 시 모달 열기
   const handleEdit = (story) => {
     setSelectedStory(story);
+    setEditTitle(story.title);
+    setEditGenre(story.genre);
     setShowModal(true);
+  };
+
+  const handleSave = () => {
+    axios.put(`http://localhost:8080/api/stories/${selectedStory.storyId}`, {
+      title: editTitle,
+      genre: editGenre
+    })
+      .then(() => {
+        setStories(stories.map(s => s.storyId === selectedStory.storyId ? { ...s, title: editTitle, genre: editGenre } : s));
+        setShowModal(false);
+      })
+      .catch(err => console.error('수정 실패:', err));
   };
 
   return (
     <>
-      {/* 카드 형식의 이야기 목록 출력 */}
       <Row className="row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {stories.map((story) => (
-          <Col key={story.id}>
+          <Col key={story.storyId}>
             <Card>
-              <Card.Img variant="top" src="https://placehold.co/200x200" />
+              <Card.Img variant="top" src={story.thumbnail || 'https://placehold.co/200x200'} />
               <Card.Body>
                 <Card.Title>{story.title}</Card.Title>
                 <Card.Text className="text-muted">{story.genre}</Card.Text>
                 <div className="d-flex gap-2">
                   <Button variant="outline-primary" size="sm">이어 작성</Button>
                   <Button variant="outline-secondary" size="sm" onClick={() => handleEdit(story)}>수정</Button>
-                  <Button variant="outline-danger" size="sm" onClick={() => handleDelete(story.id)}>삭제</Button>
+                  <Button variant="outline-danger" size="sm" onClick={() => handleDelete(story.storyId)}>삭제</Button>
                 </div>
               </Card.Body>
             </Card>
@@ -69,7 +82,6 @@ const MyCreatedStories = () => {
         ))}
       </Row>
 
-      {/* 이야기 수정용 모달 */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>이야기 수정</Modal.Title>
@@ -78,33 +90,31 @@ const MyCreatedStories = () => {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>이야기 제목</Form.Label>
-              <Form.Control type="text" defaultValue={selectedStory?.title} />
+              <Form.Control type="text" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>장르</Form.Label>
-              <Form.Control type="text" defaultValue={selectedStory?.genre} />
+              <Form.Control type="text" value={editGenre} onChange={(e) => setEditGenre(e.target.value)} />
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>취소</Button>
-          <Button variant="primary">저장</Button> {/* 실제 저장 기능은 아직 구현 안됨 */}
+          <Button variant="primary" onClick={handleSave}>저장</Button>
         </Modal.Footer>
       </Modal>
     </>
   );
 };
 
-// 내 목소리 학습 탭 컴포넌트
 const VoiceTraining = () => {
-  const [file, setFile] = useState(null); // 업로드된 파일
-  const [uploaded, setUploaded] = useState(false); // 업로드 상태
+  const [file, setFile] = useState(null);
+  const [uploaded, setUploaded] = useState(false);
 
-  // 업로드 버튼 클릭 시 처리
   const handleUpload = () => {
     if (!file) return alert('파일을 선택하세요');
     setUploaded(true);
-    setTimeout(() => alert('학습이 완료되었습니다!'), 1000); // 모의 학습 처리
+    setTimeout(() => alert('학습이 완료되었습니다!'), 1000);
   };
 
   return (
@@ -117,13 +127,11 @@ const VoiceTraining = () => {
   );
 };
 
-// 내 서재 탭 전체 페이지
 const MyLibraryTabs = () => {
   return (
     <div className="d-flex flex-column min-vh-100">
       <Container className="py-4 flex-grow-1">
         <h2 className="fw-bold mb-4">내 서재</h2>
-        {/* 탭 메뉴 */}
         <Tabs defaultActiveKey="recent" id="mylibrary-tabs" className="mb-3">
           <Tab eventKey="recent" title="📖 최근 본 이야기">
             <RecentStories />

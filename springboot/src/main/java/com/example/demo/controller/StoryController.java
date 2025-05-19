@@ -72,6 +72,22 @@ public class StoryController {
     }
 
     /**
+     * 사용자 자신의 생성 이야기 목록 조회
+     */
+    @GetMapping("/mine")
+    public List<StoryDTO> getMyStories(@RequestParam Long userId) {
+        List<Story> stories = storyRepository.findByAuthor_UserId(userId);
+        return stories.stream().map(story -> new StoryDTO(
+            story.getStoryId(),
+            story.getTitle(),
+            story.getTextJson() != null ? extractThumbnailFromJson(story.getTextJson()) : null,
+            getAuthorName(story.getAuthor()),
+            story.getGenre(),
+            0 // 좋아요 수 추후 구현
+        )).collect(Collectors.toList());
+    }
+
+    /**
      * 공통: Story 리스트를 DTO 리스트로 변환
      */
     private List<StoryDTO> toDtoList(List<Story> stories) {
@@ -105,6 +121,9 @@ public class StoryController {
         return user.getNickname() != null ? user.getNickname() : user.getName();
     }
 
+    /**
+     * 장르 목록 (스토리 수 기준 정렬)
+     */
     @GetMapping("/genres")
     public List<String> getGenresBySharedCount() {
         List<Object[]> rows = storyRepository.findGenreWithSharedStoryCount();
@@ -112,5 +131,4 @@ public class StoryController {
                 .map(row -> (String) row[0])
                 .collect(Collectors.toList());
     }
-
 }
