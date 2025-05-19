@@ -12,7 +12,7 @@ const RecentStories = () => (
           <img src="https://placehold.co/200x200" className="img-fluid rounded mb-2" alt="story preview" />
           <div>제목</div>
           <div className="text-muted">작가이름</div>
-          <div><i className="fas fa-star text-warning"></i> 좋아요 수</div>
+          <div><i className="fas fa-heart text-danger"></i> 좋아요 수</div>
         </div>
       </Col>
     ))}
@@ -54,7 +54,7 @@ const MyCreatedStories = () => {
         {stories.map((story) => (
           <Col key={story.id}>
             <Card>
-              <Card.Img variant="top" src="https://placehold.co/400x200" />
+              <Card.Img variant="top" src="https://placehold.co/200x200" />
               <Card.Body>
                 <Card.Title>{story.title}</Card.Title>
                 <Card.Text className="text-muted">{story.genre}</Card.Text>
