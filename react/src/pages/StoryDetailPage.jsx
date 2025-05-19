@@ -9,7 +9,6 @@ const StoryDetailPage = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const [storyTitle, setStoryTitle] = useState('');
 
-  // 이야기 데이터 가져오기
   useEffect(() => {
     axios.get(`http://localhost:8080/api/stories/${id}`)
       .then(res => {
@@ -26,11 +25,9 @@ const StoryDetailPage = () => {
 
   if (storyPages.length === 0) return <div className="text-center mt-5">Loading...</div>;
 
-  // 실질적으로 보여줄 전체 페이지 수 = 1 (제목) + 실제 story 페이지 수
   const totalPageCount = storyPages.length + 1;
-
-  // 0번째 인덱스는 제목만 출력
   const currentPage = pageIndex === 0 ? null : storyPages[pageIndex - 1];
+  const coverImage = storyPages[0]?.image_url || '';
 
   const playTTS = () => {
     const audio = new Audio(currentPage.tts_url);
@@ -61,14 +58,23 @@ const StoryDetailPage = () => {
           className="shadow border rounded bg-white w-100"
           style={{
             maxWidth: '1300px',
-            minHeight: '300px',
+            minHeight: '400px',
             padding: '30px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
           }}
         >
-          <h1 style={{ textAlign: 'center', fontWeight: 'bold' }}>{storyTitle || '제목 없음'}</h1>
+          <Col md={6} className="d-flex justify-content-center align-items-center">
+            <img
+              src={coverImage}
+              alt="cover"
+              className="img-fluid rounded"
+              style={{ maxHeight: '100%', objectFit: 'contain' }}
+            />
+          </Col>
+          <Col md={6} className="d-flex justify-content-center align-items-center">
+            <h2 style={{ textAlign: 'center', fontWeight: 'bold' }}>{storyTitle || '제목 없음'}</h2>
+          </Col>
         </Row>
       ) : (
         <Row
