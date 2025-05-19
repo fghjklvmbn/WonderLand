@@ -23,19 +23,30 @@ public class StoryController {
     private StoryRepository storyRepository;
 
     /**
-     * 공유된 이야기 목록 조회 (카드용)
+     * 공유된 이야기 목록 전체 조회 (기본 탭)
      */
     @GetMapping("/shared")
     public List<StoryDTO> getSharedStories() {
         List<Story> stories = storyRepository.findByIsSharedTrue();
-        return stories.stream().map(story -> new StoryDTO(
-                story.getStoryId(),
-                story.getTitle(),
-                extractThumbnailFromJson(story.getTextJson()),
-                getAuthorName(story.getAuthor()),
-                story.getGenre(),
-                0 // 좋아요 수는 추후 구현
-        )).collect(Collectors.toList());
+        return toDtoList(stories);
+    }
+
+    /**
+     * 장르별 공유된 이야기 조회
+     */
+    @GetMapping("/genre/{genre}")
+    public List<StoryDTO> getStoriesByGenre(@PathVariable String genre) {
+        List<Story> stories = storyRepository.findByGenreAndIsSharedTrue(genre);
+        return toDtoList(stories);
+    }
+
+    /**
+     * 최신순 공유된 이야기 조회
+     */
+    @GetMapping("/latest")
+    public List<StoryDTO> getLatestStories() {
+        List<Story> stories = storyRepository.findByIsSharedTrueOrderByCreatedAtDesc();
+        return toDtoList(stories);
     }
 
     /**
@@ -53,10 +64,25 @@ public class StoryController {
             JsonNode root = mapper.readTree(story.getTextJson());
             Map<String, Object> result = new HashMap<>();
             result.put("pages", root.get("pages"));
+            result.put("title", story.getTitle());
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", "JSON 파싱 실패"));
         }
+    }
+
+    /**
+     * 공통: Story 리스트를 DTO 리스트로 변환
+     */
+    private List<StoryDTO> toDtoList(List<Story> stories) {
+        return stories.stream().map(story -> new StoryDTO(
+                story.getStoryId(),
+                story.getTitle(),
+                extractThumbnailFromJson(story.getTextJson()),
+                getAuthorName(story.getAuthor()),
+                story.getGenre(),
+                0 // 좋아요 수는 추후 구현
+        )).collect(Collectors.toList());
     }
 
     /**
@@ -78,4 +104,13 @@ public class StoryController {
     private String getAuthorName(User user) {
         return user.getNickname() != null ? user.getNickname() : user.getName();
     }
+
+    @GetMapping("/genres")
+    public List<String> getGenresBySharedCount() {
+        List<Object[]> rows = storyRepository.findGenreWithSharedStoryCount();
+        return rows.stream()
+                .map(row -> (String) row[0])
+                .collect(Collectors.toList());
+    }
+
 }

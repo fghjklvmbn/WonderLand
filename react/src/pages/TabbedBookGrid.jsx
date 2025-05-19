@@ -4,61 +4,73 @@ import BookCard from './BookCard';
 import axios from 'axios';
 
 const TabbedBookGrid = () => {
-  const [stories, setStories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [latestStories, setLatestStories] = useState([]);
+  const [genreStories, setGenreStories] = useState({});
   const [genres, setGenres] = useState([]);
+  const [activeKey, setActiveKey] = useState('latest');
+  const [loading, setLoading] = useState(true);
 
-  // 이야기 데이터 가져오기
   useEffect(() => {
-    axios.get('http://localhost:8080/api/stories/shared')
+    // 장르를 공유된 이야기 개수 기준으로 가져오기
+    axios.get('http://localhost:8080/api/stories/genres')
       .then(res => {
-        const data = res.data;
-        setStories(data);
+        setGenres(res.data);
+        res.data.forEach(genre => {
+          axios.get(`http://localhost:8080/api/stories/genre/${genre}`)
+            .then(res => {
+              setGenreStories(prev => ({ ...prev, [genre]: res.data }));
+            });
+        });
+      });
 
-        // 장르 목록 중복 제거
-        const uniqueGenres = [...new Set(data.map(story => story.genre))];
-        setGenres(uniqueGenres);
-
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('스토리 로딩 실패:', err);
+    // 최신순 스토리 가져오기
+    axios.get('http://localhost:8080/api/stories/latest')
+      .then(res => {
+        setLatestStories(res.data);
         setLoading(false);
       });
   }, []);
 
-  // 카드 그리드 렌더링 함수
-  const renderGrid = (genre) => (
+  const renderGrid = (stories) => (
     <Row xs={2} md={3} lg={5} className="g-3 py-4">
-      {stories
-        .filter((story) => story.genre === genre)
-        .map((story) => (
-          <Col key={story.storyId}>
-            <BookCard
-              storyId={story.storyId}
-              image={story.thumbnail}
-              title={story.title}
-              author={story.author}
-              likes={story.likes}
-            />
-          </Col>
-        ))}
+      {stories.map((story) => (
+        <Col key={story.storyId}>
+          <BookCard
+            storyId={story.storyId}
+            image={story.thumbnail}
+            title={story.title}
+            author={story.author}
+            likes={story.likes}
+          />
+        </Col>
+      ))}
     </Row>
   );
 
+  const getCurrentStories = () => {
+    if (activeKey === 'latest') return latestStories;
+    return genreStories[activeKey] || [];
+  };
+
   return (
     <div className="container py-4">
-      <Tabs defaultActiveKey={genres[0]} id="genre-tabs" className="mb-3">
-        {loading ? (
-          <Spinner animation="border" />
-        ) : (
-          genres.map((genre) => (
-            <Tab eventKey={genre} title={`📚 ${genre}`} key={genre}>
-              {renderGrid(genre)}
-            </Tab>
-          ))
-        )}
+      <Tabs
+        id="story-tabs"
+        activeKey={activeKey}
+        onSelect={(k) => setActiveKey(k)}
+        className="mb-3"
+      >
+        <Tab eventKey="latest" title="🕓 최신순" />
+        {genres.map((genre) => (
+          <Tab
+            key={genre}
+            eventKey={genre}
+            title={genre}
+          />
+        ))}
       </Tabs>
+
+      {loading ? <Spinner animation="border" /> : renderGrid(getCurrentStories())}
     </div>
   );
 };
