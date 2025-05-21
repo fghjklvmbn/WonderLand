@@ -6,6 +6,8 @@ import com.example.demo.model.User;
 import com.example.demo.repository.StoryRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,36 +23,28 @@ public class StoryController {
     @Autowired
     private StoryRepository storyRepository;
 
-    /**
-     * 공유된 이야기 목록 전체 조회 (기본 탭)
-     */
+    // 🔸 공유된 이야기 목록
     @GetMapping("/shared")
     public List<StoryDTO> getSharedStories() {
         List<Story> stories = storyRepository.findByIsSharedTrue();
         return toDtoList(stories);
     }
 
-    /**
-     * 장르별 공유된 이야기 조회
-     */
+    // 🔸 장르별 공유된 이야기
     @GetMapping("/genre/{genre}")
     public List<StoryDTO> getStoriesByGenre(@PathVariable String genre) {
         List<Story> stories = storyRepository.findByGenreAndIsSharedTrue(genre);
         return toDtoList(stories);
     }
 
-    /**
-     * 최신순 공유된 이야기 조회
-     */
+    // 🔸 최신순 공유된 이야기
     @GetMapping("/latest")
     public List<StoryDTO> getLatestStories() {
         List<Story> stories = storyRepository.findByIsSharedTrueOrderByCreatedAtDesc();
         return toDtoList(stories);
     }
 
-    /**
-     * 단일 이야기 상세 조회 (pages 반환용)
-     */
+    // 🔸 단일 이야기 상세
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getStoryById(@PathVariable Long id) {
         Optional<Story> optional = storyRepository.findById(id);
@@ -70,18 +64,19 @@ public class StoryController {
         }
     }
 
-    /**
-     * 로그인한 사용자의 이야기 목록 조회
-     */
-    @GetMapping("/user/stories")
-    public List<StoryDTO> getUserStories(@RequestParam Long userId) {
-        List<Story> stories = storyRepository.findByAuthor_UserId(userId);
-        return toDtoList(stories);
+    // 🔸 ✅ 세션 기반 사용자 이야기 조회
+    @GetMapping("/mine")
+    public ResponseEntity<?> getMyStories(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+
+        List<Story> stories = storyRepository.findByAuthor_UserId(user.getUserId());
+        return ResponseEntity.ok(toDtoList(stories));
     }
 
-    /**
-     * 이야기 수정
-     */
+    // 🔸 이야기 수정
     @PutMapping("/{id}")
     public ResponseEntity<String> updateStory(@PathVariable Long id, @RequestBody Map<String, String> body) {
         Optional<Story> optional = storyRepository.findById(id);
@@ -95,9 +90,7 @@ public class StoryController {
         return ResponseEntity.ok("수정 완료");
     }
 
-    /**
-     * 이야기 삭제
-     */
+    // 🔸 이야기 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStory(@PathVariable Long id) {
         if (!storyRepository.existsById(id)) return ResponseEntity.notFound().build();
@@ -105,9 +98,7 @@ public class StoryController {
         return ResponseEntity.ok("삭제 완료");
     }
 
-    /**
-     * 공통: Story 리스트를 DTO 리스트로 변환
-     */
+    // 🔸 공통: Story 리스트를 DTO 리스트로 변환
     private List<StoryDTO> toDtoList(List<Story> stories) {
         return stories.stream().map(story -> new StoryDTO(
                 story.getStoryId(),
@@ -119,9 +110,7 @@ public class StoryController {
         )).collect(Collectors.toList());
     }
 
-    /**
-     * 텍스트 JSON에서 썸네일 이미지 추출 (첫 페이지의 image_url)
-     */
+    // 🔸 텍스트 JSON에서 썸네일 추출
     private String extractThumbnailFromJson(String textJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -132,13 +121,12 @@ public class StoryController {
         }
     }
 
-    /**
-     * 작가 이름: 닉네임 우선, 없으면 이름
-     */
+    // 🔸 작가 이름 추출
     private String getAuthorName(User user) {
         return user.getNickname() != null ? user.getNickname() : user.getName();
     }
 
+    // 🔸 장르별 순위
     @GetMapping("/genres")
     public List<String> getGenresBySharedCount() {
         List<Object[]> rows = storyRepository.findGenreWithSharedStoryCount();
@@ -146,4 +134,4 @@ public class StoryController {
                 .map(row -> (String) row[0])
                 .collect(Collectors.toList());
     }
-}        
+}
