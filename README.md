@@ -54,7 +54,7 @@
 
 
 # API 명세서  
-**AI**  
+**AI(ver0.1)**  
 ![image](https://github.com/user-attachments/assets/2836fa26-15ed-4b9e-9e48-fee694c8aa0f)  
   
 **백엔드**  
