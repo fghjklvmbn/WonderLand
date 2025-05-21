@@ -12,23 +12,22 @@ const TabbedBookGrid = () => {
 
   useEffect(() => {
     // 장르를 공유된 이야기 개수 기준으로 가져오기
-    axios.get('http://localhost:8080/api/stories/genres')
-      .then(res => {
-        setGenres(res.data);
-        res.data.forEach(genre => {
-          axios.get(`http://localhost:8080/api/stories/genre/${genre}`)
-            .then(res => {
-              setGenreStories(prev => ({ ...prev, [genre]: res.data }));
-            });
-        });
+    axios.get('http://localhost:8080/api/stories/genres').then((res) => {
+      setGenres(res.data);
+      res.data.forEach((genre) => {
+        axios
+          .get(`http://localhost:8080/api/stories/genre/${genre}`)
+          .then((res) => {
+            setGenreStories((prev) => ({ ...prev, [genre]: res.data }));
+          });
       });
+    });
 
     // 최신순 스토리 가져오기
-    axios.get('http://localhost:8080/api/stories/latest')
-      .then(res => {
-        setLatestStories(res.data);
-        setLoading(false);
-      });
+    axios.get('http://localhost:8080/api/stories/latest').then((res) => {
+      setLatestStories(res.data);
+      setLoading(false);
+    });
   }, []);
 
   const renderGrid = (stories) => (
@@ -62,15 +61,15 @@ const TabbedBookGrid = () => {
       >
         <Tab eventKey="latest" title="🕓 최신순" />
         {genres.map((genre) => (
-          <Tab
-            key={genre}
-            eventKey={genre}
-            title={genre}
-          />
+          <Tab key={genre} eventKey={genre} title={genre} />
         ))}
       </Tabs>
 
-      {loading ? <Spinner animation="border" /> : renderGrid(getCurrentStories())}
+      {loading ? (
+        <Spinner animation="border" />
+      ) : (
+        renderGrid(getCurrentStories())
+      )}
     </div>
   );
 };

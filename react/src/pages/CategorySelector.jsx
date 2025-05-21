@@ -1,4 +1,3 @@
-// src/pages/CategorySelector.jsx
 import React, { useState } from 'react';
 import { Container, Button, Row, Col } from 'react-bootstrap';
 
