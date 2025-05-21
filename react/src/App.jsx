@@ -9,6 +9,15 @@ import LoginPage from './pages/LoginPage';    // 로그인 페이지
 import SignupPage from './pages/SignupPage';  // 회원가입 페이지
 import { AuthProvider } from './context/AuthContext'; // 로그인 상태 관리 컨텍스트
 
+// 우빈 추가 코드
+import ForgotEmailPage from './pages/ForgotEmailPage'; // 이메일 재설정
+import RePasswordPage from './pages/RePasswordPage'; // 비밀번호 재설정
+import Write from './pages/Write'; // 글작성 페이지
+import Write_Manual from './pages/Write_Manual'; // 글작성 페이지
+import Write_Ai from './pages/Write_Ai.jsx'; // 글작성 페이지
+import ImageGenerator from './pages/ImageGenerator'; // 이미지 생성 페이지로 이동
+// 우빈 추가 코드
+
 // 부트스트랩 CSS 및 전역 스타일
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -41,6 +50,19 @@ const App = () => {
               {/* 로그인 / 회원가입 페이지 */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} /> {/* ✅ URL 경로는 소문자로 유지 */}
+
+              {/* 우빈 추가 코드 */}
+              {/* ✅ URL 경로는 소문자로 유지 */}
+              {/* 이메일 찾기 / 비밀번호 재설정 페이지 추가 */}
+              <Route path="/Re" element={<RePasswordPage />} />
+              <Route path="/forgot" element={<ForgotEmailPage />} />
+              <Route path="/write" element={<Write />} />
+              <Route path="/write_manual" element={<Write_Manual />} /> // 수동
+              작성 페이지
+              <Route path="/write_ai" element={<Write_Ai />} /> // AI 작성
+              페이지
+              <Route path="/imagegenerator" element={<ImageGenerator />} />
+              {/* 우빈 추가 코드 */}
             </Routes>
           </main>
 

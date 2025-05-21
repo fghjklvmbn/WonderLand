@@ -2,6 +2,10 @@
 CREATE DATABASE wonderland DEFAULT CHARACTER SET utf8mb4;
 USE wonderland;
 
+
+select * form User;
+
+
 -- User 테이블 생성 (user_id는 BIGINT로 유지)
 CREATE TABLE User (
   user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
