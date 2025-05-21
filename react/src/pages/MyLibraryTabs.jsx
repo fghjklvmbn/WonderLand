@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
@@ -195,6 +196,12 @@ const VoiceTraining = () => {
     </div>
   );
 };
+=======
+// src/pages/MyLibrary/MyLibraryTabs.jsx
+import React from 'react';
+import { Tabs, Tab, Container } from 'react-bootstrap';
+import MyAccount from './MyAccount';
+>>>>>>> 87bc8f2bd38ad2019e380b036d1b1e951274239e
 
 const MyLibraryTabs = () => {
   return (
@@ -202,14 +209,8 @@ const MyLibraryTabs = () => {
       <Container className="py-4 flex-grow-1">
         <h2 className="fw-bold mb-4">내 서재</h2>
         <Tabs defaultActiveKey="recent" id="mylibrary-tabs" className="mb-3">
-          <Tab eventKey="recent" title="📖 최근 본 이야기">
-            <RecentStories />
-          </Tab>
-          <Tab eventKey="created" title="✍️ 생성한 이야기">
-            <MyCreatedStories />
-          </Tab>
-          <Tab eventKey="voice" title="🔊 내 목소리 학습">
-            <VoiceTraining />
+          <Tab eventKey="account" title="👤 내 계정 설정">
+            <MyAccount />
           </Tab>
         </Tabs>
       </Container>
