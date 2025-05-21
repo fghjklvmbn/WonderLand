@@ -4,7 +4,7 @@ from create_pic import generate_and_export_images
 
 app = Flask(__name__)
 
-@app.route("/AI/CreatePic", methods=["POST"])
+@app.route("/AI/Art/Create", methods=["POST"])
 def create_pic():
     data = request.json or {}
     prompt = data.get("prompt")
