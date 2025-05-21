@@ -51,3 +51,11 @@
 ## ver0.1
 ![Image](https://github.com/user-attachments/assets/6b2351ac-be5c-4f6c-9730-268d79a8acb1)
 
+
+
+# API 명세서  
+**AI**  
+![image](https://github.com/user-attachments/assets/2836fa26-15ed-4b9e-9e48-fee694c8aa0f)  
+  
+**백엔드**  
+(준비중)  
