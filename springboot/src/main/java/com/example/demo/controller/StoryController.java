@@ -6,7 +6,6 @@ import com.example.demo.model.User;
 import com.example.demo.repository.StoryRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,19 +71,38 @@ public class StoryController {
     }
 
     /**
-     * 사용자 자신의 생성 이야기 목록 조회
+     * 로그인한 사용자의 이야기 목록 조회
      */
-    @GetMapping("/mine")
-    public List<StoryDTO> getMyStories(@RequestParam Long userId) {
+    @GetMapping("/user/stories")
+    public List<StoryDTO> getUserStories(@RequestParam Long userId) {
         List<Story> stories = storyRepository.findByAuthor_UserId(userId);
-        return stories.stream().map(story -> new StoryDTO(
-            story.getStoryId(),
-            story.getTitle(),
-            story.getTextJson() != null ? extractThumbnailFromJson(story.getTextJson()) : null,
-            getAuthorName(story.getAuthor()),
-            story.getGenre(),
-            0 // 좋아요 수 추후 구현
-        )).collect(Collectors.toList());
+        return toDtoList(stories);
+    }
+
+    /**
+     * 이야기 수정
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateStory(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        Optional<Story> optional = storyRepository.findById(id);
+        if (optional.isEmpty()) return ResponseEntity.notFound().build();
+
+        Story story = optional.get();
+        story.setTitle(body.getOrDefault("title", story.getTitle()));
+        story.setGenre(body.getOrDefault("genre", story.getGenre()));
+        storyRepository.save(story);
+
+        return ResponseEntity.ok("수정 완료");
+    }
+
+    /**
+     * 이야기 삭제
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteStory(@PathVariable Long id) {
+        if (!storyRepository.existsById(id)) return ResponseEntity.notFound().build();
+        storyRepository.deleteById(id);
+        return ResponseEntity.ok("삭제 완료");
     }
 
     /**
@@ -121,9 +139,6 @@ public class StoryController {
         return user.getNickname() != null ? user.getNickname() : user.getName();
     }
 
-    /**
-     * 장르 목록 (스토리 수 기준 정렬)
-     */
     @GetMapping("/genres")
     public List<String> getGenresBySharedCount() {
         List<Object[]> rows = storyRepository.findGenreWithSharedStoryCount();
@@ -131,4 +146,4 @@ public class StoryController {
                 .map(row -> (String) row[0])
                 .collect(Collectors.toList());
     }
-}
+}        
