@@ -16,6 +16,10 @@ def create_pic():
     status = 200 if result["success"] else 500
     return jsonify(result), status
 
+def ping():
+    status = 200
+    return jsonify("pong"), status
+
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
