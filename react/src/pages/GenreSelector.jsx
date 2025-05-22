@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Container, Button, Row, Col } from 'react-bootstrap';
 
-const categories = [
+const genres = [
   '모험',
   '동물',
   '사랑',
@@ -32,35 +32,35 @@ const categories = [
   '우주',
 ];
 
-const CategorySelector = ({ selected, onSelect, onGenerate }) => {
-  const toggleCategory = (category) => {
-    if (selected.includes(category)) {
-      onSelect(selected.filter((c) => c !== category));
+const GenreSelector = ({ selected, onSelect, onGenerate }) => {
+  const toggleGenre = (genre) => {
+    if (selected.includes(genre)) {
+      onSelect(selected.filter((g) => g !== genre));
     } else {
-      onSelect([...selected, category]);
+      onSelect([...selected, genre]);
     }
   };
 
   return (
     <Container className="py-4 text-center" style={{ maxWidth: '700px' }}>
-      <h4 className="fw-bold mb-2">카테고리 선택</h4>
-      <p className="text-muted mb-4">원하는 카테고리를 선택하세요.</p>
+      <h4 className="fw-bold mb-2">장르 선택</h4>
+      <p className="text-muted mb-4">원하는 장르를 선택하세요.</p>
 
       <div
         className="p-4 mb-4 mx-auto shadow-sm rounded"
         style={{ background: '#f9f9f9' }}
       >
         <Row className="g-2 justify-content-center">
-          {categories.map((category) => (
-            <Col key={category} xs="auto">
+          {genres.map((genre) => (
+            <Col key={genre} xs="auto">
               <Button
                 variant={
-                  selected.includes(category) ? 'primary' : 'outline-primary'
+                  selected.includes(genre) ? 'primary' : 'outline-primary'
                 }
-                onClick={() => toggleCategory(category)}
+                onClick={() => toggleGenre(genre)}
                 className="rounded-pill px-3"
               >
-                {category}
+                {genre}
               </Button>
             </Col>
           ))}
@@ -80,4 +80,4 @@ const CategorySelector = ({ selected, onSelect, onGenerate }) => {
   );
 };
 
-export default CategorySelector;
+export default GenreSelector;
