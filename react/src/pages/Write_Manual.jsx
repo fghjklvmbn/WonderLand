@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import GenreSelector from './GenreSelector'; // ✅ 이름 변경된 GenreSelector import
 
 const WriteManual = () => {
-  const navigate = useNavigate(); // ✅ 컴포넌트 안에서 호출
+  const navigate = useNavigate();
   const [texts, setTexts] = useState(['', '', '', '', '']);
   const [title, setTitle] = useState('');
+  const [selectedGenres, setSelectedGenres] = useState([]); // ✅ 선택된 장르 상태
 
   const handleChange = (index, value) => {
     const newTexts = [...texts];
@@ -14,6 +16,7 @@ const WriteManual = () => {
   };
 
   const handleGenerate = () => {
+    // 유효성 검사 주석 처리된 상태 유지
     const allEmpty = texts.every((text) => !text.trim());
     if (!title.trim()) {
       alert('이야기 제목을 입력해주세요!');
@@ -23,11 +26,16 @@ const WriteManual = () => {
       alert('최소 한 페이지 이상 작성해주세요!');
       return;
     }
+    // if (selectedGenres.length === 0) {
+    //   alert('최소 한 개의 장르를 선택해주세요.');
+    //   return;
+    // }
 
     navigate('/imagegenerator', {
       state: {
         title: title,
         pages: texts,
+        genre: selectedGenres,
       },
     });
   };
@@ -86,13 +94,17 @@ const WriteManual = () => {
         </div>
       </div>
 
+      {/* ✅ 장르 선택 영역 */}
+      <GenreSelector selected={selectedGenres} onSelect={setSelectedGenres} />
+
       <div className="text-center">
         <Button
           variant="primary"
           className="px-5 rounded-pill"
           onClick={handleGenerate}
+          disabled={selectedGenres.length === 0} // ✅ 선택된 장르가 있어야 활성화
         >
-          줄거리 생성하기
+          이미지 생성하기
         </Button>
       </div>
     </Container>

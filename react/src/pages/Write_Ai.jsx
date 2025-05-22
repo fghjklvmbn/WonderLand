@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
-import CategorySelector from './CategorySelector'; // ✅ 카테고리 컴포넌트 import
+import GenreSelector from './GenreSelector'; // ✅ 장르 컴포넌트 import
 
 const Write_Ai = () => {
   const [text, setText] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState([]); // ✅ 선택된 카테고리 상태
+  const [selectedGenres, setSelectedGenres] = useState([]); // ✅ 선택된 장르 상태
 
   const handleGenerate = () => {
     if (!text.trim()) {
@@ -12,14 +12,14 @@ const Write_Ai = () => {
       return;
     }
 
-    if (selectedCategory.length === 0) {
-      alert('카테고리를 하나 이상 선택해주세요!');
+    if (selectedGenres.length === 0) {
+      alert('장르를 하나 이상 선택해주세요!');
       return;
     }
 
     // 추후 줄거리 생성 로직 추가
     console.log('입력된 내용:', text);
-    console.log('선택된 카테고리:', selectedCategory);
+    console.log('선택된 장르:', selectedGenres);
   };
 
   return (
@@ -43,13 +43,9 @@ const Write_Ai = () => {
         />
       </Form>
 
-      {/* ✅ 카테고리 선택 영역 추가 */}
-      <CategorySelector
-        selected={selectedCategory}
-        onSelect={setSelectedCategory}
-      />
+      {/* ✅ 장르 선택 영역 */}
+      <GenreSelector selected={selectedGenres} onSelect={setSelectedGenres} />
 
-      {/* 예시 */}
       <div className="text-center text-muted small mb-4">
         <div>
           예시 1) 소포아가 신비로운 마법의 숲을 탐험하며 친구들과 함께 숲을
