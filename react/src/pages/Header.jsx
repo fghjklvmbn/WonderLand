@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../images/Logo_ver2.0.png';
-import profile from '../images/뚱이.png';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
@@ -94,12 +93,6 @@ const Header = () => {
                       id="dropdown-profile"
                       className="d-flex align-items-center gap-2"
                     >
-                      <img
-                        src={profile}
-                        alt="프로필"
-                        style={{ height: 25 }}
-                        className="rounded-circle"
-                      />
                       <span className="d-none d-md-inline">
                         {nickname}
                       </span>
