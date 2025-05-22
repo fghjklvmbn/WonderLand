@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../images/Logo_ver2.0.png';
@@ -10,6 +10,7 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useAuth();
+  const [nickname, setNickname] = useState('');
 
   const hideExtras =
     location.pathname === '/login' || location.pathname === '/register';
@@ -18,7 +19,27 @@ const Header = () => {
     location.pathname.startsWith(path)
   );
 
-  // ✅ 로그아웃 처리: 백엔드 세션 삭제 + 프론트 상태 초기화 + 로그인 페이지 이동
+  // ✅ 로그인 유저 정보 요청해서 닉네임 저장
+  useEffect(() => {
+    const fetchNickname = async () => {
+      try {
+        const res = await axios.get('http://localhost:8080/api/auth/me', {
+          withCredentials: true,
+        });
+        if (res.data && res.data.nickname) {
+          setNickname(res.data.nickname);
+        }
+      } catch (err) {
+        console.warn('닉네임 가져오기 실패', err);
+      }
+    };
+
+    if (isLoggedIn) {
+      fetchNickname();
+    }
+  }, [isLoggedIn]);
+
+  // ✅ 로그아웃 처리
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -26,8 +47,8 @@ const Header = () => {
         {},
         { withCredentials: true }
       );
-      logout(); // AuthContext 상태 초기화
-      navigate('/login'); // 로그인 페이지 이동
+      logout();
+      navigate('/login');
     } catch (err) {
       console.error('로그아웃 실패:', err);
     }
@@ -39,7 +60,7 @@ const Header = () => {
         style={{ backgroundColor: '#9ED0F3' }}
         className="py-3 px-4 d-flex justify-content-between align-items-center"
       >
-        {/* 왼쪽 로고 및 제목 */}
+        {/* 로고 */}
         <Link
           to="/"
           className="d-flex align-items-center gap-2 text-decoration-none"
@@ -50,10 +71,9 @@ const Header = () => {
           </span>
         </Link>
 
-        {/* 로그인/회원가입 페이지가 아닐 때만 표시 */}
         {!hideExtras && (
           <>
-            {/* 중앙 검색창 */}
+            {/* 검색창 */}
             <div className="w-50 position-relative">
               <input
                 type="text"
@@ -63,11 +83,11 @@ const Header = () => {
               <i className="fas fa-search position-absolute top-50 end-0 translate-middle-y pe-3 text-muted"></i>
             </div>
 
-            {/* 오른쪽: 로그인 상태 */}
+            {/* 우측 */}
             <div className="d-flex align-items-center gap-2">
               {isLoggedIn ? (
                 <>
-                  {/* 내 서재 드롭다운 */}
+                  {/* 프로필 드롭다운 */}
                   <Dropdown align="end">
                     <Dropdown.Toggle
                       variant="light"
@@ -80,7 +100,9 @@ const Header = () => {
                         style={{ height: 25 }}
                         className="rounded-circle"
                       />
-                      <span className="d-none d-md-inline">내 서재</span>
+                      <span className="d-none d-md-inline">
+                        {nickname}
+                      </span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item as={Link} to="/my-library">
@@ -96,7 +118,6 @@ const Header = () => {
                     </Dropdown.Menu>
                   </Dropdown>
 
-                  {/* Write 페이지일 때만 보이는 버튼 */}
                   {isWritePage && (
                     <>
                       <button

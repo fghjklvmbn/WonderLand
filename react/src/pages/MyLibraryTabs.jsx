@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Tabs, Tab, Container, Spinner } from 'react-bootstrap';
 import axiosInstance from '../api/axiosInstance';
 import MyCreatedStories from './MyCreatedStories';
-import MyAccount from './MyAccount';
+import SettingsPage from './SettingsPage';
 
 const MyLibraryTabs = () => {
   const [nickname, setNickname] = useState('');
@@ -32,7 +32,6 @@ const MyLibraryTabs = () => {
     <div className="d-flex flex-column min-vh-100">
       <Container className="py-4 flex-grow-1">
         <h2 className="fw-bold mb-2">내 서재</h2>
-        <p>👋 {nickname} 님, 환영합니다!</p>
 
         <Tabs defaultActiveKey="created" id="mylibrary-tabs" className="mb-3" fill>
           <Tab eventKey="recent" title="📖 최근 본 이야기">
@@ -44,8 +43,8 @@ const MyLibraryTabs = () => {
           <Tab eventKey="voice" title="🎤 내 목소리 학습">
             <p>내 목소리 학습 기능은 아직 준비 중입니다.</p>
           </Tab>
-          <Tab eventKey="account" title="👤 내 계정 설정">
-            <MyAccount />
+          <Tab eventKey="SettingsPage" title="👤 내 계정 설정">
+            <SettingsPage />
           </Tab>
         </Tabs>
       </Container>
