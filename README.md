@@ -9,6 +9,9 @@
 [피그마 주소](https://www.figma.com/design/u6YK03mZF5mum4Gvrbcv9v/WonderLand?node-id=0-1&t=JByndxUTiUFZwHn8-1)
 
 <br><br><br><br>
+# ERD
+## ver0.3 (25.05.22)
+![Wonderland ERD Ver0 3 drawio](https://github.com/user-attachments/assets/7d656535-df5f-4c5d-b30b-7c7b7044e9d6)
 
 # 업무 흐름도
 ## ver0.5 (25.05.22)
