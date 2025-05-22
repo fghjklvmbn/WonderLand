@@ -102,7 +102,7 @@ const Header = () => {
                         내 서재 보기
                       </Dropdown.Item>
                       <Dropdown.Item as={Link} to="/settings">
-                        설정
+                        내 계정 설정
                       </Dropdown.Item>
                       <Dropdown.Divider />
                       <Dropdown.Item onClick={handleLogout}>

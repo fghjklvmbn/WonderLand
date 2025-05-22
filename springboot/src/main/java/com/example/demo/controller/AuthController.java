@@ -37,7 +37,6 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> me(HttpSession session) {
         Object user = session.getAttribute("user");
-        System.out.println("🔍 세션 user 확인: " + user);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {

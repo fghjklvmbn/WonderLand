@@ -7,7 +7,7 @@ import { Container, Form, Button, Card, Alert } from 'react-bootstrap';
 const SettingsPage = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [nickname, setNickname] = useState('');
-  const [passwords, setPasswords] = useState({ current: '', new: '' });
+  const [passwords, setPasswords] = useState({ current: '', newPassword: '' });
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -91,9 +91,9 @@ const SettingsPage = () => {
               <Form.Label>새 비밀번호</Form.Label>
               <Form.Control
                 type="password"
-                value={passwords.new}
+                value={passwords.newPassword}
                 onChange={(e) =>
-                  setPasswords({ ...passwords, new: e.target.value })
+                  setPasswords({ ...passwords, newPassword: e.target.value })
                 }
               />
             </Form.Group>
