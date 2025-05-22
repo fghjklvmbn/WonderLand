@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../images/Logo_ver2.0.png';
 import profile from '../images/뚱이.png';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 const Header = () => {
   const location = useLocation();
@@ -13,10 +14,24 @@ const Header = () => {
   const hideExtras =
     location.pathname === '/login' || location.pathname === '/register';
 
-  // Write 관련 페이지 여부 확인
   const isWritePage = ['/write', '/write_manual', '/write_ai'].some((path) =>
     location.pathname.startsWith(path)
   );
+
+  // ✅ 로그아웃 처리: 백엔드 세션 삭제 + 프론트 상태 초기화 + 로그인 페이지 이동
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        'http://localhost:8080/api/auth/logout',
+        {},
+        { withCredentials: true }
+      );
+      logout(); // AuthContext 상태 초기화
+      navigate('/login'); // 로그인 페이지 이동
+    } catch (err) {
+      console.error('로그아웃 실패:', err);
+    }
+  };
 
   return (
     <div className="container">
@@ -68,16 +83,20 @@ const Header = () => {
                       <span className="d-none d-md-inline">내 서재</span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                      <Dropdown.Item href="/my-library">
+                      <Dropdown.Item as={Link} to="/my-library">
                         내 서재 보기
                       </Dropdown.Item>
-                      <Dropdown.Item href="/settings">설정</Dropdown.Item>
+                      <Dropdown.Item as={Link} to="/settings">
+                        설정
+                      </Dropdown.Item>
                       <Dropdown.Divider />
-                      <Dropdown.Item onClick={logout}>로그아웃</Dropdown.Item>
+                      <Dropdown.Item onClick={handleLogout}>
+                        로그아웃
+                      </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
 
-                  {/* ✔ Write 페이지일 때만 보이는 버튼 */}
+                  {/* Write 페이지일 때만 보이는 버튼 */}
                   {isWritePage && (
                     <>
                       <button
@@ -96,7 +115,6 @@ const Header = () => {
                   )}
                 </>
               ) : (
-                // 로그아웃 상태일 때 로그인 버튼
                 <button
                   onClick={() => navigate('/login')}
                   className="btn btn-light fw-bold px-4 rounded-pill"
