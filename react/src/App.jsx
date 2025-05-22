@@ -52,7 +52,6 @@ const App = () => {
               <Route path="/settings" element={<SettingsPage />} />
 
 
-
               {/* 우빈 추가 코드 */}
               {/* ✅ URL 경로는 소문자로 유지 */}
               {/* 이메일 찾기 / 비밀번호 재설정 페이지 추가 */}
