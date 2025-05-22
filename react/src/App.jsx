@@ -8,6 +8,7 @@ import StoryDetailPage from './pages/StoryDetailPage'; // 동화 상세 보기
 import LoginPage from './pages/LoginPage'; // 로그인 페이지
 import SignupPage from './pages/SignupPage'; // 회원가입 페이지
 import { AuthProvider } from './context/AuthContext'; // 로그인 상태 관리 컨텍스트
+import MyLibraryPage from './pages/MyLibraryPage';
 
 // 우빈 추가 코드
 import ForgotEmailPage from './pages/ForgotEmailPage'; // 이메일 재설정
@@ -45,18 +46,16 @@ const App = () => {
               <Route path="/story/:id" element={<StoryDetailPage />} />
               {/* 로그인 / 회원가입 페이지 */}
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />{' '}
-              {/* ✅ URL 경로는 소문자로 유지 */}
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/my-library" element={<MyLibraryPage />} />
               {/* 우빈 추가 코드 */}
               {/* ✅ URL 경로는 소문자로 유지 */}
               {/* 이메일 찾기 / 비밀번호 재설정 페이지 추가 */}
               <Route path="/Re" element={<RePasswordPage />} />
               <Route path="/forgot" element={<ForgotEmailPage />} />
               <Route path="/write" element={<Write />} />
-              <Route path="/write_manual" element={<Write_Manual />} /> // 수동
-              작성 페이지
-              <Route path="/write_ai" element={<Write_Ai />} /> // AI 작성
-              페이지
+              <Route path="/write_manual" element={<Write_Manual />} />
+              <Route path="/write_ai" element={<Write_Ai />} />
               <Route path="/imagegenerator" element={<ImageGenerator />} />
               {/* 우빈 추가 코드 */}
             </Routes>

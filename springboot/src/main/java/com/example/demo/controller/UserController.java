@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import jakarta.servlet.http.HttpSession;
 
 
 @RestController
@@ -31,19 +32,24 @@ public class UserController {
     }
 
 
-// 로그인 처리 메서드 수정
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User loginUser) {
+    public ResponseEntity<String> login(@RequestBody User loginUser, HttpSession session) {
         User user = userRepository.findByEmail(loginUser.getEmail()).orElse(null);
         if (user == null || !user.getPassword().equals(loginUser.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        session.setAttribute("user", user); // ✅ 세션에 저장
+        System.out.println("세션 저장됨: " + session.getAttribute("user"));
+
         return ResponseEntity.ok("로그인 성공");
     }
 
+
     @PostMapping("/logout")
-    public String logout() {
-        return "로그아웃 성공";
+    public ResponseEntity<?> logout(HttpSession session) {
+        session.invalidate(); // ✅ 세션 제거
+        return ResponseEntity.ok("로그아웃 성공");
     }
 
     @PostMapping("/reset-password")

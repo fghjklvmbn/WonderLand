@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.dto.UserInfoResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -35,18 +36,13 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<?> me(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        System.out.println("📦 현재 세션 user: " + user);
-        System.out.println("📦 현재 세션 user: " + user);
-        System.out.println("📦 현재 세션 user: " + user);
-        System.out.println("📦 현재 세션 user: " + user);
-        System.out.println("📦 현재 세션 user: " + user);
-        System.out.println("📦 현재 세션 user: " + user);
-        System.out.println("📦 현재 세션 user: " + user);
+        Object user = session.getAttribute("user");
+        System.out.println("🔍 세션 user 확인: " + user);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.status(401).body("로그인 상태가 아닙니다.");
         }
     }
+
 }

@@ -20,8 +20,9 @@ const LoginPage = () => {
     try {
       const res = await axios.post(
         'http://localhost:8080/api/users/login',
-        formData
-      );
+        formData, {
+          withCredentials: true,
+        });
 
       // 백엔드에서 200 OK만 반환될 때만 로그인 성공
       if (res.status === 200 && res.data === '로그인 성공') {
