@@ -3,9 +3,6 @@ CREATE DATABASE wonderland DEFAULT CHARACTER SET utf8mb4;
 USE wonderland;
 
 
-select * from User;
-
-
 -- User 테이블 생성 (user_id는 BIGINT로 유지)
 CREATE TABLE User (
   user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -27,6 +24,10 @@ VALUES
 ('diana@example.com', 'hashed_pw4', 'Diana', '다이애나', 21, NOW(), 20),
 ('edward@example.com', 'hashed_pw5', 'Edward', '에드워드', 25, NOW(), 0);
 
+select * from user;
+
+drop table story;
+
 -- Story 테이블 생성 (author_id는 BIGINT로 User.user_id와 일치)
 CREATE TABLE Story (
   story_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -40,6 +41,9 @@ CREATE TABLE Story (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (author_id) REFERENCES User(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ---------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------
 
 INSERT INTO Story (author_id, title, genre, text_json, is_draft, is_shared, created_at, updated_at) VALUES
 (1, '시간을 건너는 토끼', '모험',
@@ -59,6 +63,9 @@ JSON_OBJECT('pages', JSON_ARRAY(
   JSON_OBJECT('page_number', 5, 'text', '언젠가 직접 답장을 써서 다시 바다에 띄우며, 아이는 소녀와 친구가 되었답니다.', 'image_url', 'https://placehold.co/600x600', 'tts_url', 'https://example.com/audio/story2_page5.mp3', 'image_generated_count', 1)
 )), FALSE, TRUE, NOW(), NOW());
 
+-- ---------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------
+
 INSERT INTO Story (author_id, title, genre, text_json, is_draft, is_shared, created_at, updated_at)
 VALUES
 (5, 'commodi의 모험 11', '판타지', '{"pages": [{"page_number": 1, "text": "Deleniti earum eos repellendus provident perspiciatis. Rem delectus porro culpa sequi illo. Adipisci distinctio sequi placeat laborum enim. Mollitia voluptates soluta quae sequi. Nulla architecto optio possimus harum.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story11_page1.mp3", "image_generated_count": 1}, {"page_number": 2, "text": "Corporis fugiat quisquam omnis commodi voluptates. Maiores maiores laudantium recusandae. Reiciendis placeat delectus in numquam.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story11_page2.mp3", "image_generated_count": 1}, {"page_number": 3, "text": "Dolore ipsum eveniet quia reprehenderit consequatur facilis. Quia placeat incidunt occaecati natus veniam voluptatum. Nemo labore inventore molestias a cupiditate. Ullam ab odit pariatur dolores quaerat.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story11_page3.mp3", "image_generated_count": 1}, {"page_number": 4, "text": "Eligendi dolores eveniet. Consequatur voluptate aspernatur esse modi debitis nisi accusamus. Praesentium perspiciatis esse. Deleniti alias mollitia veniam labore blanditiis. Vitae fugit error culpa velit.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story11_page4.mp3", "image_generated_count": 1}, {"page_number": 5, "text": "Assumenda corporis fugiat vel voluptatem. Ullam earum nisi ab sapiente. Rem ratione voluptatem nulla aliquam sed. Est delectus nisi quisquam eaque. Placeat dolorum temporibus a est. Quo molestiae quia consequatur omnis quos.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story11_page5.mp3", "image_generated_count": 1}]}', FALSE, TRUE, '2025-05-15 07:40:18', '2025-05-15 07:40:18'),
@@ -72,54 +79,8 @@ VALUES
 (2, 'saepe의 모험 19', '우정', '{"pages": [{"page_number": 1, "text": "Exercitationem amet voluptatum voluptates tempora. Ut debitis pariatur odit dicta eveniet reiciendis nesciunt. Aspernatur ex rerum natus amet veniam saepe fugiat. Voluptas deserunt quasi corporis. Voluptatibus dignissimos sint omnis hic asperiores iste. Accusantium minima accusamus iure soluta quo placeat.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story19_page1.mp3", "image_generated_count": 1}, {"page_number": 2, "text": "Expedita adipisci eaque quam adipisci. Modi quaerat inventore cupiditate perferendis. Deserunt iure fuga. Ratione quisquam assumenda rem. Provident deleniti sint in eos voluptate dolor. Rem qui vel quibusdam corrupti.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story19_page2.mp3", "image_generated_count": 1}, {"page_number": 3, "text": "Nesciunt mollitia soluta sed. Repudiandae vitae culpa incidunt delectus rerum. Saepe officia aspernatur nulla.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story19_page3.mp3", "image_generated_count": 1}, {"page_number": 4, "text": "Itaque culpa deserunt. Temporibus molestias voluptatibus voluptas veritatis rem repellat vero. Possimus autem esse vero. Ab dolorem ab a quasi provident quis. Voluptates fugit eos est. Cupiditate ullam atque accusamus velit eveniet.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story19_page4.mp3", "image_generated_count": 1}, {"page_number": 5, "text": "Soluta ad occaecati incidunt. Suscipit hic possimus sint ipsum voluptate impedit. Doloremque ad eos. Voluptatibus molestiae nesciunt vel. Iure exercitationem ad odit facere debitis.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story19_page5.mp3", "image_generated_count": 1}]}', FALSE, TRUE, '2025-05-15 07:40:18', '2025-05-15 07:40:18'),
 (2, 'suscipit의 모험 20', '모험', '{"pages": [{"page_number": 1, "text": "Placeat ea praesentium aut vel tempora. Eaque libero quos fugit consequatur ipsum ratione. Incidunt cupiditate et nobis nostrum tempore nisi. Praesentium vero adipisci doloremque neque similique. Odit itaque incidunt iste optio fugiat.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story20_page1.mp3", "image_generated_count": 1}, {"page_number": 2, "text": "Doloribus eveniet blanditiis deleniti laboriosam. Voluptate dolorem labore minus nostrum. Ipsam minus nemo id sequi. Sit porro consequuntur beatae optio saepe placeat quod.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story20_page2.mp3", "image_generated_count": 1}, {"page_number": 3, "text": "Sequi labore quisquam suscipit nostrum. Similique cupiditate doloribus ad incidunt fugiat praesentium. Quaerat repellendus incidunt nam non ipsam quis. Temporibus enim corporis inventore.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story20_page3.mp3", "image_generated_count": 1}, {"page_number": 4, "text": "Alias cupiditate aliquid neque aliquid est. Quibusdam quis nesciunt possimus. Temporibus nesciunt ipsum sed eveniet minima nisi. Quidem harum architecto. Vel asperiores illo.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story20_page4.mp3", "image_generated_count": 1}, {"page_number": 5, "text": "Libero aliquid nesciunt explicabo. Eaque harum maiores. Totam rem quasi mollitia accusantium quis. Repudiandae esse repellendus quae dolore corrupti nobis culpa. Repellendus similique magni.", "image_url": "https://placehold.co/600x600", "tts_url": "https://example.com/audio/story20_page5.mp3", "image_generated_count": 1}]}', FALSE, TRUE, '2025-05-15 07:40:18', '2025-05-15 07:40:18');
 
-INSERT INTO Story (author_id, title, genre, text_json, is_draft, is_shared, created_at, updated_at)
-VALUES (
-  1,
-  '소원을 이루는 나뭇잎',
-  '판타지',
-  JSON_OBJECT('pages', JSON_ARRAY(
-    JSON_OBJECT(
-      'page_number', 1,
-      'text', '옛날 옛적, 푸르고 깊은 숲속에 조용하고 아름다운 마을이 있었어요. 그 마을에는 작고 따뜻한 오두막에서 할머니와 손자가 함께 살고 있었답니다. 할머니는 매일같이 아침 일찍 일어나 손자에게 따뜻한 죽을 끓여주고, 손자는 마당의 닭들에게 모이를 주었죠. 이들은 서로를 아끼며 평화롭게 살아가고 있었어요.',
-      'image_url', 'https://placehold.co/600x600',
-      'tts_url', 'https://example.com/audio/story1_page1.mp3',
-      'image_generated_count', 1
-    ),
-    JSON_OBJECT(
-      'page_number', 2,
-      'text', '그러던 어느 날, 손자는 숲속에서 반짝이는 무언가를 발견하게 되었어요. 그것은 작은 나무 상자였고, 상자 안에는 빛나는 돌과 함께 \'소원을 이루는 나뭇잎\'이라는 쪽지가 들어 있었답니다. 손자는 그 상자를 집으로 가져가 조심스럽게 열어보았고, 할머니와 함께 그 비밀을 풀어보기로 결심했어요.',
-      'image_url', 'https://placehold.co/600x600',
-      'tts_url', 'https://example.com/audio/story1_page2.mp3',
-      'image_generated_count', 1
-    ),
-    JSON_OBJECT(
-      'page_number', 3,
-      'text', '할머니는 먼 옛날 자신이 어릴 적에도 그런 전설을 들은 적이 있다고 말했어요. 그 나뭇잎은 마음이 순수한 사람의 진심 어린 소원을 하나만 들어준다고 했죠. 손자는 곰곰이 생각하다가, 자신이 마을 사람들과 함께 더 행복하게 지낼 수 있는 세상을 만들고 싶다고 소원을 빌었어요. 순간, 나뭇잎이 반짝이며 하늘로 날아올랐답니다.',
-      'image_url', 'https://placehold.co/600x600',
-      'tts_url', 'https://example.com/audio/story1_page3.mp3',
-      'image_generated_count', 1
-    ),
-    JSON_OBJECT(
-      'page_number', 4,
-      'text', '그날 밤, 마을에 기적 같은 변화가 일어났어요. 마당의 꽃들은 갑자기 활짝 피어나고, 말썽쟁이 고양이는 착한 친구가 되었으며, 이웃끼리 자주 싸우던 사람들도 서로 웃으며 인사를 하기 시작했어요. 사람들은 이유는 몰랐지만 모두 마음이 따뜻해졌고, 마을은 예전보다 더 밝고 환한 곳이 되었답니다.',
-      'image_url', 'https://placehold.co/600x600',
-      'tts_url', 'https://example.com/audio/story1_page4.mp3',
-      'image_generated_count', 1
-    ),
-    JSON_OBJECT(
-      'page_number', 5,
-      'text', '그 후로도 손자와 할머니는 예전처럼 평화롭게 살아갔지만, 마음 한켠에는 언제나 나뭇잎의 기적을 기억하며 감사한 마음으로 하루하루를 보냈답니다. 손자는 그날 이후로 더 많은 사람들에게 웃음을 나누는 사람이 되겠다고 다짐했고, 그 마을은 세상에서 가장 따뜻한 이야기로 가득한 곳이 되었어요.',
-      'image_url', 'https://placehold.co/600x600',
-      'tts_url', 'https://example.com/audio/story1_page5.mp3',
-      'image_generated_count', 1
-    )
-  )),
-  FALSE,
-  TRUE,
-  NOW(),
-  NOW()
-);
-
+-- ---------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------
 
 INSERT INTO Story (author_id, title, genre, text_json, is_draft, is_shared, created_at, updated_at) VALUES
 -- 1. 별을 닮은 아이
@@ -168,21 +129,60 @@ JSON_OBJECT('pages', JSON_ARRAY(
     JSON_OBJECT('page_number', 5, 'text', '사람들은 종이배가 사라졌다고 했지만, 누군가는 가끔 파도 위에서 흰 그림자를 본다고 했답니다.', 'image_url', 'https://placehold.co/600x600', 'tts_url', 'https://example.com/audio/story5_5.mp3')
 )), FALSE, TRUE, NOW(), NOW());
 
+-- ---------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+INSERT INTO Story (author_id, title, genre, text_json, is_draft, is_shared, created_at, updated_at)
+VALUES (
+  1,
+  '소원을 이루는 나뭇잎',
+  '판타지',
+  JSON_OBJECT('pages', JSON_ARRAY(
+    JSON_OBJECT(
+      'page_number', 0,
+      'text', '앨리스',
+      'image_url', '/images/cover.png',
+      'tts_url', '',
+      'image_generated_count', 1
+    ),
+    JSON_OBJECT(
+      'page_number', 1,
+      'text', '옛날 옛적, 푸르고 깊은 숲속에 조용하고 아름다운 마을이 있었어요. 그 마을에는 작고 따뜻한 오두막에서 할머니와 손자가 함께 살고 있었답니다. 할머니는 매일같이 아침 일찍 일어나 손자에게 따뜻한 죽을 끓여주고, 손자는 마당의 닭들에게 모이를 주었죠. 이들은 서로를 아끼며 평화롭게 살아가고 있었어요.',
+      'image_url', '/images/1page.png',
+      'tts_url', 'https://example.com/audio/story1_page1.mp3',
+      'image_generated_count', 1
+    ),
+    JSON_OBJECT(
+      'page_number', 2,
+      'text', '그러던 어느 날, 손자는 숲속에서 반짝이는 무언가를 발견하게 되었어요. 그것은 작은 나무 상자였고, 상자 안에는 빛나는 돌과 함께 \'소원을 이루는 나뭇잎\'이라는 쪽지가 들어 있었답니다. 손자는 그 상자를 집으로 가져가 조심스럽게 열어보았고, 할머니와 함께 그 비밀을 풀어보기로 결심했어요.',
+      'image_url', '/images/2page.png',
+      'tts_url', 'https://example.com/audio/story1_page2.mp3',
+      'image_generated_count', 1
+    ),
+    JSON_OBJECT(
+      'page_number', 3,
+      'text', '할머니는 먼 옛날 자신이 어릴 적에도 그런 전설을 들은 적이 있다고 말했어요. 그 나뭇잎은 마음이 순수한 사람의 진심 어린 소원을 하나만 들어준다고 했죠. 손자는 곰곰이 생각하다가, 자신이 마을 사람들과 함께 더 행복하게 지낼 수 있는 세상을 만들고 싶다고 소원을 빌었어요. 순간, 나뭇잎이 반짝이며 하늘로 날아올랐답니다.',
+      'image_url', '/images/3page.png',
+      'tts_url', 'https://example.com/audio/story1_page3.mp3',
+      'image_generated_count', 1
+    ),
+    JSON_OBJECT(
+      'page_number', 4,
+      'text', '그날 밤, 마을에 기적 같은 변화가 일어났어요. 마당의 꽃들은 갑자기 활짝 피어나고, 말썽쟁이 고양이는 착한 친구가 되었으며, 이웃끼리 자주 싸우던 사람들도 서로 웃으며 인사를 하기 시작했어요. 사람들은 이유는 몰랐지만 모두 마음이 따뜻해졌고, 마을은 예전보다 더 밝고 환한 곳이 되었답니다.',
+      'image_url', '/images/4page.png',
+      'tts_url', 'https://example.com/audio/story1_page4.mp3',
+      'image_generated_count', 1
+    ),
+    JSON_OBJECT(
+      'page_number', 5,
+      'text', '그 후로도 손자와 할머니는 예전처럼 평화롭게 살아갔지만, 마음 한켠에는 언제나 나뭇잎의 기적을 기억하며 감사한 마음으로 하루하루를 보냈답니다. 손자는 그날 이후로 더 많은 사람들에게 웃음을 나누는 사람이 되겠다고 다짐했고, 그 마을은 세상에서 가장 따뜻한 이야기로 가득한 곳이 되었어요.',
+      'image_url', '/images/5page.png',
+      'tts_url', 'https://example.com/audio/story1_page5.mp3',
+      'image_generated_count', 1
+    )
+  )),
+  FALSE,
+  TRUE,
+  NOW(),
+  NOW()
+);
