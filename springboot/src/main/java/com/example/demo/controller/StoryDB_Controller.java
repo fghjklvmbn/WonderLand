@@ -21,9 +21,8 @@ public class StoryDB_Controller {
     private final StoryRepository storyRepository;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @PostMapping("/save")
-    public ResponseEntity<?> saveStory(@RequestBody StorySaveRequest request, HttpSession session) {
-        // 세션에서 로그인한 사용자 가져오기
+    @PostMapping("/saveOrUpdate")
+    public ResponseEntity<?> saveOrUpdateStory(@RequestBody StorySaveRequest request, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return ResponseEntity.status(401).body("로그인된 사용자가 없습니다.");
@@ -37,7 +36,6 @@ public class StoryDB_Controller {
             return ResponseEntity.badRequest().body("필수 항목이 누락되었습니다.");
         }
 
-        // textJsonObj를 JSON 문자열로 변환
         String textJson;
         try {
             textJson = mapper.writeValueAsString(textJsonObj);
@@ -45,7 +43,17 @@ public class StoryDB_Controller {
             return ResponseEntity.status(500).body("textJson 변환 실패");
         }
 
-        // 스토리 저장
+        // 이미 임시 저장된 스토리가 있으면 update, 없으면 insert
+        Story existingStory = storyRepository.findFirstByAuthorUserIdAndIsDraftTrue(user.getUserId()).orElse(null);
+
+        if (existingStory != null) {
+            existingStory.setTitle(title);
+            existingStory.setTextJson(textJson);
+            storyRepository.save(existingStory);
+            return ResponseEntity.ok("기존 임시 스토리 업데이트 완료");
+        }
+
+        // 새로 저장
         Story story = Story.builder()
                 .author(user)
                 .title(title)
@@ -53,9 +61,9 @@ public class StoryDB_Controller {
                 .isDraft(true)
                 .isShared(false)
                 .build();
-
         storyRepository.save(story);
 
-        return ResponseEntity.ok("스토리 저장 성공");
+        return ResponseEntity.ok("새 스토리 저장 완료");
     }
+
 }

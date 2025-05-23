@@ -50,24 +50,26 @@ const ImageGenerator = () => {
     const payload = {
       title,
       textJson: {
-        genre:
-          typeof genre === 'string'
-            ? genre.split(',').map((g) => g.trim())
-            : genre,
+        genre: Array.isArray(genre)
+          ? genre
+          : genre.split(',').map((g) => g.trim()),
         pages,
       },
     };
-    console.log('Sending payload:', payload);
+    console.log('Sending payload (saveOrUpdate):', payload);
 
     try {
-      const response = await fetch('http://localhost:8080/api/story/save', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // <--- 이 부분 추가
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        'http://localhost:8080/api/story/saveOrUpdate',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // 세션 유지
+          body: JSON.stringify(payload),
+        }
+      );
 
       const text = await response.text();
       console.log('Response status:', response.status);
@@ -77,13 +79,13 @@ const ImageGenerator = () => {
         throw new Error(`스토리 저장 실패: ${response.status} ${text}`);
       }
 
-      alert('스토리 저장 완료');
+      alert('스토리 임시 저장 또는 업데이트 완료');
     } catch (error) {
       console.error(error);
       alert('스토리 저장 중 오류가 발생했습니다.');
     }
 
-    // 이미지 생성 코드
+    // (샘플 이미지 생성 로직은 그대로 유지)
     const fakeImages = Array.from(
       { length: 5 },
       (_, i) =>
@@ -109,20 +111,49 @@ const ImageGenerator = () => {
     setPages(updatedPages);
   };
 
+  // 페이지가 모두 작성되어야 이야기 생성이 가능하도록 한 로직
+  // const handleCreateStory = () => {
+  //   if (!title.trim()) {
+  //     alert('제목을 입력해주세요.');
+  //     return;
+  //   }
+  //   for (let i = 0; i < pages.length; i++) {
+  //     if (!pages[i].trim()) {
+  //       alert(`페이지 ${i + 1} 내용을 입력해주세요.`);
+  //       return;
+  //     }
+  //     if (!selectedImages[i]) {
+  //       alert(`페이지 ${i + 1}의 이미지를 선택해주세요.`);
+  //       return;
+  //     }
+  //   }
+
+  //   const storyData = {
+  //     title,
+  //     genre,
+  //     pages,
+  //     selectedImages,
+  //   };
+  //   localStorage.setItem('myStoryData', JSON.stringify(storyData));
+
+  //   navigate('/final-check');
+  // };
   const handleCreateStory = () => {
     if (!title.trim()) {
       alert('제목을 입력해주세요.');
       return;
     }
-    for (let i = 0; i < pages.length; i++) {
-      if (!pages[i].trim()) {
-        alert(`페이지 ${i + 1} 내용을 입력해주세요.`);
-        return;
-      }
-      if (!selectedImages[i]) {
-        alert(`페이지 ${i + 1}의 이미지를 선택해주세요.`);
-        return;
-      }
+
+    const nonEmptyPages = pages.filter((page) => page.trim() !== '');
+    if (nonEmptyPages.length === 0) {
+      alert('최소 한 페이지 이상의 내용을 입력해주세요.');
+      return;
+    }
+
+    const selectedImageCount = Object.keys(selectedImages).length;
+    if (selectedImageCount === 0) {
+      alert('최소한 한 페이지에서 이미지를 선택해주세요.');
+      return;
     }
 
     const storyData = {
@@ -132,7 +163,6 @@ const ImageGenerator = () => {
       selectedImages,
     };
     localStorage.setItem('myStoryData', JSON.stringify(storyData));
-
     navigate('/final-check');
   };
 

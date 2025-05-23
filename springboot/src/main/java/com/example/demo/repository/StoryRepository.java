@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StoryRepository extends JpaRepository<Story, Long> {
@@ -34,4 +35,6 @@ public interface StoryRepository extends JpaRepository<Story, Long> {
     // 특정 사용자가 생성한 이야기 목록 조회
     @EntityGraph(attributePaths = "author")
     List<Story> findByAuthor_UserId(Long userId);
+    Optional<Story> findFirstByAuthorUserIdAndIsDraftTrue(Long userId);
+    
 }
