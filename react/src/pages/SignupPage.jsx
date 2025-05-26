@@ -28,6 +28,7 @@ const SignupPage = () => {
         {
           headers: {
             'Content-Type': 'application/json',
+            withCredentials: true,
           },
         }
       );

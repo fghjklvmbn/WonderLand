@@ -18,13 +18,15 @@ const Header = () => {
     location.pathname.startsWith(path)
   );
 
-  // ✅ 로그인 유저 정보 요청해서 닉네임 저장
+  // ✅ 닉네임 불러오기 (POST /mypage/myinfo 로 변경됨)
   useEffect(() => {
     const fetchNickname = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/auth/me', {
-          withCredentials: true,
-        });
+        const res = await axios.post(
+          'http://localhost:8080/mypage/myinfo',
+          {},
+          { withCredentials: true }
+        );
         if (res.data && res.data.nickname) {
           setNickname(res.data.nickname);
         }
@@ -38,11 +40,11 @@ const Header = () => {
     }
   }, [isLoggedIn]);
 
-  // ✅ 로그아웃 처리
+  // ✅ 로그아웃
   const handleLogout = async () => {
     try {
       await axios.post(
-        'http://localhost:8080/api/auth/logout',
+        'http://localhost:8080/api/users/logout',
         {},
         { withCredentials: true }
       );
@@ -82,27 +84,24 @@ const Header = () => {
               <i className="fas fa-search position-absolute top-50 end-0 translate-middle-y pe-3 text-muted"></i>
             </div>
 
-            {/* 우측 */}
+            {/* 우측 유저 메뉴 */}
             <div className="d-flex align-items-center gap-2">
               {isLoggedIn ? (
                 <>
-                  {/* 프로필 드롭다운 */}
                   <Dropdown align="end">
                     <Dropdown.Toggle
                       variant="light"
                       id="dropdown-profile"
                       className="d-flex align-items-center gap-2"
                     >
-                      <span className="d-none d-md-inline">
-                        {nickname}
-                      </span>
+                      <span className="d-none d-md-inline">{nickname}</span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item as={Link} to="/my-library">
                         내 서재 보기
                       </Dropdown.Item>
-                      <Dropdown.Item as={Link} to="/settings">
-                        내 계정 설정
+                      <Dropdown.Item as={Link} to="/mypage">
+                        내 계정
                       </Dropdown.Item>
                       <Dropdown.Divider />
                       <Dropdown.Item onClick={handleLogout}>

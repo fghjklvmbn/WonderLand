@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import jakarta.servlet.http.HttpSession;
 
+import com.example.demo.dto.LoginRequest;
+
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") // ✅ 세션 연동
@@ -23,14 +25,15 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/signup")
-    public String signup(@RequestBody User user) {
+    public ResponseEntity<String> signup(@RequestBody User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            return "이미 등록된 이메일입니다.";
+            return ResponseEntity.badRequest().body("이미 등록된 이메일입니다.");
         }
         userRepository.save(user);
-        return "회원가입 성공";
+        return ResponseEntity.ok("회원가입 성공");
     }
 
+<<<<<<< HEAD
     // @PostMapping("/login")
     // public ResponseEntity<String> login(@RequestBody User loginUser, HttpSession session) {
     //     User user = userRepository.findByEmail(loginUser.getEmail()).orElse(null);
@@ -41,6 +44,18 @@ public class UserController {
     //     session.setAttribute("user", user); // ✅ 세션 저장
     //     return ResponseEntity.ok("로그인 성공");
     // }
+=======
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpSession session) {
+        return userRepository.findByEmail(request.getEmail())
+                .filter(user -> user.getPassword().equals(request.getPassword()))
+                .map(user -> {
+                    session.setAttribute("user", user);
+                    return ResponseEntity.ok("로그인 성공");
+                })
+                .orElse(ResponseEntity.status(401).body("이메일 또는 비밀번호가 올바르지 않습니다."));
+    }
+>>>>>>> 801ae43 (api 명세서 반영 중)
 
     // @PostMapping("/logout")
     // public ResponseEntity<?> logout(HttpSession session) {
@@ -48,7 +63,20 @@ public class UserController {
     //     return ResponseEntity.ok("로그아웃 성공");
     // }
 
+<<<<<<< HEAD
     // 비밀번호 초기화
+=======
+    @GetMapping("/me")
+    public ResponseEntity<?> me(HttpSession session) {
+        Object user = session.getAttribute("user");
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(401).body("로그인 상태가 아닙니다.");
+        }
+    }
+
+>>>>>>> 801ae43 (api 명세서 반영 중)
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> request) {
         String email = request.get("email");
@@ -79,35 +107,5 @@ public class UserController {
         return ResponseEntity.ok(user.getEmail());
     }
 
-    // ✅ 닉네임 변경 API
-    @PutMapping("/update-nickname")
-    public ResponseEntity<?> updateNickname(@RequestBody NicknameRequest request, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
-
-        user.setNickname(request.getNickname());
-        userRepository.save(user);
-        session.setAttribute("user", user); // 세션도 최신화
-
-        return ResponseEntity.ok("닉네임이 변경되었습니다.");
-    }
-
-    // ✅ 비밀번호 변경 API
-    @PutMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequest request, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) return ResponseEntity.status(401).body("로그인 필요");
-
-        if (!user.getPassword().equals(request.getCurrent())) {
-            return ResponseEntity.status(400).body("현재 비밀번호 불일치");
-        }
-
-        user.setPassword(request.getNewPassword());
-        userRepository.save(user);
-
-        return ResponseEntity.ok("비밀번호 변경 성공");
-    }
 
 }

@@ -8,7 +8,7 @@ const MyLibraryTabs = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosInstance.get('/api/auth/me')
+    axiosInstance.get('/api/users/me')
       .then(res => {
         setNickname(res.data.nickname || res.data.name || '사용자');
         setLoading(false);

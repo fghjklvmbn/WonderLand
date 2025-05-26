@@ -8,7 +8,13 @@ import StoryDetailPage from './pages/StoryDetailPage'; // 동화 상세 보기
 import LoginPage from './pages/LoginPage'; // 로그인 페이지
 import SignupPage from './pages/SignupPage'; // 회원가입 페이지
 import { AuthProvider } from './context/AuthContext'; // 로그인 상태 관리 컨텍스트
+<<<<<<< HEAD
 import SettingsPage from './pages/SettingsPage';
+=======
+import MyLibraryPage from './pages/MyLibraryPage';
+import MyAccountPage from './pages/MyAccountPage';
+import EditAccountPage from './pages/EditAccountPage';
+>>>>>>> 801ae43 (api 명세서 반영 중)
 
 // 우빈 추가 코드
 import ForgotEmailPage from './pages/ForgotEmailPage'; // 이메일 재설정
@@ -47,14 +53,25 @@ const App = () => {
               {/* 로그인 / 회원가입 페이지 */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+<<<<<<< HEAD
               <Route path="/settings" element={<SettingsPage />} />
+=======
+              <Route path="/my-library" element={<MyLibraryPage />} />
+              <Route path="/mypage" element={<MyAccountPage />} />
+              <Route path="/mypage/myinfoupdate" element={<EditAccountPage />} />
+>>>>>>> 801ae43 (api 명세서 반영 중)
 
 
               {/* 우빈 추가 코드 */}
               {/* ✅ URL 경로는 소문자로 유지 */}
               {/* 이메일 찾기 / 비밀번호 재설정 페이지 추가 */}
+<<<<<<< HEAD
               <Route path="/re" element={<RePasswordPage />} />
               <Route path="/forgot" element={<ForgotEmailPage />} />
+=======
+              <Route path="/Re" element={<RePasswordPage />} />
+              <Route path="/FindMyEmail" element={<ForgotEmailPage />} />
+>>>>>>> 801ae43 (api 명세서 반영 중)
               <Route path="/write" element={<Write />} />
               <Route path="/write_manual" element={<WriteManual />} />
               <Route path="/write_ai" element={<WriteAi />} />
