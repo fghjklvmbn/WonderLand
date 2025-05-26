@@ -21,11 +21,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
     
-    // @Column(nullable = false)
-    // @JsonIgnore
-    // private String password;
-    // 기존 위 코드에서 백엔드로 전달 안됨. 아래 코드로 수정함함
-
     @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
