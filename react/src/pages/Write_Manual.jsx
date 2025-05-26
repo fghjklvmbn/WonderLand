@@ -33,6 +33,7 @@ const WriteManual = () => {
 
     navigate('/imagegenerator', {
       state: {
+        mode: 'manual', // 모드를 넘겨서 이미지 생성 페이지를 분기 분할하려고 함
         title: title,
         pages: texts,
         genre: selectedGenres,
