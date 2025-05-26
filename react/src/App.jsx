@@ -53,14 +53,16 @@ const App = () => {
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/my-library" element={<MyLibraryPage />} />
               <Route path="/mypage" element={<MyAccountPage />} />
-              <Route path="/mypage/myinfoupdate" element={<EditAccountPage />} />
-
+              <Route
+                path="/mypage/myinfoupdate"
+                element={<EditAccountPage />}
+              />
 
               {/* 우빈 추가 코드 */}
               {/* ✅ URL 경로는 소문자로 유지 */}
               {/* 이메일 찾기 / 비밀번호 재설정 페이지 추가 */}
               <Route path="/Re" element={<RePasswordPage />} />
-              <Route path="/FindMyEmail" element={<ForgotEmailPage />} />
+              <Route path="/forgot" element={<ForgotEmailPage />} />
               <Route path="/write" element={<Write />} />
               <Route path="/write_manual" element={<WriteManual />} />
               <Route path="/write_ai" element={<WriteAi />} />
