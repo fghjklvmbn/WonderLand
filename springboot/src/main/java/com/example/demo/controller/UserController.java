@@ -33,18 +33,6 @@ public class UserController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
-<<<<<<< HEAD
-    // @PostMapping("/login")
-    // public ResponseEntity<String> login(@RequestBody User loginUser, HttpSession session) {
-    //     User user = userRepository.findByEmail(loginUser.getEmail()).orElse(null);
-    //     if (user == null || !user.getPassword().equals(loginUser.getPassword())) {
-    //         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    //     }
-
-    //     session.setAttribute("user", user); // ✅ 세션 저장
-    //     return ResponseEntity.ok("로그인 성공");
-    // }
-=======
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpSession session) {
         return userRepository.findByEmail(request.getEmail())
@@ -55,17 +43,13 @@ public class UserController {
                 })
                 .orElse(ResponseEntity.status(401).body("이메일 또는 비밀번호가 올바르지 않습니다."));
     }
->>>>>>> 801ae43 (api 명세서 반영 중)
 
-    // @PostMapping("/logout")
-    // public ResponseEntity<?> logout(HttpSession session) {
-    //     session.invalidate(); // ✅ 세션 제거
-    //     return ResponseEntity.ok("로그아웃 성공");
-    // }
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        session.invalidate(); // ✅ 세션 제거
+        return ResponseEntity.ok("로그아웃 성공");
+    }
 
-<<<<<<< HEAD
-    // 비밀번호 초기화
-=======
     @GetMapping("/me")
     public ResponseEntity<?> me(HttpSession session) {
         Object user = session.getAttribute("user");
@@ -76,7 +60,6 @@ public class UserController {
         }
     }
 
->>>>>>> 801ae43 (api 명세서 반영 중)
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> request) {
         String email = request.get("email");

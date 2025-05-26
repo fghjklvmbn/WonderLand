@@ -19,7 +19,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'http://localhost:8080/api/auth/login',
+        'http://localhost:8080/api/users/login',
         formData, {
           withCredentials: true,
         });
