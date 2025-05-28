@@ -17,6 +17,7 @@ const ForgotEmailPage = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
+        // UserController -> find-email
         'http://localhost:8080/api/users/find-email',
         formData
       );

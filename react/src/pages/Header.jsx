@@ -86,6 +86,13 @@ const Header = () => {
 
             {/* 우측 유저 메뉴 */}
             <div className="d-flex align-items-center gap-2">
+              {' '}
+              <button
+                onClick={() => navigate('/Write')}
+                className="btn btn-light fw-bold px-4 rounded-pill"
+              >
+                글쓰기
+              </button>
               {isLoggedIn ? (
                 <>
                   <Dropdown align="end">
@@ -110,7 +117,7 @@ const Header = () => {
                     </Dropdown.Menu>
                   </Dropdown>
 
-                  {isWritePage && (
+                  {/* {isWritePage && (
                     <>
                       <button
                         className="btn btn-outline-light fw-bold rounded-pill"
@@ -125,7 +132,7 @@ const Header = () => {
                         다음 단계
                       </button>
                     </>
-                  )}
+                  )} */}
                 </>
               ) : (
                 <button

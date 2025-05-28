@@ -16,6 +16,7 @@ const RePasswordPage = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
+        // UserController -> reset-password
         'http://localhost:8080/api/users/reset-password',
         formData
       );

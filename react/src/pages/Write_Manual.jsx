@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import GenreSelector from './GenreSelector'; // ✅ 이름 변경된 GenreSelector import
+import GenreSelector from './GenreSelector';
+import axios from 'axios';
 
 const WriteManual = () => {
   const navigate = useNavigate();
   const [texts, setTexts] = useState(['', '', '', '', '']);
   const [title, setTitle] = useState('');
-  const [selectedGenres, setSelectedGenres] = useState([]); // ✅ 선택된 장르 상태
+  const [selectedGenres, setSelectedGenres] = useState('');
 
   const handleChange = (index, value) => {
     const newTexts = [...texts];
@@ -15,8 +16,7 @@ const WriteManual = () => {
     setTexts(newTexts);
   };
 
-  const handleGenerate = () => {
-    // 유효성 검사 주석 처리된 상태 유지
+  const handleGenerate = async () => {
     const allEmpty = texts.every((text) => !text.trim());
     if (!title.trim()) {
       alert('이야기 제목을 입력해주세요!');
@@ -26,19 +26,54 @@ const WriteManual = () => {
       alert('최소 한 페이지 이상 작성해주세요!');
       return;
     }
-    // if (selectedGenres.length === 0) {
-    //   alert('최소 한 개의 장르를 선택해주세요.');
-    //   return;
-    // }
+    if (selectedGenres.length === 0) {
+      alert('최소 한 개의 장르를 선택해주세요.');
+      return;
+    }
 
-    navigate('/imagegenerator', {
-      state: {
-        mode: 'manual', // 모드를 넘겨서 이미지 생성 페이지를 분기 분할하려고 함
-        title: title,
-        pages: texts,
-        genre: selectedGenres,
-      },
+    // pages를 {1: 내용, 2: 내용} 객체 형태로 가공
+    const pagesObj = {};
+    texts.forEach((text, idx) => {
+      if (text.trim()) {
+        pagesObj[idx + 1] = text.trim();
+      }
     });
+
+    try {
+      const res = await axios.post(
+        // StoryManualController -> write_manualDB
+        'http://localhost:8080/api/story/write_manualDB',
+        {
+          title: title,
+          genre: selectedGenres,
+          textJson: { pages: pagesObj },
+        },
+        { withCredentials: true }
+      );
+
+      // 응답에서 storyId 받아옴
+      const storyId = res.data.storyId;
+      if (!storyId) {
+        alert('스토리 ID를 받아오지 못했습니다.');
+        return;
+      }
+      // storyId 로컬스토리지에 저장
+      localStorage.setItem('storyId', storyId);
+      console.log('story_ID: ', storyId);
+
+      // ImageGenerator 페이지로 이동하면서 state에 storyId 포함 전달
+      navigate('/imagegenerator', {
+        state: {
+          mode: 'manual',
+          title: title,
+          pages: texts,
+          genre: selectedGenres,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      alert('스토리 저장 중 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -95,7 +130,6 @@ const WriteManual = () => {
         </div>
       </div>
 
-      {/* ✅ 장르 선택 영역 */}
       <GenreSelector selected={selectedGenres} onSelect={setSelectedGenres} />
 
       <div className="text-center">
@@ -103,7 +137,7 @@ const WriteManual = () => {
           variant="primary"
           className="px-5 rounded-pill"
           onClick={handleGenerate}
-          disabled={selectedGenres.length === 0} // ✅ 선택된 장르가 있어야 활성화
+          disabled={selectedGenres.length === 0}
         >
           이미지 생성하기
         </Button>

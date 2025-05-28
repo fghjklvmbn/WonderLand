@@ -45,6 +45,24 @@ public class StoryController {
     }
 
     // 🔸 단일 이야기 상세
+    // @GetMapping("/{id}")
+    // public ResponseEntity<Map<String, Object>> getStoryById(@PathVariable Long id) {
+    //     Optional<Story> optional = storyRepository.findById(id);
+    //     if (optional.isEmpty()) return ResponseEntity.notFound().build();
+
+    //     Story story = optional.get();
+    //     ObjectMapper mapper = new ObjectMapper();
+
+    //     try {
+    //         JsonNode root = mapper.readTree(story.getTextJson());
+    //         Map<String, Object> result = new HashMap<>();
+    //         result.put("pages", root.get("pages"));
+    //         result.put("title", story.getTitle());
+    //         return ResponseEntity.ok(result);
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(500).body(Map.of("error", "JSON 파싱 실패"));
+    //     }
+    // }
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getStoryById(@PathVariable Long id) {
         Optional<Story> optional = storyRepository.findById(id);
@@ -54,15 +72,31 @@ public class StoryController {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            JsonNode root = mapper.readTree(story.getTextJson());
+            JsonNode textRoot = mapper.readTree(story.getTextJson());
+            JsonNode selectedRoot = mapper.readTree(story.getSelectedJson());
+
+            JsonNode pagesNode = textRoot.path("pages");
+            List<Map<String, String>> pages = new ArrayList<>();
+
+            for (int i = 0; i < pagesNode.size(); i++) {
+                String text = pagesNode.get(i).asText();
+                String imageUrl = selectedRoot.path(String.valueOf(i + 1)).asText(); // key는 "1", "2", ...
+                Map<String, String> page = new HashMap<>();
+                page.put("text", text);
+                page.put("image_url", imageUrl);
+                pages.add(page);
+            }
+
             Map<String, Object> result = new HashMap<>();
-            result.put("pages", root.get("pages"));
             result.put("title", story.getTitle());
+            result.put("pages", pages);
+
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", "JSON 파싱 실패"));
         }
     }
+
 
     // 🔸 ✅ 세션 기반 사용자 이야기 조회
     @GetMapping("/mine")
@@ -103,7 +137,7 @@ public class StoryController {
         return stories.stream().map(story -> new StoryDTO(
                 story.getStoryId(),
                 story.getTitle(),
-                extractThumbnailFromJson(story.getTextJson()),
+                extractThumbnailFromJson(story.getSelectedJson()),
                 getAuthorName(story.getAuthor()),
                 story.getGenre(),
                 0 // 좋아요 수는 추후 구현
@@ -111,15 +145,31 @@ public class StoryController {
     }
 
     // 🔸 텍스트 JSON에서 썸네일 추출
-    private String extractThumbnailFromJson(String textJson) {
+    // private String extractThumbnailFromJson(String selected_json) {
+    //     try {
+    //         ObjectMapper mapper = new ObjectMapper();
+    //         JsonNode root = mapper.readTree(selected_json);
+    //         return root.path("pages").get(0).path("image_url").asText();
+    //     } catch (Exception e) {
+    //         return null;
+    //     }
+    // }
+        private String extractThumbnailFromJson(String selected_json) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(textJson);
-            return root.path("pages").get(0).path("image_url").asText();
+            JsonNode root = mapper.readTree(selected_json);
+            // 첫 번째 키(예: "1")의 값을 가져오기
+            Iterator<String> fieldNames = root.fieldNames();
+            if (fieldNames.hasNext()) {
+                String firstKey = fieldNames.next();
+                return root.path(firstKey).asText();
+            }
+            return null;
         } catch (Exception e) {
             return null;
         }
     }
+
 
     // 🔸 작가 이름 추출
     private String getAuthorName(User user) {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Container, Button, Row, Col } from 'react-bootstrap';
 
 const genres = [
@@ -32,12 +31,21 @@ const genres = [
   '우주',
 ];
 
-const GenreSelector = ({ selected, onSelect, onGenerate }) => {
+// ✅ 기본값 설정: selected = []
+const GenreSelector = ({ selected = [], onSelect, onGenerate }) => {
   const toggleGenre = (genre) => {
-    if (selected.includes(genre)) {
-      onSelect(selected.filter((g) => g !== genre));
+    // 장르 여러개 선택 할 수 있도록 하려면 아래 코드 주석 해제
+
+    // if (selected.includes(genre)) {
+    //   onSelect(selected.filter((g) => g !== genre));
+    // } else {
+    //   onSelect([...selected, genre]);
+    // }
+    if (selected === genre) {
+      // 이미 선택된 장르를 다시 누르면 선택 해제
+      onSelect('');
     } else {
-      onSelect([...selected, genre]);
+      onSelect(genre);
     }
   };
 

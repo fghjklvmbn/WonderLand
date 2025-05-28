@@ -32,8 +32,10 @@ public class Story {
 
     private Boolean isShared = false;
 
+    // @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
 
     @PrePersist
@@ -46,4 +48,7 @@ public class Story {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+    @Column(name = "selected_json", columnDefinition = "json")
+    private String selectedJson;
+
 }

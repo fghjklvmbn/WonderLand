@@ -5,6 +5,8 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.dto.NicknameRequest;
 import com.example.demo.dto.PasswordChangeRequest;
 
+
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import jakarta.servlet.http.HttpSession;
 
+// import com.example.demo.config.JwtUtil;
 import com.example.demo.dto.LoginRequest;
 
 @RestController
@@ -39,10 +42,43 @@ public class UserController {
                 .filter(user -> user.getPassword().equals(request.getPassword()))
                 .map(user -> {
                     session.setAttribute("user", user);
+
+                    
                     return ResponseEntity.ok("로그인 성공");
                 })
                 .orElse(ResponseEntity.status(401).body("이메일 또는 비밀번호가 올바르지 않습니다."));
     }
+
+    // @PostMapping("/login")
+    // public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    //     return userRepository.findByEmail(request.getUserId())
+    //             .filter(user -> user.getPassword().equals(request.getUserPassword()))
+    //             .map(user -> {
+    //                 // JWT 토큰 생성
+    //                 String accessToken = JwtUtil.generateAccessToken(user);
+    //                 String refreshToken = JwtUtil.generateRefreshToken(user);
+
+    //                 // refreshToken은 저장소(예: Redis, DB)에 저장 필요 (생략 가능)
+    //                 refreshTokenStore.save(user.getEmail(), refreshToken);
+
+    //                 // 성공 응답 JSON 반환
+    //                 Map<String, Object> response = new HashMap<>();
+    //                 response.put("status", "로그인이 성공하였습니다.");
+    //                 response.put("access_token", accessToken);
+    //                 response.put("refresh_token", refreshToken);
+
+    //                 return ResponseEntity.ok(response);
+    //             })
+    //             .orElseGet(() -> {
+    //                 // 실패 응답 JSON 반환
+    //                 Map<String, Object> error = new HashMap<>();
+    //                 error.put("status", "로그인이 실패하였습니다.");
+    //                 error.put("err_code", "AUTH_FAILED");
+    //                 error.put("err_message", "이메일 또는 비밀번호가 올바르지 않습니다.");
+    //                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    //             });
+    // }
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {

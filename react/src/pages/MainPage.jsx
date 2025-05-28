@@ -15,12 +15,6 @@ const MainPage = () => {
       <Banner />
       {/* 도서 목록 탭 영역 */}
       <TabbedBookGrid />
-      <button
-        onClick={() => navigate('/Write')}
-        className="btn btn-light fw-bold px-4 rounded-pill"
-      >
-        글쓰기
-      </button>
     </>
   );
 };
