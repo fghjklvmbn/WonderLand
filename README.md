@@ -59,8 +59,6 @@
 
 
 # API 명세서  
-**AI(ver0.1)**  
-![image](https://github.com/user-attachments/assets/2836fa26-15ed-4b9e-9e48-fee694c8aa0f)  
-  
-**백엔드**  
-(준비중)  
+[API 명세서 통합](https://expensive-yamamomo-86a.notion.site/API-115a958373418078b799c0048ba0746f?source=copy_link)
+
+
