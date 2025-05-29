@@ -42,8 +42,7 @@ public class UserController {
                 .filter(user -> user.getPassword().equals(request.getPassword()))
                 .map(user -> {
                     session.setAttribute("user", user);
-
-                    
+                    System.out.println("✅ 세션에 저장된 유저: " + user);
                     return ResponseEntity.ok("로그인 성공");
                 })
                 .orElse(ResponseEntity.status(401).body("이메일 또는 비밀번호가 올바르지 않습니다."));

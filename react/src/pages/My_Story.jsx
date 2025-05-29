@@ -5,11 +5,19 @@ import { useNavigate } from 'react-router-dom';
 const My_Story = () => {
   const [storyData, setStoryData] = useState(null);
   const navigate = useNavigate();
+  const [isShared, setIsShared] = useState(false);
 
   useEffect(() => {
     const savedData = localStorage.getItem('myStoryData');
+
     if (savedData) {
-      setStoryData(JSON.parse(savedData));
+      const parsed = JSON.parse(savedData);
+      setStoryData(parsed);
+
+      // 저장된 스토리의 공유 여부를 상태로 세팅
+      if (parsed.isShared !== undefined) {
+        setIsShared(parsed.isShared);
+      }
     } else {
       alert('이야기 데이터가 없습니다.');
       navigate('/');
@@ -23,6 +31,44 @@ const My_Story = () => {
       navigate(`/story/${storyId}`);
     } else {
       alert('최근 생성된 이야기가 없습니다.');
+    }
+  };
+  const handleToggleShare = async () => {
+    const confirmMessage = isShared
+      ? '정말로 공유를 취소하시겠습니까?'
+      : '정말로 이야기를 공유하시겠습니까?';
+
+    // 사용자 확인
+    if (!window.confirm(confirmMessage)) {
+      return; // 취소 시 아무 것도 하지 않음
+    }
+
+    try {
+      const storyId = localStorage.getItem('latestStoryId');
+      const newIsShared = !isShared;
+
+      const response = await fetch(
+        `http://localhost:8080/api/story/${storyId}/toggle-share`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ isShared: newIsShared }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('공유 상태 변경 실패');
+      }
+
+      const result = await response.json();
+      setIsShared(result.isShared);
+      alert(`이야기가 ${result.isShared ? '공유됨' : '비공유 상태로 전환됨'}`);
+    } catch (error) {
+      alert('공유 상태 변경에 실패했습니다.');
+      console.error(error);
     }
   };
 
@@ -44,6 +90,15 @@ const My_Story = () => {
       <div className="text-center mb-4">
         <Button variant="primary" onClick={handleGoToMyStory}>
           내 이야기 보러 가기
+        </Button>
+      </div>
+      {/* 이야기 공유/취소 버튼 */}
+      <div className="text-center mb-5">
+        <Button
+          variant={isShared ? 'secondary' : 'success'}
+          onClick={handleToggleShare}
+        >
+          {isShared ? '공유 취소' : '이야기 공유하기'}
         </Button>
       </div>
 

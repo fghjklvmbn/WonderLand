@@ -52,7 +52,7 @@ public ResponseEntity<?> saveManualStory(
                 .textJson(textJsonStr)
                 .selectedJson("{}")
                 .isDraft(true)
-                .isShared(true)
+                .isShared(false)
                 .build();
         storyRepository.save(story);
 

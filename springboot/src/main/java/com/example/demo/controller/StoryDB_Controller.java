@@ -70,7 +70,7 @@ public class StoryDB_Controller {
                 .textJson(textJsonStr)       // pages JSON 문자열
                 .selectedJson(selectedJsonStr) // 선택된 이미지 JSON 문자열
                 .isDraft(true)
-                .isShared(true)
+                .isShared(false)
                 .build();
 
         storyRepository.save(story);
@@ -78,5 +78,26 @@ public class StoryDB_Controller {
         return ResponseEntity.ok(Map.of("message", "스토리 저장 완료","storyId", story.getStoryId()));
         
     }
+        @PatchMapping("/{storyId}/toggle-share")
+        public ResponseEntity<?> toggleShareStatus(
+                @PathVariable Long storyId,
+                HttpSession session
+        ) {
+            User user = (User) session.getAttribute("user");
+            if (user == null) {
+                return ResponseEntity.status(401).body("로그인이 필요합니다.");
+            }
+
+            Story story = storyRepository.findById(storyId).orElse(null);
+            if (story == null || !story.getAuthor().getUserId().equals(user.getUserId())) {
+                return ResponseEntity.status(403).body("수정 권한이 없습니다.");
+            }
+
+            // 현재 값의 반대로 설정
+            story.setIsShared(!story.getIsShared());
+            storyRepository.save(story);
+
+            return ResponseEntity.ok(Map.of("message", "공유 상태 변경 완료", "isShared", story.getIsShared()));
+        }
 
 }

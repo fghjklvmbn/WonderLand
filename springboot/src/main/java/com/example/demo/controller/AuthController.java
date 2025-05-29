@@ -24,7 +24,9 @@ public class AuthController {
     public ResponseEntity<?> me(HttpSession session) {
         Object user = session.getAttribute("user");
         if (user != null) {
+            
             return ResponseEntity.ok(user);
+            
         } else {
             return ResponseEntity.status(401).body("로그인 상태가 아닙니다.");
         }

@@ -20,7 +20,7 @@ const BookCard = ({ storyId, image, title, author, likes }) => {
         style={{
           aspectRatio: '1 / 1',
           objectFit: 'cover',
-          borderRadius: '10px'
+          borderRadius: '10px',
         }}
       />
       <div className="fw-semibold">{title}</div>

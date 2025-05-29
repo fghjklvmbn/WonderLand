@@ -182,6 +182,7 @@ const ImageGenerator = () => {
     const storyData = { title, genre, pages, selectedImages };
 
     try {
+      // StoryDB_Controller -> create
       const res = await fetch('http://localhost:8080/api/story/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
