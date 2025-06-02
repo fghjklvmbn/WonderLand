@@ -68,8 +68,8 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-
-
+    @JsonProperty("phone_number")
+    private String phoneNumber;
     private String name;
     private String nickname;
     private Integer age;

@@ -63,39 +63,76 @@ public class StoryController {
     //         return ResponseEntity.status(500).body(Map.of("error", "JSON 파싱 실패"));
     //     }
     // }
-    @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getStoryById(@PathVariable Long id) {
-        Optional<Story> optional = storyRepository.findById(id);
-        if (optional.isEmpty()) return ResponseEntity.notFound().build();
+    // @GetMapping("/{id}")
+    // public ResponseEntity<Map<String, Object>> getStoryById(@PathVariable Long id) {
+    //     Optional<Story> optional = storyRepository.findById(id);
+    //     if (optional.isEmpty()) return ResponseEntity.notFound().build();
 
-        Story story = optional.get();
-        ObjectMapper mapper = new ObjectMapper();
+    //     Story story = optional.get();
+    //     ObjectMapper mapper = new ObjectMapper();
 
-        try {
-            JsonNode textRoot = mapper.readTree(story.getTextJson());
-            JsonNode selectedRoot = mapper.readTree(story.getSelectedJson());
+    //     try {
+    //         JsonNode textRoot = mapper.readTree(story.getTextJson());
+    //         JsonNode selectedRoot = mapper.readTree(story.getSelectedJson());
 
-            JsonNode pagesNode = textRoot.path("pages");
-            List<Map<String, String>> pages = new ArrayList<>();
+    //         JsonNode pagesNode = textRoot.path("pages");
+    //         List<Map<String, String>> pages = new ArrayList<>();
 
-            for (int i = 0; i < pagesNode.size(); i++) {
-                String text = pagesNode.get(i).asText();
-                String imageUrl = selectedRoot.path(String.valueOf(i + 1)).asText(); // key는 "1", "2", ...
-                Map<String, String> page = new HashMap<>();
-                page.put("text", text);
-                page.put("image_url", imageUrl);
-                pages.add(page);
+    //         for (int i = 0; i < pagesNode.size(); i++) {
+    //             String text = pagesNode.get(i).asText();
+    //             String imageUrl = selectedRoot.path(String.valueOf(i + 1)).asText(); // key는 "1", "2", ...
+    //             Map<String, String> page = new HashMap<>();
+    //             page.put("text", text);
+    //             page.put("image_url", imageUrl);
+    //             pages.add(page);
+    //         }
+
+    //         Map<String, Object> result = new HashMap<>();
+    //         result.put("title", story.getTitle());
+    //         result.put("pages", pages);
+
+    //         return ResponseEntity.ok(result);
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(500).body(Map.of("error", "JSON 파싱 실패"));
+    //     }
+    // }
+        @GetMapping("/{id}")
+        public ResponseEntity<Map<String, Object>> getStoryById(@PathVariable Long id) {
+            Optional<Story> optional = storyRepository.findById(id);
+            if (optional.isEmpty()) return ResponseEntity.notFound().build();
+
+            Story story = optional.get();
+            ObjectMapper mapper = new ObjectMapper();
+
+            try {
+                JsonNode textRoot = mapper.readTree(story.getTextJson());
+                JsonNode selectedRoot = mapper.readTree(story.getSelectedJson());
+
+                JsonNode pagesNode = textRoot.path("pages");
+                List<Map<String, String>> pages = new ArrayList<>();
+
+                for (int i = 0; i < pagesNode.size(); i++) {
+                    String text = pagesNode.get(i).asText();
+                    String imageUrl = selectedRoot.path(String.valueOf(i + 1)).asText();
+                    Map<String, String> page = new HashMap<>();
+                    page.put("text", text);
+                    page.put("image_url", imageUrl);
+                    pages.add(page);
+                }
+
+                Map<String, Object> result = new HashMap<>();
+                result.put("title", story.getTitle());
+                result.put("pages", pages);
+
+                // ← 이 줄을 추가하세요!
+                result.put("selected_json", selectedRoot);
+
+                return ResponseEntity.ok(result);
+            } catch (Exception e) {
+                return ResponseEntity.status(500).body(Map.of("error", "JSON 파싱 실패"));
             }
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("title", story.getTitle());
-            result.put("pages", pages);
-
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("error", "JSON 파싱 실패"));
         }
-    }
+
 
 
     // 🔸 ✅ 세션 기반 사용자 이야기 조회

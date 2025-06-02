@@ -35,8 +35,8 @@ const My_Story = () => {
   };
   const handleToggleShare = async () => {
     const confirmMessage = isShared
-      ? '정말로 공유를 취소하시겠습니까?'
-      : '정말로 이야기를 공유하시겠습니까?';
+      ? '공유를 취소하시겠습니까?'
+      : '이야기를 공유하시겠습니까?';
 
     // 사용자 확인
     if (!window.confirm(confirmMessage)) {

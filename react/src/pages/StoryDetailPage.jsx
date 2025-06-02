@@ -180,8 +180,8 @@ const StoryDetailPage = () => {
       .get(`http://localhost:8080/api/stories/${id}`)
       .then((res) => {
         console.log('전체 응답:', res.data);
-        console.log('selectedImages:', res.data.selected_json);
-        // console.log('selectedImages[5]:', res.data.selected_json['5']);
+        setSelectedImages(res.data.selected_json || {});
+        console.log('📦 selectedImages:', res.data.selected_json);
         const pages = res.data.pages || [];
         setStoryPages(pages);
 
@@ -190,8 +190,6 @@ const StoryDetailPage = () => {
         }
         if (res.data.selected_json) {
           setSelectedImages(res.data.selected_json);
-          console.log('selectedImages:', res.data.selected_json);
-          console.log('selectedImages[5]:', res.data.selected_json['5']);
         }
       })
       .catch((err) => {
@@ -202,10 +200,12 @@ const StoryDetailPage = () => {
   if (storyPages.length === 0)
     return <div className="text-center mt-5">Loading...</div>;
 
-  const totalPageCount = storyPages.length + 1;
-  const currentPage = pageIndex === 0 ? null : storyPages[pageIndex - 1];
-  // const lastImageIndex = String(storyPages.length - 1);
+  // selectedImages 객체의 '1' 키(첫 페이지) 값을 읽어 옵니다.
   const coverImageUrl = selectedImages['1'];
+  // 전체 페이지 수 (커버 포함)
+  const totalPageCount = storyPages.length + 1;
+  // 현재 보여줄 페이지 객체 (0이면 cover, 1부터 storyPages[0]…)
+  const currentPage = pageIndex === 0 ? null : storyPages[pageIndex - 1];
 
   const playTTS = () => {
     const audio = new Audio(currentPage.tts_url);

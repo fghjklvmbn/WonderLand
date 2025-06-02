@@ -40,7 +40,6 @@ public class StoryImageController {
         try {
             Long storyId = Long.valueOf(request.get("storyId").toString());
             Integer pageNumber = Integer.valueOf(request.get("pageNumber").toString());
-            @SuppressWarnings("unchecked")
             ObjectMapper mapper = new ObjectMapper();
             List<String> imageUrls = mapper.convertValue(request.get("imageUrls"), new TypeReference<List<String>>() {});
 
@@ -53,8 +52,6 @@ public class StoryImageController {
                 return ResponseEntity.status(403).body("스토리를 찾을 수 없거나 권한이 없습니다.");
             }
 
-            // 기존에 동일 페이지 이미지 있으면 삭제(optional)
-            // imageRepository.deleteByStoryAndPageNumber(story, pageNumber);
 
             // 이미지 5개 저장
             for (String url : imageUrls) {
@@ -72,4 +69,36 @@ public class StoryImageController {
             return ResponseEntity.status(500).body("서버 에러");
         }
     }
+        /**
+     * 스토리 공유/비공유 토글
+     */
+    @PatchMapping("/{storyId}/toggle-share")
+    public ResponseEntity<?> toggleShare(
+            @PathVariable Long storyId,
+            @RequestBody Map<String, Boolean> body,
+            HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(401).body("로그인된 사용자가 없습니다.");
+        }
+
+        Boolean toShare = body.get("isShared");
+        if (toShare == null) {
+            return ResponseEntity.badRequest().body("isShared 값을 보내주세요.");
+        }
+
+        Story story = storyRepository.findById(storyId).orElse(null);
+        if (story == null || !story.getAuthor().getUserId().equals(user.getUserId())) {
+            return ResponseEntity.status(403).body("스토리를 찾을 수 없거나 권한이 없습니다.");
+        }
+
+        // 공유 상태 업데이트 & 저장
+        story.setIsShared(toShare);
+        storyRepository.save(story);
+
+        // 변경된 공유 상태를 응답
+        return ResponseEntity.ok(Map.of("isShared", story.getIsShared()));
+    }
+    
 }

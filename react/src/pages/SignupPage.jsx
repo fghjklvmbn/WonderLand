@@ -11,6 +11,7 @@ const SignupPage = () => {
     name: '',
     nickname: '',
     age: '',
+    phone_number: '',
   });
 
   const handleChange = (e) => {
@@ -50,7 +51,7 @@ const SignupPage = () => {
           <h2 className="mb-3 text-center fw-bold">회원가입</h2>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-2">
-              <Form.Label>이메일</Form.Label>
+              <Form.Label className="fw-semibold">이메일</Form.Label>
               <Form.Control
                 name="email"
                 type="email"
@@ -59,7 +60,7 @@ const SignupPage = () => {
               />
             </Form.Group>
             <Form.Group className="mb-2">
-              <Form.Label>비밀번호</Form.Label>
+              <Form.Label className="fw-semibold">비밀번호</Form.Label>
               <Form.Control
                 name="password"
                 type="password"
@@ -68,19 +69,41 @@ const SignupPage = () => {
               />
             </Form.Group>
             <Form.Group className="mb-2">
-              <Form.Label>이름</Form.Label>
+              <Form.Label className="fw-semibold">이름</Form.Label>
               <Form.Control name="name" type="text" onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-2">
-              <Form.Label>닉네임</Form.Label>
+              <Form.Label className="fw-semibold">닉네임</Form.Label>
               <Form.Control
                 name="nickname"
                 type="text"
                 onChange={handleChange}
               />
             </Form.Group>
+            <Form.Group className="mb-2">
+              <Form.Label className="fw-semibold">휴대폰 번호</Form.Label>
+              <Form.Control
+                name="phone_number"
+                type="text"
+                inputMode="numeric" // 모바일 키패드 숫자 전용으로
+                pattern="[0-9]*" // 숫자만 허용
+                maxLength={11} // 최대 길이 제한 (예: 01012345678)
+                value={formData.phone_number}
+                onChange={(e) => {
+                  // 숫자 이외는 무시
+                  const onlyNums = e.target.value.replace(/\D/g, '');
+                  setFormData((prev) => ({
+                    ...prev,
+                    phone_number: onlyNums,
+                  }));
+                }}
+                required
+                placeholder="01012345678"
+              />
+            </Form.Group>
+
             <Form.Group className="mb-3">
-              <Form.Label>나이</Form.Label>
+              <Form.Label className="fw-semibold">나이</Form.Label>
               <Form.Control name="age" type="number" onChange={handleChange} />
             </Form.Group>
             <Button

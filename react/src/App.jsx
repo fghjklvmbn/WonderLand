@@ -20,8 +20,7 @@ import WriteManual from './pages/Write_Manual'; // 글작성 페이지
 import WriteAi from './pages/Write_Ai.jsx'; // 글작성 페이지
 import ImageGenerator from './pages/ImageGenerator'; // 이미지 생성 페이지로 이동
 import My_Story from './pages/My_Story'; // 생성된 이야기 보기
-import StoryCreate from './pages/StoryCreate'; // 이야기 생성
-import Sample from './pages/Sample'; // 목소리 녹음음
+import StoryCreate from './pages/StoryCreate'; // 이야기 생성MyCreatedStories
 
 // 우빈 추가 코드
 
@@ -71,7 +70,7 @@ const App = () => {
               <Route path="/imagegenerator" element={<ImageGenerator />} />
               <Route path="/My_Story" element={<My_Story />} />
               <Route path="/StoryCreate" element={<StoryCreate />} />
-              <Route path="/Sample" element={<Sample />} />
+
               {/* 우빈 추가 코드 */}
             </Routes>
           </main>

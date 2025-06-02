@@ -58,14 +58,25 @@ const ForgotEmailPage = () => {
               />
             </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold">비밀번호</Form.Label>
+            <Form.Group className="mb-2">
+              <Form.Label className="fw-semibold">휴대폰 번호</Form.Label>
               <Form.Control
-                type="password"
-                name="password"
+                name="phone_number"
+                type="text"
+                inputMode="numeric" // 모바일 키패드 숫자 전용으로
+                pattern="[0-9]*" // 숫자만 허용
+                maxLength={11} // 최대 길이 제한 (예: 01012345678)
+                value={formData.phone_number}
+                onChange={(e) => {
+                  // 숫자 이외는 무시
+                  const onlyNums = e.target.value.replace(/\D/g, '');
+                  setFormData((prev) => ({
+                    ...prev,
+                    phone_number: onlyNums,
+                  }));
+                }}
                 required
-                onChange={handleChange}
-                className="rounded-3"
+                placeholder="01012345678"
               />
             </Form.Group>
 
