@@ -33,14 +33,14 @@ const My_Story = () => {
       alert('최근 생성된 이야기가 없습니다.');
     }
   };
+
   const handleToggleShare = async () => {
     const confirmMessage = isShared
       ? '공유를 취소하시겠습니까?'
       : '이야기를 공유하시겠습니까?';
 
-    // 사용자 확인
     if (!window.confirm(confirmMessage)) {
-      return; // 취소 시 아무 것도 하지 않음
+      return;
     }
 
     try {
@@ -65,6 +65,14 @@ const My_Story = () => {
 
       const result = await response.json();
       setIsShared(result.isShared);
+
+      // ✅ localStorage 갱신
+      const updatedStoryData = {
+        ...storyData,
+        isShared: result.isShared,
+      };
+      localStorage.setItem('myStoryData', JSON.stringify(updatedStoryData));
+
       alert(`이야기가 ${result.isShared ? '공유됨' : '비공유 상태로 전환됨'}`);
     } catch (error) {
       alert('공유 상태 변경에 실패했습니다.');

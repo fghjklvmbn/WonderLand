@@ -185,6 +185,10 @@ const StoryDetailPage = () => {
         const pages = res.data.pages || [];
         setStoryPages(pages);
 
+        // 🔽 전체 텍스트 콘솔 출력
+        const allTexts = pages.map((p, i) => `Page ${i + 1}: ${p.text}`);
+        console.log('📘 전체 페이지 텍스트:\n' + allTexts.join('\n\n'));
+
         if (res.data.title) {
           setStoryTitle(res.data.title);
         }
