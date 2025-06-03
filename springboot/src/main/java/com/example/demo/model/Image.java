@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,5 +26,16 @@ public class Image {
 
     @Column(name = "url", nullable = false)
     private String imageUrl;
+
+
+
+    // created_at 컬럼 추가
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 }

@@ -16,8 +16,55 @@ import java.util.Map;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class StoryManualController {
-  private final StoryRepository storyRepository;
+private final StoryRepository storyRepository;
 private final ObjectMapper objectMapper = new ObjectMapper();
+
+@PutMapping("/update_manualDB")
+public ResponseEntity<?> updateManualStory(
+        @RequestBody Map<String, Object> request,
+        HttpSession session
+) {
+    User user = (User) session.getAttribute("user");
+    if (user == null) {
+        return ResponseEntity.status(401).body("로그인된 사용자가 없습니다.");
+    }
+
+    Integer storyIdInt = (Integer) request.get("storyId");
+    String title = (String) request.get("title");
+    String genre = (String) request.get("genre");
+    @SuppressWarnings("unchecked")
+    Map<String, Object> textJson = (Map<String, Object>) request.get("textJson");
+
+    if (storyIdInt == null || title == null || genre == null || textJson == null) {
+        return ResponseEntity.badRequest().body("필수 항목이 누락되었습니다.");
+    }
+
+    try {
+        Story story = storyRepository.findById(Long.valueOf(storyIdInt))
+                .orElse(null);
+
+        if (story == null) {
+            return ResponseEntity.badRequest().body("해당 storyId를 찾을 수 없습니다.");
+        }
+
+
+        String textJsonStr = objectMapper.writeValueAsString(textJson);
+
+        story.setTitle(title);
+        story.setGenre(genre);
+        story.setTextJson(textJsonStr);
+
+        storyRepository.save(story);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "스토리 업데이트 성공",
+                "storyId", story.getStoryId()
+        ));
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body("스토리 업데이트 중 오류 발생");
+    }
+}
+
 
 @PostMapping("/write_manualDB")
 public ResponseEntity<?> saveManualStory(

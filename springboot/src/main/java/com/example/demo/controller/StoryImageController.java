@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ public class StoryImageController {
             HttpSession session) {
 
         User user = (User) session.getAttribute("user");
+        System.out.println("현재 유저: " + user);
         if (user == null) {
             return ResponseEntity.status(401).body("로그인된 사용자가 없습니다.");
         }
@@ -56,9 +58,11 @@ public class StoryImageController {
             // 이미지 5개 저장
             for (String url : imageUrls) {
                 Image img = Image.builder()
+                        .user(user)
                         .story(story)
                         .pageNumber(pageNumber)
                         .imageUrl(url)
+                        .createdAt(LocalDateTime.now())
                         .build();
                 imageRepository.save(img);
             }

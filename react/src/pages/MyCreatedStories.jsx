@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Row, Col, Card, Modal, Form } from 'react-bootstrap';
 import GenreSelector from './GenreSelector';
+import { useNavigate } from 'react-router-dom';
 
 const MyCreatedStories = () => {
   const [stories, setStories] = useState([]);
@@ -9,7 +10,11 @@ const MyCreatedStories = () => {
   const [selectedStory, setSelectedStory] = useState(null);
   const [editTitle, setEditTitle] = useState('');
   const [editGenre, setEditGenre] = useState('');
+  const navigate = useNavigate();
 
+  const handleClick = (id) => {
+    navigate(`/story/${id}`);
+  };
   useEffect(() => {
     axios
       .get('http://localhost:8080/api/stories/mine', { withCredentials: true })
@@ -102,6 +107,8 @@ const MyCreatedStories = () => {
               <Card.Img
                 variant="top"
                 src={story.thumbnail || 'https://placehold.co/200x200'}
+                onClick={() => handleClick(story.storyId)}
+                style={{ cursor: 'pointer' }}
               />
               <Card.Body>
                 <Card.Title>{story.title}</Card.Title>

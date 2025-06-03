@@ -44,7 +44,7 @@ const My_Story = () => {
     }
 
     try {
-      const storyId = localStorage.getItem('latestStoryId');
+      const storyId = localStorage.getItem('storyId');
       const newIsShared = !isShared;
 
       const response = await fetch(

@@ -40,26 +40,26 @@ const WriteManual = () => {
     });
 
     try {
-      const res = await axios.post(
-        // StoryManualController -> write_manualDB
-        'http://localhost:8080/api/story/write_manualDB',
-        {
-          title: title,
-          genre: selectedGenres,
-          textJson: { pages: pagesObj },
-        },
-        { withCredentials: true }
-      );
+      //   const res = await axios.post(
+      //     // StoryManualController -> write_manualDB
+      //     'http://localhost:8080/api/story/write_manualDB',
+      //     {
+      //       title: title,
+      //       genre: selectedGenres,
+      //       textJson: { pages: pagesObj },
+      //     },
+      //     { withCredentials: true }
+      //   );
 
-      // 응답에서 storyId 받아옴
-      const storyId = res.data.storyId;
-      if (!storyId) {
-        alert('스토리 ID를 받아오지 못했습니다.');
-        return;
-      }
-      // storyId 로컬스토리지에 저장
-      localStorage.setItem('storyId', storyId);
-      console.log('story_ID: ', storyId);
+      //   // 응답에서 storyId 받아옴
+      //   const storyId = res.data.storyId;
+      //   if (!storyId) {
+      //     alert('스토리 ID를 받아오지 못했습니다.');
+      //     return;
+      //   }
+      //   // storyId 로컬스토리지에 저장
+      //   localStorage.setItem('storyId', storyId);
+      //   console.log('story_ID: ', storyId);
 
       // ImageGenerator 페이지로 이동하면서 state에 storyId 포함 전달
       navigate('/imagegenerator', {

@@ -21,6 +21,14 @@ const ImageGenerator = () => {
 
   const [showGenreModal, setShowGenreModal] = useState(false);
 
+  const [isGenerating, setIsGenerating] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
+
   useEffect(() => {
     if (!location.state) return;
     const {
@@ -51,59 +59,6 @@ const ImageGenerator = () => {
   // ─────────────────────────────────────────────────────────────────────
 
   // ✨ **핵심**: 실제 Gradio → Spring → 이미지를 생성하고 넘어오는 부분
-  const handleImageGenerate = async () => {
-    if (!title.trim() || !pages[currentPage].trim()) {
-      alert('제목과 페이지 내용을 모두 입력해주세요.');
-      return;
-    }
-
-    try {
-      // 1) 프론트에서 백엔드(Spring)에 요청 보낼 페이로드 구성
-      //    prompt: 현재 페이지의 텍스트(pages[currentPage])를 넣자.
-      const pay = {
-        prompt: pages[currentPage],
-        // seed나 cfg_scale, temperature를 추가로 넘기고 싶으면 여기에 넣으면 됨
-        // seed: 42,
-        // cfg_scale: 7.0,
-        // temperature: 0.7
-      };
-
-      // 2) Spring Boot 서버의 엔드포인트 호출 (/api/image/generate)
-      const res = await fetch('http://localhost:8080/api/image/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // 필요 시
-        body: JSON.stringify(pay),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        console.error('Spring 에러 응답:', errText);
-        throw new Error('이미지 생성 요청 실패');
-      }
-
-      const data = await res.json();
-      if (!data.success || !Array.isArray(data.imageUrls)) {
-        throw new Error('이미지 URL 응답이 올바르지 않습니다');
-      }
-
-      // 3) Spring이 반환한 imageUrls (예: ["/output/gen_20230607_121314_00.png", ...])
-      const urls = data.imageUrls.map((path) => {
-        // React에서 직접 접근할 때는 절대경로를 붙여야 함
-        // 예: http://localhost:8080/output/xxxxx.png
-        return `http://localhost:8080${path}`;
-      });
-
-      // 4) 상태 업데이트 → 해당 페이지에 URLs 저장
-      const copy = [...generatedImages];
-      copy[currentPage] = urls;
-      setGeneratedImages(copy);
-    } catch (error) {
-      console.error('이미지 생성 중 오류:', error);
-      alert('이미지 생성에 실패했습니다.');
-    }
-  };
-
   // 사용자가 이미지를 클릭하여 “선택”할 때 호출
   const handleSelectImage = (pageIdx, url) => {
     setSelectedImages((prev) => ({
@@ -118,11 +73,253 @@ const ImageGenerator = () => {
     setPages(arr);
   };
 
+  const [storyId, setStoryId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // 선언 필요
+
+  const handleImageGenerate = async () => {
+    if (!title || !genre || !pages) {
+      alert('제목, 장르, 페이지 내용이 모두 있어야 합니다.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      let currentStoryId = storyId;
+
+      if (!currentStoryId) {
+        // 최초 저장 (Insert)
+        const res = await fetch(
+          'http://localhost:8080/api/story/write_manualDB',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              title: title,
+              genre: genre,
+              textJson: { pages },
+            }),
+          }
+        );
+
+        if (!res.ok) {
+          const errorMsg = await res.text();
+          throw new Error(errorMsg || '스토리 저장 실패');
+        }
+
+        const data = await res.json();
+        currentStoryId = data.storyId;
+        setStoryId(currentStoryId);
+        localStorage.setItem('storyId', currentStoryId);
+      } else {
+        // 이미 storyId가 있을 때는 업데이트 요청 (Update)
+        const updateRes = await fetch(
+          'http://localhost:8080/api/story/update_manualDB',
+          {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              storyId: currentStoryId,
+              title: title,
+              genre: genre,
+              textJson: { pages },
+            }),
+          }
+        );
+
+        if (!updateRes.ok) {
+          const errorMsg = await updateRes.text();
+          throw new Error(errorMsg || '스토리 업데이트 실패');
+        }
+      }
+
+      localStorage.setItem('storyId', currentStoryId);
+      console.log('최초 저장된 story_ID:', currentStoryId);
+
+      alert(
+        '이미지를 생성 중입니다.\n약 10~20초 정도 소요됩니다.\n그동안 다음 페이지의 내용을 검토해주세요!'
+      );
+
+      setIsGenerating((prev) => {
+        const copy = [...prev];
+        copy[currentPage] = true;
+        return copy;
+      });
+
+      // 이미지 생성 요청 페이로드
+      const pay = {
+        prompt: pages[currentPage], // 현재 페이지 텍스트
+      };
+
+      const res = await fetch('http://localhost:8080/api/image/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(pay),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('Spring 에러 응답:', errText);
+        throw new Error('이미지 생성 요청 실패');
+      }
+
+      const data = await res.json();
+      if (!data.success || !Array.isArray(data.imageUrls)) {
+        throw new Error('이미지 URL 응답이 올바르지 않습니다');
+      }
+
+      const urls = data.imageUrls.map((path) => `http://localhost:8080${path}`);
+
+      // 생성된 이미지 상태 저장
+      setGeneratedImages((prev) => {
+        const copy = [...prev];
+        copy[currentPage] = urls;
+        return copy;
+      });
+
+      // 이미지 저장 API 호출
+      if (currentStoryId) {
+        const saveRes = await fetch(
+          'http://localhost:8080/api/story/image/save',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              storyId: currentStoryId,
+              pageNumber: currentPage + 1,
+              imageUrls: urls,
+            }),
+          }
+        );
+
+        const saveText = await saveRes.text(); // 응답 본문 미리 읽어두기
+
+        if (!saveRes.ok) {
+          console.error('이미지 저장 에러:', saveText);
+        } else {
+          console.log('이미지 저장 완료:', saveText); // ✅ 여기에 출력 추가!
+        }
+      } else {
+        console.warn('storyId가 없어 이미지 저장 API를 호출하지 않았습니다.');
+      }
+    } catch (error) {
+      console.error('이미지 생성 중 오류:', error);
+      alert('이미지 생성에 실패했습니다.');
+    } finally {
+      setIsGenerating((prev) => {
+        const copy = [...prev];
+        copy[currentPage] = false;
+        return copy;
+      });
+      setIsLoading(false);
+    }
+  };
+
   // ─────────────────────────────────────────────────────────────────────
 
   const handleCreateStory = async () => {
-    // (기존의 유효성 검사 로직 그대로 가져오면 됩니다)
-    // ...
+    if (!title.trim()) {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+    const nonEmpty = pages.filter((p) => p.trim());
+    if (!nonEmpty.length) {
+      alert('최소 한 페이지 이상의 내용을 입력해주세요.');
+      return;
+    }
+
+    // 내용이 있는데 이미지 생성/선택이 안 된 페이지 체크
+    const pagesWithContentNoImages = pages
+      .map((p, idx) => {
+        const hasContent = p.trim().length > 0;
+        const hasGeneratedImages = generatedImages[idx].length > 0;
+        const hasSelectedImage = !!selectedImages[String(idx + 1)];
+        if (hasContent && !hasGeneratedImages && !hasSelectedImage) {
+          return idx + 1;
+        }
+        return null;
+      })
+      .filter((v) => v !== null);
+
+    if (pagesWithContentNoImages.length > 0) {
+      alert(
+        `다음 페이지에 내용이 있지만 AI 이미지가 생성되지 않았거나 선택되지 않았습니다.\n` +
+          `이미지를 생성하거나, 이미지가 필요 없으면 해당 페이지 내용을 삭제해주세요:` +
+          pagesWithContentNoImages.join(', ')
+      );
+      return;
+    }
+
+    // 이미지 생성했지만 선택 안 된 페이지 체크
+    const pagesWithImagesButNoSelection = pages
+      .map((p, idx) => {
+        const imgs = generatedImages[idx];
+        if (p.trim() && imgs.length > 0 && !selectedImages[String(idx + 1)]) {
+          return idx + 1;
+        }
+        return null;
+      })
+      .filter((v) => v !== null);
+
+    if (pagesWithImagesButNoSelection.length > 0) {
+      alert(
+        `다음 페이지에서 이미지를 선택해주세요: ${pagesWithImagesButNoSelection.join(
+          ', '
+        )}`
+      );
+      return;
+    }
+
+    if (!Object.keys(selectedImages).length) {
+      alert('최소한 한 페이지에서 이미지를 선택해주세요.');
+      return;
+    }
+    // ✅ 여기에 추가: 이미지가 있는데 내용이 없는 페이지 검사
+    for (let idx = 0; idx < pages.length; idx++) {
+      if (generatedImages[idx].length > 0 && !pages[idx].trim()) {
+        const proceed = window.confirm(
+          `페이지 ${
+            idx + 1
+          }에 이미지가 있지만 내용이 비어 있습니다.\n이 상태로 계속 진행하시겠습니까?`
+        );
+        if (!proceed) return; // 사용자가 아니오(N) 클릭한 경우 함수 종료
+      }
+    }
+
+    const storyData = { storyId, title, genre, pages, selectedImages };
+
+    try {
+      // StoryDB_Controller -> create
+      const res = await fetch('http://localhost:8080/api/story/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(storyData),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('서버 에러 응답:', errorText);
+        throw new Error('스토리 저장 실패');
+      }
+
+      const data = await res.json();
+      console.log(data.message); // "스토리 저장 완료"
+
+      alert('스토리가 성공적으로 저장되었습니다.');
+      console.log('저장된 storyId:', data.storyId);
+      setStoryId(data.storyId); // storyId 갱신
+      localStorage.setItem('myStoryData', JSON.stringify(storyData));
+      // localStorage.setItem('latestStoryId', data.storyId);
+      navigate('/My_Story');
+    } catch (error) {
+      console.error('스토리 저장 에러:', error);
+      alert('스토리 저장 중 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -166,7 +363,11 @@ const ImageGenerator = () => {
 
       {/* AI 이미지 생성 버튼 */}
       <div className="text-center mb-4">
-        <Button variant="success" onClick={handleImageGenerate}>
+        <Button
+          variant="success"
+          onClick={() => handleImageGenerate(currentPage)}
+          disabled={isGenerating[currentPage]}
+        >
           AI 이미지 생성하기
         </Button>
       </div>
@@ -186,7 +387,6 @@ const ImageGenerator = () => {
                   width: 150,
                   height: 150,
                   cursor: 'pointer',
-                  filter: isSelected ? 'none' : 'none',
                   border: isSelected ? '4px solid #007BFF' : '2px solid #ccc',
                   borderRadius: 8,
                   transition: 'all .3s ease',
