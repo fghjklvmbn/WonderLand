@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from stub.WriteDetail_stub import WriteDetail as write_detail_stub
 from stub.FullCreate_stub import FullCreate as full_create_stub
 from stub.CharaterSpecific_stub import CharaterSpecific as character_specific_stub
+from stub.pageprompt_stub import PagePrompt as pageprompt_stub
 
 app = Flask(__name__)
 
@@ -56,6 +57,18 @@ def character_specific():
         return jsonify({"오류": "줄거리(plot) 항목은 필수 입니다."}), 400
 
     result = character_specific_stub(character_name, plot)
+    return jsonify(result)
+
+# 4. 페이지 내용 기반 이미지 생성 프롬프트 생성
+@app.route("/ai/StoryCreate/CharaterSpecific", methods=["POST"])
+def character_specific():
+    data = request.get_json()
+    detail = data.get("detail", "")
+    
+    if not detail:
+        return jsonify({"오류": "페이지 내용(detail) 항목은 필수 입니다."}), 400
+
+    result = pageprompt_stub(detail)
     return jsonify(result)
 
 
