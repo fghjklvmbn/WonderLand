@@ -76,6 +76,152 @@ const ImageGenerator = () => {
   const [storyId, setStoryId] = useState(null);
   const [isLoading, setIsLoading] = useState(false); // 선언 필요
 
+  // const handleImageGenerate = async () => {
+  //   if (!title || !genre || !pages) {
+  //     alert('제목, 장르, 페이지 내용이 모두 있어야 합니다.');
+  //     return;
+  //   }
+
+  //   setIsLoading(true);
+
+  //   try {
+  //     let currentStoryId = storyId;
+
+  //     if (!currentStoryId) {
+  //       // 최초 저장 (Insert)
+  //       const res = await fetch(
+  //         'http://localhost:8080/api/story/write_manualDB',
+  //         {
+  //           method: 'POST',
+  //           headers: { 'Content-Type': 'application/json' },
+  //           credentials: 'include',
+  //           body: JSON.stringify({
+  //             title: title,
+  //             genre: genre,
+  //             textJson: { pages },
+  //           }),
+  //         }
+  //       );
+
+  //       if (!res.ok) {
+  //         const errorMsg = await res.text();
+  //         throw new Error(errorMsg || '스토리 저장 실패');
+  //       }
+
+  //       const data = await res.json();
+  //       currentStoryId = data.storyId;
+  //       setStoryId(currentStoryId);
+  //       localStorage.setItem('storyId', currentStoryId);
+  //     } else {
+  //       // 이미 storyId가 있을 때는 업데이트 요청 (Update)
+  //       const updateRes = await fetch(
+  //         'http://localhost:8080/api/story/update_manualDB',
+  //         {
+  //           method: 'PUT',
+  //           headers: { 'Content-Type': 'application/json' },
+  //           credentials: 'include',
+  //           body: JSON.stringify({
+  //             storyId: currentStoryId,
+  //             title: title,
+  //             genre: genre,
+  //             textJson: { pages },
+  //           }),
+  //         }
+  //       );
+
+  //       if (!updateRes.ok) {
+  //         const errorMsg = await updateRes.text();
+  //         throw new Error(errorMsg || '스토리 업데이트 실패');
+  //       }
+  //     }
+
+  //     localStorage.setItem('storyId', currentStoryId);
+  //     console.log('최초 저장된 story_ID:', currentStoryId);
+
+  //     alert(
+  //       '이미지를 생성 중입니다.\n약 10~20초 정도 소요됩니다.\n그동안 다음 페이지의 내용을 검토해주세요!'
+  //     );
+
+  //     setIsGenerating((prev) => {
+  //       const copy = [...prev];
+  //       copy[currentPage] = true;
+  //       return copy;
+  //     });
+
+  //     // 이미지 생성 요청 페이로드
+  //     const pay = {
+  //       prompt: pages[currentPage], // 현재 페이지 텍스트
+  //     };
+
+  //     const res = await fetch('http://localhost:8080/api/image/generate', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       credentials: 'include',
+  //       body: JSON.stringify(pay),
+  //     });
+
+  //     if (!res.ok) {
+  //       const errText = await res.text();
+  //       console.error('Spring 에러 응답:', errText);
+  //       throw new Error('이미지 생성 요청 실패');
+  //     }
+
+  //     const data = await res.json();
+  //     if (!data.success || !Array.isArray(data.imageUrls)) {
+  //       throw new Error('이미지 URL 응답이 올바르지 않습니다');
+  //     }
+
+  //     const urls = data.imageUrls.map((path) => `http://localhost:8080${path}`);
+
+  //     // 생성된 이미지 상태 저장
+  //     setGeneratedImages((prev) => {
+  //       const copy = [...prev];
+  //       copy[currentPage] = urls;
+  //       return copy;
+  //     });
+
+  //     // 이미지 저장 API 호출
+  //     if (currentStoryId) {
+  //       const saveRes = await fetch(
+  //         'http://localhost:8080/api/story/image/save',
+  //         {
+  //           method: 'POST',
+  //           headers: { 'Content-Type': 'application/json' },
+  //           credentials: 'include',
+  //           body: JSON.stringify({
+  //             storyId: currentStoryId,
+  //             pageNumber: currentPage + 1,
+  //             imageUrls: urls,
+  //           }),
+  //         }
+  //       );
+
+  //       const saveText = await saveRes.text(); // 응답 본문 미리 읽어두기
+
+  //       if (!saveRes.ok) {
+  //         console.error('이미지 저장 에러:', saveText);
+  //       } else {
+  //         console.log('이미지 저장 완료:', saveText); // ✅ 여기에 출력 추가!
+  //       }
+  //     } else {
+  //       console.warn('storyId가 없어 이미지 저장 API를 호출하지 않았습니다.');
+  //     }
+  //   } catch (error) {
+  //     console.error('이미지 생성 중 오류:', error);
+  //     alert('이미지 생성에 실패했습니다.');
+  //   } finally {
+  //     setIsGenerating((prev) => {
+  //       const copy = [...prev];
+  //       copy[currentPage] = false;
+  //       return copy;
+  //     });
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // ─────────────────────────────────────────────────────────────────────
+  // ImageGenerator.jsx
+
   const handleImageGenerate = async () => {
     if (!title || !genre || !pages) {
       alert('제목, 장르, 페이지 내용이 모두 있어야 합니다.');
@@ -87,8 +233,8 @@ const ImageGenerator = () => {
     try {
       let currentStoryId = storyId;
 
+      // ①: storyId가 없으면 최초 저장(insert) 후 storyId 획득
       if (!currentStoryId) {
-        // 최초 저장 (Insert)
         const res = await fetch(
           'http://localhost:8080/api/story/write_manualDB',
           {
@@ -113,7 +259,7 @@ const ImageGenerator = () => {
         setStoryId(currentStoryId);
         localStorage.setItem('storyId', currentStoryId);
       } else {
-        // 이미 storyId가 있을 때는 업데이트 요청 (Update)
+        // ②: 이미 storyId가 있으면 update 요청
         const updateRes = await fetch(
           'http://localhost:8080/api/story/update_manualDB',
           {
@@ -128,7 +274,6 @@ const ImageGenerator = () => {
             }),
           }
         );
-
         if (!updateRes.ok) {
           const errorMsg = await updateRes.text();
           throw new Error(errorMsg || '스토리 업데이트 실패');
@@ -148,10 +293,47 @@ const ImageGenerator = () => {
         return copy;
       });
 
-      // 이미지 생성 요청 페이로드
-      const pay = {
-        prompt: pages[currentPage], // 현재 페이지 텍스트
-      };
+      // ───────────────────────────────────────────────────────
+      // 3) mode가 'ai'인 경우 Flask stub로부터 image_prompt 받아오기
+      let imagePrompt;
+
+      if (mode === 'ai') {
+        // Flask endpoint 호출
+        const detail = pages[currentPage];
+        const promptRes = await fetch(
+          'http://localhost:3001/ai/prompt/artprompt/',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ detail }),
+          }
+        );
+
+        if (!promptRes.ok) {
+          const errText = await promptRes.text();
+          console.error('Flask artprompt 에러 응답:', errText);
+          throw new Error('이미지 프롬프트 생성 실패');
+        }
+
+        const promptData = await promptRes.json();
+        if (!promptData || typeof promptData.image_prompt !== 'string') {
+          console.error('Flask 응답이 올바르지 않습니다:', promptData);
+          throw new Error('Flask에서 유효한 image_prompt를 받지 못했습니다.');
+        }
+
+        imagePrompt = promptData.image_prompt;
+        console.log('Flask로부터 받은 image_prompt:', imagePrompt);
+      } else {
+        // mode가 'manual'인 경우, page 텍스트를 그대로 prompt로 사용
+        imagePrompt = pages[currentPage];
+        console.log(
+          'Manual 모드이므로 페이지 텍스트를 imagePrompt로 사용:',
+          imagePrompt
+        );
+      }
+
+      // 4) imagePrompt를 Spring Boot 이미지 생성 API에 전달
+      const pay = { prompt: imagePrompt };
 
       const res = await fetch('http://localhost:8080/api/image/generate', {
         method: 'POST',
@@ -162,7 +344,7 @@ const ImageGenerator = () => {
 
       if (!res.ok) {
         const errText = await res.text();
-        console.error('Spring 에러 응답:', errText);
+        console.error('Spring 이미지 생성 에러 응답:', errText);
         throw new Error('이미지 생성 요청 실패');
       }
 
@@ -173,14 +355,14 @@ const ImageGenerator = () => {
 
       const urls = data.imageUrls.map((path) => `http://localhost:8080${path}`);
 
-      // 생성된 이미지 상태 저장
+      // 5) 생성된 이미지 상태 저장
       setGeneratedImages((prev) => {
         const copy = [...prev];
         copy[currentPage] = urls;
         return copy;
       });
 
-      // 이미지 저장 API 호출
+      // 6) DB에 이미지 URL도 같이 저장
       if (currentStoryId) {
         const saveRes = await fetch(
           'http://localhost:8080/api/story/image/save',
@@ -196,19 +378,19 @@ const ImageGenerator = () => {
           }
         );
 
-        const saveText = await saveRes.text(); // 응답 본문 미리 읽어두기
-
+        const saveText = await saveRes.text();
         if (!saveRes.ok) {
           console.error('이미지 저장 에러:', saveText);
         } else {
-          console.log('이미지 저장 완료:', saveText); // ✅ 여기에 출력 추가!
+          console.log('이미지 저장 완료:', saveText);
         }
       } else {
         console.warn('storyId가 없어 이미지 저장 API를 호출하지 않았습니다.');
       }
+      // ───────────────────────────────────────────────────────
     } catch (error) {
       console.error('이미지 생성 중 오류:', error);
-      alert('이미지 생성에 실패했습니다.');
+      alert(error.message || '이미지 생성에 실패했습니다.');
     } finally {
       setIsGenerating((prev) => {
         const copy = [...prev];
@@ -218,8 +400,6 @@ const ImageGenerator = () => {
       setIsLoading(false);
     }
   };
-
-  // ─────────────────────────────────────────────────────────────────────
 
   const handleCreateStory = async () => {
     if (!title.trim()) {
@@ -314,7 +494,7 @@ const ImageGenerator = () => {
       console.log('저장된 storyId:', data.storyId);
       setStoryId(data.storyId); // storyId 갱신
       localStorage.setItem('myStoryData', JSON.stringify(storyData));
-      // localStorage.setItem('latestStoryId', data.storyId);
+      localStorage.setItem('latestStoryId', data.storyId);
       navigate('/My_Story');
     } catch (error) {
       console.error('스토리 저장 에러:', error);
