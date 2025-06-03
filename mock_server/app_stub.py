@@ -60,8 +60,8 @@ def character_specific():
     return jsonify(result)
 
 # 4. 페이지 내용 기반 이미지 생성 프롬프트 생성
-@app.route("/ai/StoryCreate/CharaterSpecific", methods=["POST"])
-def character_specific():
+@app.route("/ai/prompt/artprompt/", methods=["POST"])
+def artprompt():
     data = request.get_json()
     detail = data.get("detail", "")
     
