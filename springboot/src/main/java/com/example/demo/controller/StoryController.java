@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.StoryDTO;
 import com.example.demo.model.Story;
 import com.example.demo.model.User;
+import com.example.demo.repository.ImageRepository;
 import com.example.demo.repository.StoryRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +24,13 @@ public class StoryController {
     @Autowired
     private StoryRepository storyRepository;
 
+    @Autowired
+    private ImageRepository imageRepository;
+
+
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    
     // 🔸 공유된 이야기 목록
     @GetMapping("/shared")
     public List<StoryDTO> getSharedStories() {
@@ -77,6 +85,7 @@ public class StoryController {
             result.put("title", story.getTitle());
             result.put("pages", pages);
             result.put("selected_json", selectedRoot);  // 표지 이미지용
+            result.put("genre", story.getGenre());
 
             return ResponseEntity.ok(result);
         } catch (Exception e) {
@@ -96,6 +105,27 @@ public class StoryController {
         List<Story> stories = storyRepository.findByAuthor_UserId(user.getUserId());
         return ResponseEntity.ok(toDtoList(stories));
     }
+    // @GetMapping("/mine")
+    // public ResponseEntity<?> getMyStories(
+    //     @RequestParam(required = false) String genre,
+    //     HttpSession session
+    // ) {
+    //     User user = (User) session.getAttribute("user");
+    //     if (user == null) {
+    //         return ResponseEntity.status(401).body("로그인이 필요합니다.");
+    //     }
+
+    //     List<Story> stories;
+
+    //     if (genre != null && !genre.isBlank()) {
+    //         stories = storyRepository.findByAuthor_UserIdAndGenre(user.getUserId(), genre);
+    //     } else {
+    //         stories = storyRepository.findByAuthor_UserId(user.getUserId());
+    //     }
+
+    //     return ResponseEntity.ok(toDtoList(stories));
+    // }
+
 
     // 🔸 이야기 수정
     @PutMapping("/{id}")
@@ -120,17 +150,6 @@ public class StoryController {
     }
 
     // 🔸 공통: Story 리스트를 DTO 리스트로 변환
-    // private List<StoryDTO> toDtoList(List<Story> stories) {
-    //     return stories.stream().map(story -> new StoryDTO(
-    //             story.getStoryId(),
-    //             story.getTitle(),
-    //             extractThumbnailFromJson(story.getSelectedJson()),
-    //             getAuthorName(story.getAuthor()),
-    //             story.getGenre(),
-    //             0 // 좋아요 수는 추후 구현
-    //     )).collect(Collectors.toList());
-    // }
-
     private List<StoryDTO> toDtoList(List<Story> stories) {
         return stories.stream().map(story -> new StoryDTO(
                 story.getStoryId(),
@@ -173,4 +192,5 @@ public class StoryController {
                 .map(row -> (String) row[0])
                 .collect(Collectors.toList());
     }
+    
 }

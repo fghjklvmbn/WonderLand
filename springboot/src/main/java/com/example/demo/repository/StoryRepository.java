@@ -36,5 +36,7 @@ public interface StoryRepository extends JpaRepository<Story, Long> {
     @EntityGraph(attributePaths = "author")
     List<Story> findByAuthor_UserId(Long userId);
     Optional<Story> findFirstByAuthorUserIdAndIsDraftTrue(Long userId);
+    @EntityGraph(attributePaths = "author")
+    List<Story> findByAuthor_UserIdAndGenre(Long userId, String genre);
     
 }

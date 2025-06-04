@@ -105,4 +105,40 @@ public class StoryImageController {
         return ResponseEntity.ok(Map.of("isShared", story.getIsShared()));
     }
     
+
+
+
+    @PutMapping("/list")
+    public ResponseEntity<?> getPageImages(
+            @RequestParam Long storyId,
+            @RequestParam Integer pageNumber,
+            HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(401).body("로그인된 사용자가 없습니다.");
+        }
+
+        Story story = storyRepository.findById(storyId).orElse(null);
+        if (story == null) {
+            return ResponseEntity.status(404).body("스토리를 찾을 수 없습니다.");
+        }
+
+        // 접근 권한 확인 (자신의 스토리이거나 공유된 스토리일 때만 허용)
+        boolean isOwner = story.getAuthor().getUserId().equals(user.getUserId());
+        boolean isShared = Boolean.TRUE.equals(story.getIsShared());
+
+        if (!isOwner && !isShared) {
+            return ResponseEntity.status(403).body("스토리에 접근할 수 없습니다.");
+        }
+
+        List<Image> images = imageRepository.findByStory_IdAndPageNumber(storyId, pageNumber);
+        List<String> imageUrls = images.stream()
+                .map(Image::getImageUrl)
+                .toList();
+
+        return ResponseEntity.ok(imageUrls);
+    }
+
+
 }

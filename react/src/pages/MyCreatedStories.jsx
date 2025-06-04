@@ -114,7 +114,11 @@ const MyCreatedStories = () => {
                 <Card.Title>{story.title}</Card.Title>
                 <Card.Text className="text-muted">{story.genre}</Card.Text>
                 <div className="d-flex gap-2">
-                  <Button variant="outline-primary" size="sm">
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    onClick={() => navigate(`/continue/${story.storyId}`)}
+                  >
                     이어쓰기
                   </Button>
                   <Button

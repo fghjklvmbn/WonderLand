@@ -179,15 +179,20 @@ const StoryDetailPage = () => {
     axios
       .get(`http://localhost:8080/api/stories/${id}`)
       .then((res) => {
-        console.log('전체 응답:', res.data);
+        // console.log('전체 응답:', res.data);
         setSelectedImages(res.data.selected_json || {});
         console.log('📦 selectedImages:', res.data.selected_json);
         const pages = res.data.pages || [];
         setStoryPages(pages);
 
         // 🔽 전체 텍스트 콘솔 출력
-        const allTexts = pages.map((p, i) => `Page ${i + 1}: ${p.text}`);
-        console.log('📘 전체 페이지 텍스트:\n' + allTexts.join('\n\n'));
+        // const allTexts = pages.map((p, i) => `Page ${i + 1}: ${p.text}`);
+        // console.log('📘 전체 페이지 텍스트:\n' + allTexts.join('\n\n'));
+
+        // ✅ 장르 출력
+        if (res.data.genre) {
+          console.log('📚 장르:', res.data.genre);
+        }
 
         if (res.data.title) {
           setStoryTitle(res.data.title);
