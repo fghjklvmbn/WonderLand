@@ -1,0 +1,6 @@
+flask
+transformers
+torch
+accelerate
+peft
+hf_xet

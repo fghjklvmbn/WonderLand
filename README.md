@@ -1,64 +1,67 @@
 # WonderLand
-![Logo ver1 3 축소](https://github.com/user-attachments/assets/7e46480b-4390-405e-8d09-5d9f8a54ad8b)
 
+## 사전 환경
+0. 64기가 이상 저장공간 소요
+1. node.js 설치
+2. Microsoft C++ Build Tools 설치(C++환경)
+3. anaconda 설치후 가상환경 조성(anaconda prompt를 이용해서 진행, python 3.10버전, 테스트 완료)
+4. 램 32GB 혹은 그래픽 램 12GB 이상 필요
 
-캡스톤디자인 2 팀 원더랜드 결과물 저장소 / capstone design 2 Team:WonderLand's results
+## 통합 설치
+일반버전 : python install.py
+<br>
+엔비디아 버전 : python install_cuda.py
 
-브랜치 : 산출물(main), 백엔드(backend), 프론트엔드(frontend)
-## Figma
-[피그마 주소](https://www.figma.com/design/u6YK03mZF5mum4Gvrbcv9v/WonderLand?node-id=0-1&t=JByndxUTiUFZwHn8-1)
+## 통합 실행
+python run.py
 
-<br><br><br><br>
-# ERD
-## ver0.3 (25.05.22)
-![Wonderland ERD Ver0 3 drawio](https://github.com/user-attachments/assets/7d656535-df5f-4c5d-b30b-7c7b7044e9d6)
+## node_modules 삭제
+python clean.py
 
-# 업무 흐름도
-## ver0.5 (25.05.22)
-![업무 흐름도 ver0 5](https://github.com/user-attachments/assets/c801ae55-c1d5-4ff2-866a-a78cf6263b5b)
+## 각 서버별 구체적인 실행 방법
+## 백엔드 서버
+cd 백엔드서버/프론트내부API
+<br>
+./mvnw spring-boot:run
+<br><br>
 
-## ver0.4 (25.04.10)
-![업무 흐름도 ver0 4](https://github.com/user-attachments/assets/fd1c5bf5-265f-4028-b390-e7ecc0d7d9f2)
+## AI 서버
+cd 백엔드서버/AI서버API
+<br>
+python run.py
+<br><br>
 
-## ver0.3 (25.04.09)
-![업무 흐름도 ver_0 3](https://github.com/user-attachments/assets/532d4963-2b67-4a27-9213-b3ae0bbc1685)
+## 음성합성 서버(예정)
+cd 백엔드서버/음성합성API
+<br>
+python run.py
+<br><br>
 
-## ver0.2
-![업무 흐름도 ver0 2](https://github.com/user-attachments/assets/7df790f2-eaed-4560-8f26-98f67e9efc40)
+## 이미지 서버
+cd 백엔드서버/이미지API
+<br>
+python app.py
+<br><br>
 
-## ver0.1
-![업무 흐름도](https://github.com/user-attachments/assets/f889125c-a275-4b6f-a57f-b067849ea54f)
+## 개방 포트 번호
+5000번 포트 : 이미지 서버
+<br>
+3000번 포트 : AI 서버
+<br>
+3001번 포트 : 프론트엔드 서버
+<br>
+7860번 포트 : 이미지 생성 화면
+<br><br>
+3000번 포트 응답(나머지는 API명세서 참고)
+<br>
+/ai/StoryCreate : AI 서버 응답
 
-<br><br><br><br>
+<br><br>
+5000번 포트 응답
+<br>
+/ai/Art : 이미지서버 응답
+<br><br>
 
-# ERD
-
-## ver0.2(수정 중)
-![원더랜드 ERD ver0 2](https://github.com/user-attachments/assets/ea5a864a-2b0a-4b8a-a8ea-287accd866cc)
-
-## ver0.1
-![원더랜드 ERD ver0 1](https://github.com/user-attachments/assets/c9d715d6-299e-425d-a399-3a18b845af11)
-
-
-<br><br><br><br>
-
-# SW 구성도
-## ver0.1
-![Image](https://github.com/user-attachments/assets/113ea6b5-a4c8-459c-a46c-2c12c437a7ca)
-
-<br><br><br><br>
-
-# 시스템 구성도
-## ver0.1
-![Image](https://github.com/user-attachments/assets/9396f321-3a33-49ef-a8c9-7187bf388353)
-
-# Application Architecture
-## ver0.1
-![Image](https://github.com/user-attachments/assets/6b2351ac-be5c-4f6c-9730-268d79a8acb1)
-
-
-
-# API 명세서  
-[API 명세서 통합](https://expensive-yamamomo-86a.notion.site/API-115a958373418078b799c0048ba0746f?source=copy_link)
-
-
+백엔드 서버
+<br>
+/ : 백엔드 응답
