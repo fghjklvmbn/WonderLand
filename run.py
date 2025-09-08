@@ -15,7 +15,6 @@ run_command("python run.py", cwd="백엔드서버/AI서버API")
 #run_command("python run.py", cwd="백엔드서버/음성합성API")
 
 # 이미지 서버 실행
-run_command("python app_januspro.py", cwd="백엔드서버/이미지API/models/Janus-main/demo/")
 run_command("python app.py", cwd="백엔드서버/이미지API")
 
 # Spring Boot 실행
