@@ -263,7 +263,7 @@ def generate_images():
 
     try:
         cfg_weight = float(cfg_weight)
-        if not (0.1 <= cfg_weight <= 100.0):
+        if not (0.1 <= cfg_weight <= 20.0):
             return jsonify({"status": False, "detail": "cfg_weight는 0.1 ~ 20.0 범위여야 합니다."}), 400
     except Exception:
         return jsonify({"status": False, "detail": "cfg_weight는 숫자여야 합니다."}), 400
