@@ -15,7 +15,7 @@ import com.example.demo.dto.UserInfoResponse;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") // ✅ 세션 쿠키 공유 허용
+@CrossOrigin(origins = "http://localhost:3001", allowCredentials = "true") // ✅ 세션 쿠키 공유 허용
 public class AuthController {
 
     private final UserRepository userRepository;

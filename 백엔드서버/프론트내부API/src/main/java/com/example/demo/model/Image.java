@@ -1,9 +1,8 @@
 package com.example.demo.model;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -11,15 +10,21 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "Image")
 public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long imageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "story_id", nullable = false)
     private Story story;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "page_number", nullable = false)
     private Integer pageNumber;
@@ -27,15 +32,6 @@ public class Image {
     @Column(name = "url", nullable = false)
     private String imageUrl;
 
-
-
-    // created_at 컬럼 추가
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
 }

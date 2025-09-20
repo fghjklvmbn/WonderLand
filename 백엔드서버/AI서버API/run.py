@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from functions.Chatbot import chat
 from functions.base import generate
 from functions.translate import translate_text
@@ -7,6 +8,8 @@ import os, json
 # 현재 파일 위치
 path = os.getcwd()
 app = Flask(__name__)
+
+CORS(app, resources={r"/ai/*": {"origins": "http://localhost:3001"}}, supports_credentials=True)
 
 # 전체적인 이야기 생성
 @app.route("/ai/StoryCreate/generate", methods=["POST"])

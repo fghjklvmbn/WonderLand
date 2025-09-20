@@ -7,9 +7,10 @@ from PIL import Image
 import numpy as np
 import io
 import gc
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app, origins="http://localhost:3001", supports_credentials=True)  # 클라이언트 주소만 허용
 # -------------------
 # 설정 (환경에 맞게 변경)
 # -------------------
@@ -304,7 +305,7 @@ def generate_images():
 
 
 
-@app.route("/ai/Art")
+@app.route("/AI/Art")
 def ping():
     return jsonify({"message": "이미지 서비스 정상작동"}), 200
 

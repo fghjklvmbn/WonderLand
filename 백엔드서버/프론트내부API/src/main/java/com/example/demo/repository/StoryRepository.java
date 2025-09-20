@@ -34,9 +34,9 @@ public interface StoryRepository extends JpaRepository<Story, Long> {
 
     // 특정 사용자가 생성한 이야기 목록 조회
     @EntityGraph(attributePaths = "author")
-    List<Story> findByAuthor_UserId(Long userId);
-    Optional<Story> findFirstByAuthorUserIdAndIsDraftTrue(Long userId);
+    List<Story> findByAuthor_UserId(Long userid);
+    Optional<Story> findFirstByAuthor_UserIdAndIsDraftTrue(Long author);
     @EntityGraph(attributePaths = "author")
-    List<Story> findByAuthor_UserIdAndGenre(Long userId, String genre);
+    List<Story> findByAuthor_UserIdAndGenre(Long author, String genre);
     
 }

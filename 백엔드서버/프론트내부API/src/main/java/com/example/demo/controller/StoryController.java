@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/stories")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3001")
 public class StoryController {
 
     @Autowired
@@ -105,27 +105,6 @@ public class StoryController {
         List<Story> stories = storyRepository.findByAuthor_UserId(user.getUserId());
         return ResponseEntity.ok(toDtoList(stories));
     }
-    // @GetMapping("/mine")
-    // public ResponseEntity<?> getMyStories(
-    //     @RequestParam(required = false) String genre,
-    //     HttpSession session
-    // ) {
-    //     User user = (User) session.getAttribute("user");
-    //     if (user == null) {
-    //         return ResponseEntity.status(401).body("로그인이 필요합니다.");
-    //     }
-
-    //     List<Story> stories;
-
-    //     if (genre != null && !genre.isBlank()) {
-    //         stories = storyRepository.findByAuthor_UserIdAndGenre(user.getUserId(), genre);
-    //     } else {
-    //         stories = storyRepository.findByAuthor_UserId(user.getUserId());
-    //     }
-
-    //     return ResponseEntity.ok(toDtoList(stories));
-    // }
-
 
     // 🔸 이야기 수정
     @PutMapping("/{id}")

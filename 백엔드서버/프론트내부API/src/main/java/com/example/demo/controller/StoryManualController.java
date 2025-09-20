@@ -14,7 +14,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/story")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:3001", allowCredentials = "true")
 public class StoryManualController {
 private final StoryRepository storyRepository;
 private final ObjectMapper objectMapper = new ObjectMapper();

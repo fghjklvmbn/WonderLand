@@ -28,9 +28,15 @@ const LoginPage = () => {
       );
 
       // 백엔드에서 200 OK만 반환될 때만 로그인 성공
-      if (res.status === 200 && res.data === '로그인 성공') {
-        alert('로그인 성공');
+      // 성공시 엔드포인트를 이용해서 alert으로 닉네임 출력
+      if (res.status === 200) {
         login(); // context 로그인 처리
+        const res = await axios.post(
+          'http://localhost:8080/mypage/myinfo',
+          {},
+          { withCredentials: true }
+        );
+        alert('로그인이 되었습니다! 안녕하세요 ' + res.data.nickname + " 님");
         navigate('/');
       }
     } catch (err) {

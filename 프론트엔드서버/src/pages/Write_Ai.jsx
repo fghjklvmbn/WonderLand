@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Form, Button } from 'react-bootstrap';
+import { Container, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import GenreSelector from './GenreSelector';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,6 +7,8 @@ import axios from 'axios';
 const Write_Ai = () => {
   const [text, setText] = useState('');
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const [loading, setLoading] = useState(false);   // 진행 상태 표시용
+  const [message, setMessage] = useState('');      // 메시지 관리
   const navigate = useNavigate();
 
   const handleGenerate = async () => {
@@ -19,11 +21,13 @@ const Write_Ai = () => {
       return;
     }
 
+    setTimeout(async () => {
     try {
+      setMessage('스토리를 생성 중입니다...');
       // 1단계: 줄거리 생성 API 호출
       const fullCreateRes = await axios.post(
         // stub_server 에서 실행 됨
-        'http://localhost:3001/ai/StoryCreate/FullCreate',
+        'http://localhost:3000/ai/StoryCreate/generate',
         { prompt: text.trim(), custom_tag: selectedGenres },
         { withCredentials: true }
       );
@@ -37,37 +41,53 @@ const Write_Ai = () => {
         genre: generatedGenre,
         title: generatedTitle,
       } = fullCreateRes.data;
-
+      // 체인로딩
       if (!story_progression) {
         alert('줄거리 생성에 실패했습니다.');
         return;
+      } else if (story_progression){
+        // 2단계: 상세 페이지 생성 API 호출
+        const detailRes = await axios.post(
+          // stub_server 에서 실행 됨
+          'http://localhost:3000/ai/StoryCreate/write',
+          {fullCreateRes}, 
+          { withCredentials: true}
+        );
+        console.log('WriteDetail 응답:', detailRes.data);
+
+        const pages = detailRes.data.pages_text; // [{number, text}, ...]
+        if (!Array.isArray(pages) || pages.length === 0) {
+          alert('페이지 생성에 실패했습니다.');
+          return;
+        }
+
+        // 3단계: ImageGenerator로 이동 (원본 객체 배열 전달)
+        navigate('/imagegenerator', {
+          state: {
+            mode: 'ai',
+            pages: pages,
+            genre: generatedGenre,
+            // 사용자가 선택한 장르 보낼거면 아래 주석 해제
+            // genre: selectedGenres,
+          },
+        });
       }
 
-      // 2단계: 상세 페이지 생성 API 호출
-      const detailRes = await axios.post(
-        // stub_server 에서 실행 됨
-        'http://localhost:3001/ai/StoryCreate/WriteDetail',
-        { createpage: '5', story_progression },
-        { withCredentials: true }
-      );
-      console.log('WriteDetail 응답:', detailRes.data);
+      // // 2단계: 상세 페이지 생성 API 호출
+      // const detailRes = await axios.post(
+      //   // stub_server 에서 실행 됨
+      //   'http://localhost:3000/ai/StoryCreate/write',
+      //   { createpage: '5', story_progression },
+      //   { withCredentials: true }
+      // );
+      // console.log('WriteDetail 응답:', detailRes.data);
 
-      const pages = detailRes.data.pages_text; // [{number, text}, ...]
-      if (!Array.isArray(pages) || pages.length === 0) {
-        alert('페이지 생성에 실패했습니다.');
-        return;
-      }
+      // const pages = detailRes.data.pages_text; // [{number, text}, ...]
+      // if (!Array.isArray(pages) || pages.length === 0) {
+      //   alert('페이지 생성에 실패했습니다.');
+      //   return;
+      // }
 
-      // 3단계: ImageGenerator로 이동 (원본 객체 배열 전달)
-      navigate('/imagegenerator', {
-        state: {
-          mode: 'ai',
-          pages: pages,
-          genre: generatedGenre,
-          // 사용자가 선택한 장르 보낼거면 아래 주석 해제
-          // genre: selectedGenres,
-        },
-      });
     } catch (error) {
       console.error('동화 생성 중 오류 발생:', error);
       if (error.response) {
@@ -76,7 +96,7 @@ const Write_Ai = () => {
       } else {
         alert('오류가 발생했습니다. 콘솔을 확인해주세요.');
       }
-    }
+    }}, 3000);
   };
 
   return (
@@ -113,8 +133,9 @@ const Write_Ai = () => {
           variant="primary"
           className="px-5 rounded-pill"
           onClick={handleGenerate}
+          disabled={loading}
         >
-          줄거리 생성하기
+          {loading ? '생성 중...' : '줄거리 생성하기'}
         </Button>
       </div>
     </Container>

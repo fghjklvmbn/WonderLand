@@ -49,7 +49,8 @@ const Header = () => {
         { withCredentials: true }
       );
       logout();
-      navigate('/login');
+      alert("로그아웃이 되었습니다.");
+      navigate('/');
     } catch (err) {
       console.error('로그아웃 실패:', err);
     }
@@ -87,14 +88,14 @@ const Header = () => {
             {/* 우측 유저 메뉴 */}
             <div className="d-flex align-items-center gap-2">
               {' '}
-              <button
-                onClick={() => navigate('/Write')}
-                className="btn btn-light fw-bold px-4 rounded-pill"
-              >
-                글쓰기
-              </button>
               {isLoggedIn ? (
                 <>
+                  <button
+                    onClick={() => navigate('/Write')}
+                    className="btn btn-light fw-bold px-4 rounded-pill"
+                  >
+                    글쓰기
+                  </button>
                   <Dropdown align="end">
                     <Dropdown.Toggle
                       variant="light"
@@ -116,23 +117,6 @@ const Header = () => {
                       </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
-
-                  {/* {isWritePage && (
-                    <>
-                      <button
-                        className="btn btn-outline-light fw-bold rounded-pill"
-                        onClick={() => alert('임시저장 기능 구현 필요')}
-                      >
-                        임시저장
-                      </button>
-                      <button
-                        className="btn btn-primary fw-bold rounded-pill"
-                        onClick={() => alert('다음 단계로 이동')}
-                      >
-                        다음 단계
-                      </button>
-                    </>
-                  )} */}
                 </>
               ) : (
                 <button

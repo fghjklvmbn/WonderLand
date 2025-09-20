@@ -14,7 +14,7 @@ git_url = "https://github.com/deepseek-ai/Janus.git"   # 예시, 실제 경로 �
 
 # janus 폴더 경로
 janus_src = os.path.join(temp_dir, "janus")
-janus_dst = os.path.join(os.getcwd(), "백엔드서버\이미지API\janus")
+janus_dst = os.path.join(os.getcwd(), "백엔드서버/이미지API/janus")
 
 # 프론트엔드 설치
 run_command("npm install", cwd="프론트엔드서버")
@@ -42,6 +42,12 @@ shutil.move(janus_src, janus_dst)
 # 설치 후 삭제
 print(">>> Janus-Pro 임시 디렉토리 삭제 중...")
 shutil.rmtree(temp_dir, ignore_errors=True)
-run_command("rmdir /s/q Janus-main")
+
+if is_windows:
+    run_command("rmdir /s/q Janus-main")
+else:
+    run_command("rm -rf Janus-main")
+
+
 
 print(">>> 모든 설치 완료!")

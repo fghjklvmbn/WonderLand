@@ -7,6 +7,10 @@ def run_command(cmd, cwd=None):
 
 is_windows = platform.system() == "Windows"
 
+# Spring Boot 실행
+spring_cmd = "mvnw.cmd spring-boot:run" if is_windows else "./mvnw spring-boot:run"
+run_command(spring_cmd, cwd="백엔드서버/프론트내부API")
+
 # AI 서버 실행
 run_command("python run.py", cwd="백엔드서버/AI서버API")
 
@@ -16,10 +20,6 @@ run_command("python run.py", cwd="백엔드서버/AI서버API")
 
 # 이미지 서버 실행
 run_command("python app.py", cwd="백엔드서버/이미지API")
-
-# Spring Boot 실행
-spring_cmd = "mvnw.cmd spring-boot:run" if is_windows else "./mvnw spring-boot:run"
-run_command(spring_cmd, cwd="백엔드서버/프론트내부API")
 
 # 프론트 실행
 run_command("npm start", cwd="프론트엔드서버")

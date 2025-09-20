@@ -74,6 +74,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<!-- <version>runtime</version> -->
 			<version>1.18.30</version>
 			<optional>true</optional>
 		</dependency>
@@ -84,6 +85,26 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>com.oracle.oci.sdk</groupId>
+			<artifactId>oci-java-sdk-objectstorage</artifactId>
+			<version>3.39.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.oracle.oci.sdk</groupId>
+			<artifactId>oci-java-sdk-common-httpclient-jersey3</artifactId>
+			<version>3.70.1</version>
+		</dependency>
+			
+		<!-- <dependency>
+			<groupId>com.oracle.oci.sdk</groupId>
+			<artifactId>oci-java-sdk-common-httpclient-jersey</artifactId>
+			<version>3.131.0</version> SDK 버전에 맞춰서 변경 
+		</dependency> -->
+
+
 
 		<!-- JSON 웹 토큰 -->
 		<!-- <dependency>

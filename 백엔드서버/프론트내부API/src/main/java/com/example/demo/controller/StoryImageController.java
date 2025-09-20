@@ -5,12 +5,14 @@ import com.example.demo.model.Story;
 import com.example.demo.model.User;
 import com.example.demo.repository.ImageRepository;
 import com.example.demo.repository.StoryRepository;
+import com.example.demo.service.OciStorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,23 +20,67 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-
 @RestController
 @RequestMapping("/api/story/image")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:3001", allowCredentials = "true")
 public class StoryImageController {
 
     private final StoryRepository storyRepository;
     private final ImageRepository imageRepository;
+    private final OciStorageService ociStorageService; // ✅ OCI 서비스 주입
 
+    /**
+     * 이미지 업로드 후 DB에 저장
+     */
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadImage(
+            @RequestParam("storyId") Long storyId,
+            @RequestParam("pageNumber") Integer pageNumber,
+            @RequestParam("file") MultipartFile file,
+            HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(401).body("로그인된 사용자가 없습니다.");
+        }
+
+        Story story = storyRepository.findById(storyId).orElse(null);
+        if (story == null || !story.getAuthor().getUserId().equals(user.getUserId())) {
+            return ResponseEntity.status(403).body("스토리를 찾을 수 없거나 권한이 없습니다.");
+        }
+
+        try {
+            // ✅ OCI에 업로드
+            String objectName = "story_" + storyId + "_page_" + pageNumber + "_" + file.getOriginalFilename();
+            String url = ociStorageService.upload(objectName, file.getInputStream(), file.getSize());
+
+            // ✅ DB 저장
+            Image img = Image.builder()
+                    .user(user)
+                    .story(story)
+                    .pageNumber(pageNumber)
+                    .imageUrl(url)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            imageRepository.save(img);
+
+            return ResponseEntity.ok(Map.of("url", url));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("이미지 업로드 실패");
+        }
+    }
+
+    /**
+     * 기존 방식: 여러 URL을 한 번에 저장 (필요 시 유지)
+     */
     @PostMapping("/save")
     public ResponseEntity<?> savePageImages(
             @RequestBody Map<String, Object> request,
             HttpSession session) {
 
         User user = (User) session.getAttribute("user");
-        System.out.println("현재 유저: " + user);
         if (user == null) {
             return ResponseEntity.status(401).body("로그인된 사용자가 없습니다.");
         }
@@ -54,8 +100,6 @@ public class StoryImageController {
                 return ResponseEntity.status(403).body("스토리를 찾을 수 없거나 권한이 없습니다.");
             }
 
-
-            // 이미지 5개 저장
             for (String url : imageUrls) {
                 Image img = Image.builder()
                         .user(user)
@@ -69,11 +113,12 @@ public class StoryImageController {
 
             return ResponseEntity.ok("이미지 저장 완료");
         } catch (Exception e) {
-            e.printStackTrace();  // 실제 에러 로그 확인을 위해 추가
+            e.printStackTrace();
             return ResponseEntity.status(500).body("서버 에러");
         }
     }
-        /**
+
+    /**
      * 스토리 공유/비공유 토글
      */
     @PatchMapping("/{storyId}/toggle-share")
@@ -97,18 +142,16 @@ public class StoryImageController {
             return ResponseEntity.status(403).body("스토리를 찾을 수 없거나 권한이 없습니다.");
         }
 
-        // 공유 상태 업데이트 & 저장
         story.setIsShared(toShare);
         storyRepository.save(story);
 
-        // 변경된 공유 상태를 응답
         return ResponseEntity.ok(Map.of("isShared", story.getIsShared()));
     }
-    
 
-
-
-    @PutMapping("/list")
+    /**
+     * 페이지 이미지 조회
+     */
+    @GetMapping("/list")
     public ResponseEntity<?> getPageImages(
             @RequestParam Long storyId,
             @RequestParam Integer pageNumber,
@@ -124,7 +167,6 @@ public class StoryImageController {
             return ResponseEntity.status(404).body("스토리를 찾을 수 없습니다.");
         }
 
-        // 접근 권한 확인 (자신의 스토리이거나 공유된 스토리일 때만 허용)
         boolean isOwner = story.getAuthor().getUserId().equals(user.getUserId());
         boolean isShared = Boolean.TRUE.equals(story.getIsShared());
 
@@ -132,13 +174,12 @@ public class StoryImageController {
             return ResponseEntity.status(403).body("스토리에 접근할 수 없습니다.");
         }
 
-        List<Image> images = imageRepository.findByStory_IdAndPageNumber(storyId, pageNumber);
+        List<Image> images = imageRepository.findByStory_StoryIdAndPageNumber(storyId, pageNumber);
+
         List<String> imageUrls = images.stream()
                 .map(Image::getImageUrl)
                 .toList();
 
         return ResponseEntity.ok(imageUrls);
     }
-
-
 }

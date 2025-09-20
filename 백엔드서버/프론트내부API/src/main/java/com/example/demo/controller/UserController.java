@@ -21,7 +21,7 @@ import com.example.demo.dto.LoginRequest;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") // ✅ 세션 연동
+@CrossOrigin(origins = "http://localhost:3001", allowCredentials = "true") // ✅ 세션 연동
 public class UserController {
 
     @Autowired
