@@ -11,7 +11,7 @@ const MyAccountPage = () => {
   const { logout } = useAuth(); // ✅ 로그아웃 함수
 
   useEffect(() => {
-    axios.post('http://localhost:8080/mypage/myinfo', {}, { withCredentials: true })
+    axios.post('https://developark.duckdns.org/api_wonderland/mypage/myinfo', {}, { withCredentials: true })
       .then((res) => {
         setUserInfo(res.data);
       })
@@ -27,7 +27,7 @@ const MyAccountPage = () => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete('http://localhost:8080/mypage/unregister', {
+      await axios.delete('https://developark.duckdns.org/api_wonderland/mypage/unregister', {
         data: {},
         withCredentials: true,
       });

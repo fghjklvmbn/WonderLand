@@ -10,7 +10,8 @@ import gc
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins="http://localhost:3001", supports_credentials=True)  # 클라이언트 주소만 허용
+CORS(app, resources={r"/AI/Art/*": {"origins": "http://localhost:3001"}}, supports_credentials=True)
+
 # -------------------
 # 설정 (환경에 맞게 변경)
 # -------------------
@@ -244,8 +245,8 @@ def generate_image(prompt, seed, cfg_weight, temperature, low_memory=True, offlo
 def generate_images():
     data = request.json or {}
     prompt = str(data.get("prompt", "")).strip()
-    seed = data.get("seed", None)
-    cfg_weight = data.get("cfg_weight", 1.0)
+    seed = data.get("seed", 42)
+    cfg_weight = data.get("cfg_weight", 20.0)
     temperature = data.get("temperature", 1.0)
     low_memory = bool(data.get("low_memory", True))   # 기본 True (GTX1080 권장)
     offload = bool(data.get("offload", True))         # 기본 True

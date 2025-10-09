@@ -48,7 +48,7 @@ const My_Story = () => {
       const newIsShared = !isShared;
 
       const response = await fetch(
-        `http://localhost:8080/api/story/${storyId}/toggle-share`,
+        `https://developark.duckdns.org/api_wonderland/story/${storyId}/toggle-share`,
         {
           method: 'PATCH',
           headers: {

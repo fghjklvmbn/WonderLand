@@ -18,7 +18,7 @@ const ForgotEmailPage = () => {
     try {
       const res = await axios.post(
         // UserController -> find-email
-        'http://localhost:8080/api/users/find-email',
+        'https://developark.duckdns.org/api_wonderland/api/users/find-email',
         formData
       );
       if (res.status === 200) {

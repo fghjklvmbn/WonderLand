@@ -4,3 +4,4 @@ torch
 accelerate
 peft
 hf_xet
+mlx_lm

@@ -17,7 +17,7 @@ const MyCreatedStories = () => {
   };
   useEffect(() => {
     axios
-      .get('http://localhost:8080/api/stories/mine', { withCredentials: true })
+      .get('https://developark.duckdns.org/api_wonderland/stories/mine', { withCredentials: true })
       .then((res) => setStories(res.data))
       .catch((err) => console.error('이야기 불러오기 실패:', err));
   }, []);
@@ -25,7 +25,7 @@ const MyCreatedStories = () => {
   const handleDelete = (id) => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       axios
-        .delete(`http://localhost:8080/api/stories/${id}`)
+        .delete(`https://developark.duckdns.org/api_wonderland/stories/${id}`)
         .then(() => setStories(stories.filter((s) => s.storyId !== id)))
         .catch((err) => console.error('삭제 실패:', err));
     }
@@ -39,7 +39,7 @@ const MyCreatedStories = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/story/${storyId}/toggle-share`,
+        `https://developark.duckdns.org/api_wonderland/story/${storyId}/toggle-share`,
         {
           method: 'PATCH',
           headers: {
@@ -81,7 +81,7 @@ const MyCreatedStories = () => {
 
   const handleSave = () => {
     axios
-      .put(`http://localhost:8080/api/stories/${selectedStory.storyId}`, {
+      .put(`https://developark.duckdns.org/api_wonderland/stories/${selectedStory.storyId}`, {
         title: editTitle,
         genre: editGenre,
       })
@@ -106,7 +106,7 @@ const MyCreatedStories = () => {
             <Card>
               <Card.Img
                 variant="top"
-                src={story.thumbnail || 'https://placehold.co/200x200'}
+                src={story.thumbnail || 'https://developark.duckdns.org/webdav/bucket/imageholder/place.jpg'}
                 onClick={() => handleClick(story.storyId)}
                 style={{ cursor: 'pointer' }}
               />

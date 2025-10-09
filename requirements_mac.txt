@@ -1,0 +1,13 @@
+flask
+transformers
+torch
+torchvision
+accelerate
+peft
+hf_xet
+pillow
+flask_cors
+jsonify
+requests
+bitsandbytes
+mlx_lm
