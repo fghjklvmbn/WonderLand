@@ -24,7 +24,7 @@ const SignupPage = () => {
     console.log('📤 회원가입 전송 데이터:', formData); // 👉 확인용 로그
     try {
       const res = await axios.post(
-        'http://localhost:8080/api/users/signup',
+        'https://developark.duckdns.org/api_wonderland/users/signup',
         formData,
         {
           headers: {

@@ -20,11 +20,6 @@ python run.py
 python clean.py
 
 ## 각 서버별 구체적인 실행 방법
-## 백엔드 서버
-cd 백엔드서버/프론트내부API
-<br>
-./mvnw spring-boot:run
-<br><br>
 
 ## AI 서버
 cd 백엔드서버/AI서버API
@@ -65,4 +60,5 @@ python app.py
 
 백엔드 서버
 <br>
+
 / : 백엔드 응답

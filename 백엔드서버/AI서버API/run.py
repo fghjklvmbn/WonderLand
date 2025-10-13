@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from functions.Chatbot import chat
-from functions.base import generate
+from functions.base import generate_txt
 from functions.translate import translate_text
-import os, json
+import os, json, platform
 
 # 현재 파일 위치
 path = os.getcwd()
@@ -16,34 +16,39 @@ CORS(app, resources={r"/ai/*": {"origins": "http://localhost:3001"}}, supports_c
 def generate_story():
     data = request.get_json()
     prompt = data.get("prompt", "")
-    templete = path + "\\functions\\templete\\createstory.txt"
+    custom_tag = data.get("custom_tag", "")
+    
+    # 사용자 지정 태그가 있으면 프롬프트에 추가
+    prompt += f"\n사용자 지정 태그: {custom_tag}" if custom_tag else ""
+    templete = os.path.join(os.getcwd(), "functions", "templete", "createstory.txt")
     
     if not prompt:
         return jsonify({"오류": "프롬프트(prompt) 항목은 필수 입니다."}), 400
     
-    result = generate(prompt, templete)
+    result = generate_txt(prompt, templete)
     first_parse = json.loads(result)     # result: 문자열
     return jsonify(first_parse)
 
 # 이야기 생성(5페이지)
 @app.route("/ai/StoryCreate/write", methods=["POST"])
 def write_detail_story():
-    prompt = request.get_json()
-
+    data = request.get_json()
+    prompt = data.get("prompt")
     # JSON을 예쁘게 포맷해서 문자열로 만들기
     pretty_json = json.dumps(prompt, ensure_ascii=False, indent=4)
 
     # 삼중 따옴표로 감싸기
-    wrapped_json = f'"""{pretty_json}"""'
+    # wrapped_json = f'"""{pretty_json}"""'
+    wrapped_json = pretty_json
     
     # 전용 템플릿 전달
-    templete = path + "\\functions\\templete\\detail.txt"
+    templete = os.path.join(os.getcwd(), "functions", "templete", "detail.txt")
     
     if not prompt:
         return jsonify({"오류": "프롬프트(prompt) 항목은 필수 입니다."}), 400
     
     # write_story 함수를 호출하여 이야기를 생성한다.
-    result = generate(wrapped_json, templete)
+    result = generate_txt(wrapped_json, templete)
     first_parse = json.loads(result)     # result: 문자열
     return jsonify(first_parse)
 
@@ -59,12 +64,12 @@ def modify_story():
     wrapped_json = f'"""{pretty_json}"""'
     
     # 전용 템플릿 전달
-    templete = path + "\\functions\\templete\\modify.txt"
+    templete = os.path.join(os.getcwd(), "functions", "templete", "modify.txt")
     
     if not prompt:
         return jsonify({"오류": "프롬프트(prompt) 항목은 필수 입니다."}), 400
     
-    result = generate(wrapped_json, templete)
+    result = generate_txt(wrapped_json, templete)
     first_parse = json.loads(result)     # result: 문자열
     return jsonify(first_parse)
 
@@ -80,12 +85,12 @@ def character_spec():
     wrapped_json = f'"""{pretty_json}"""'
 
     # 전용 템플릿 전달
-    templete = path + "\\functions\\templete\\charspec.txt"
+    templete = os.path.join(os.getcwd(), "functions", "templete", "charspec.txt")
 
     if not prompt:
         return jsonify({"오류": "프롬프트(prompt) 항목은 필수 입니다."}), 400
     
-    result = generate(wrapped_json, templete)
+    result = generate_txt(wrapped_json, templete)
     first_parse = json.loads(result)     # result: 문자열
     return jsonify(first_parse)
 
@@ -101,12 +106,12 @@ def artprompt():
     wrapped_json = f'"""{pretty_json}"""'
 
     # 전용 템플릿 전달
-    templete = path + "\\functions\\templete\\artprompt.txt"
+    templete = os.path.join(os.getcwd(), "functions", "templete", "artprompt.txt")
 
     if not prompt:
         return jsonify({"오류": "프롬프트(prompt) 항목은 필수 입니다."}), 400
     
-    result = generate(wrapped_json, templete)
+    result = generate_txt(wrapped_json, templete)
     first_parse = json.loads(result)     # result: 문자열
     return jsonify(first_parse)
 
@@ -122,12 +127,12 @@ def create_new():
     wrapped_json = f'"""{pretty_json}"""'
 
     # 전용 템플릿 전달
-    templete = path + "\\functions\\templete\\create.txt"
+    templete = os.path.join(path, "functions", "templete", "create.txt")
 
     if not prompt:
         return jsonify({"오류": "프롬프트(prompt) 항목은 필수 입니다."}), 400
     
-    result = generate(wrapped_json, templete)
+    result = generate_txt(wrapped_json, templete)
     first_parse = json.loads(result)     # result: 문자열
     return jsonify(first_parse)
 

@@ -8,7 +8,7 @@ const MyLibraryTabs = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosInstance.get('/api/users/me')
+    axiosInstance.get('/users/me')
       .then(res => {
         setNickname(res.data.nickname || res.data.name || '사용자');
         setLoading(false);
@@ -34,7 +34,7 @@ const MyLibraryTabs = () => {
 
         <Tabs defaultActiveKey="created" id="mylibrary-tabs" className="mb-3" fill>
           <Tab eventKey="recent" title="📖 최근 본 이야기">
-            <p>최근 보어 이어지는 아직 준비 중입니다.</p>
+            <p>최근 본 이미지 기능은 아직 준비 중입니다.</p>
           </Tab>
           <Tab eventKey="created" title="✍️ 내가 만든 이야기">
             <MyCreatedStories />

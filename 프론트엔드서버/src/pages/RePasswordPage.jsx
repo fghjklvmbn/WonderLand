@@ -17,7 +17,7 @@ const RePasswordPage = () => {
     try {
       const res = await axios.post(
         // UserController -> reset-password
-        'http://localhost:8080/api/users/reset-password',
+        'https://developark.duckdns.org/api_wonderland/users/reset-password',
         formData
       );
       if (res.status === 200) {

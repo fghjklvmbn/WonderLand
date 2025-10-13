@@ -11,6 +11,7 @@ const Write_Ai = () => {
   const [message, setMessage] = useState('');      // 메시지 관리
   const navigate = useNavigate();
 
+
   const handleGenerate = async () => {
     if (!text.trim()) {
       alert('내용을 입력해주세요!');
@@ -21,82 +22,59 @@ const Write_Ai = () => {
       return;
     }
 
-    setTimeout(async () => {
     try {
       setMessage('스토리를 생성 중입니다...');
-      // 1단계: 줄거리 생성 API 호출
+
+      // 1단계: 줄거리 생성
       const fullCreateRes = await axios.post(
-        // stub_server 에서 실행 됨
         'http://localhost:3000/ai/StoryCreate/generate',
         { prompt: text.trim(), custom_tag: selectedGenres },
         { withCredentials: true }
       );
+
       console.log('사용자 입력 텍스트:', text);
-      console.log('선택한 장르(태그) 배열:', selectedGenres);
+      console.log('선택한 장르:', selectedGenres);
       console.log('FullCreate 응답:', fullCreateRes.data);
 
-      // const { story_progression } = fullCreateRes.data;
-      const {
-        story_progression,
-        genre: generatedGenre,
-        title: generatedTitle,
-      } = fullCreateRes.data;
-      // 체인로딩
+      const { story_progression } = fullCreateRes.data;
+
       if (!story_progression) {
         alert('줄거리 생성에 실패했습니다.');
         return;
-      } else if (story_progression){
-        // 2단계: 상세 페이지 생성 API 호출
-        const detailRes = await axios.post(
-          // stub_server 에서 실행 됨
-          'http://localhost:3000/ai/StoryCreate/write',
-          {fullCreateRes}, 
-          { withCredentials: true}
-        );
-        console.log('WriteDetail 응답:', detailRes.data);
-
-        const pages = detailRes.data.pages_text; // [{number, text}, ...]
-        if (!Array.isArray(pages) || pages.length === 0) {
-          alert('페이지 생성에 실패했습니다.');
-          return;
-        }
-
-        // 3단계: ImageGenerator로 이동 (원본 객체 배열 전달)
-        navigate('/imagegenerator', {
-          state: {
-            mode: 'ai',
-            pages: pages,
-            genre: generatedGenre,
-            // 사용자가 선택한 장르 보낼거면 아래 주석 해제
-            // genre: selectedGenres,
-          },
-        });
       }
 
-      // // 2단계: 상세 페이지 생성 API 호출
-      // const detailRes = await axios.post(
-      //   // stub_server 에서 실행 됨
-      //   'http://localhost:3000/ai/StoryCreate/write',
-      //   { createpage: '5', story_progression },
-      //   { withCredentials: true }
-      // );
-      // console.log('WriteDetail 응답:', detailRes.data);
+      // 2단계: 상세 페이지 생성 호출
+      const detailRes = await axios.post(
+        'http://localhost:3000/ai/StoryCreate/write',
+        { prompt : story_progression },  
+        { withCredentials: true }
+      );
 
-      // const pages = detailRes.data.pages_text; // [{number, text}, ...]
-      // if (!Array.isArray(pages) || pages.length === 0) {
-      //   alert('페이지 생성에 실패했습니다.');
-      //   return;
-      // }
+      console.log('WriteDetail 응답:', detailRes.data);
+
+      const pages = detailRes.data.pages_text;
+      if (!Array.isArray(pages) || pages.length === 0) {
+        alert('페이지 생성에 실패했습니다.');
+        return;
+      }
+
+      navigate('/imagegenerator', {
+        state: {
+          mode: 'ai',
+          pages: pages,
+          genre: selectedGenres
+        },
+      });
 
     } catch (error) {
       console.error('동화 생성 중 오류 발생:', error);
       if (error.response) {
         console.error('서버 응답 데이터:', error.response.data);
-        alert(`오류: ${error.response.status}`);
+        alert(`오류: ${error.response.status} ${JSON.stringify(error.response.data)}`);
       } else {
         alert('오류가 발생했습니다. 콘솔을 확인해주세요.');
       }
-    }}, 3000);
+    }
   };
 
   return (

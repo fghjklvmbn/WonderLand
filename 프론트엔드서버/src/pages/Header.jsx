@@ -23,7 +23,7 @@ const Header = () => {
     const fetchNickname = async () => {
       try {
         const res = await axios.post(
-          'http://localhost:8080/mypage/myinfo',
+          'https://developark.duckdns.org/api_wonderland/mypage/myinfo',
           {},
           { withCredentials: true }
         );
@@ -44,7 +44,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        'http://localhost:8080/api/users/logout',
+        'https://developark.duckdns.org/api_wonderland/users/logout',
         {},
         { withCredentials: true }
       );

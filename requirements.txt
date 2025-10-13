@@ -7,3 +7,6 @@ peft
 hf_xet
 pillow
 flask_cors
+jsonify
+requests
+bitsandbytes

@@ -20,7 +20,7 @@ const LoginPage = () => {
     try {
       const res = await axios.post(
         // UserController -> login
-        'http://localhost:8080/api/users/login',
+        'https://developark.duckdns.org/api_wonderland/users/login',
         formData,
         {
           withCredentials: true,
@@ -32,7 +32,7 @@ const LoginPage = () => {
       if (res.status === 200) {
         login(); // context 로그인 처리
         const res = await axios.post(
-          'http://localhost:8080/mypage/myinfo',
+          'https://developark.duckdns.org/api_wonderland/mypage/myinfo',
           {},
           { withCredentials: true }
         );

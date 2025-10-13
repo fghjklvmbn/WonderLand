@@ -38,7 +38,7 @@ const ContinueStoryPage = () => {
 
     setIsLoading(true);
     axios
-      .get(`http://localhost:8080/api/stories/${storyId}`, {
+      .get(`https://developark.duckdns.org/api_wonderland/stories/${storyId}`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -59,7 +59,7 @@ const ContinueStoryPage = () => {
       });
     axios
       .get(
-        `http://localhost:8080/api/story/image/list?storyId=${storyId}&pageNumber=${
+        `https://developark.duckdns.org/api_wonderland/story/image/list?storyId=${storyId}&pageNumber=${
           currentPage + 1
         }`,
         {
@@ -111,7 +111,7 @@ const ContinueStoryPage = () => {
     try {
       // 1) 제목·텍스트 업데이트
       await axios.put(
-        `http://localhost:8080/api/stories/${storyId}`,
+        `https://developark.duckdns.org/api_wonderland/stories/${storyId}`,
         {
           title,
           // 백엔드 updateStory 로직은 textJson을 쓰지 않으므로,
@@ -123,7 +123,7 @@ const ContinueStoryPage = () => {
       // 2) 선택 이미지 업데이트 (selected_json 필드 덮어쓰기)
       //    예시 엔드포인트: PUT /api/stories/{storyId}/selected-images
       await axios.put(
-        `http://localhost:8080/api/stories/${storyId}/selected-images`,
+        `https://developark.duckdns.org/api_wonderland/stories/${storyId}/selected-images`,
         { selectedJson: selectedImages },
         { withCredentials: true }
       );
@@ -152,7 +152,7 @@ const ContinueStoryPage = () => {
       if (currentStoryId) {
         // ②: 이미 storyId가 있으면 update 요청
         const updateRes = await fetch(
-          'http://localhost:8080/api/story/update_manualDB',
+          'https://developark.duckdns.org/api_wonderland/story/update_manualDB',
           {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -190,7 +190,7 @@ const ContinueStoryPage = () => {
       let imagePrompt;
       const pay = { prompt: imagePrompt };
 
-      const res = await fetch('http://localhost:8080/api/image/generate', {
+      const res = await fetch('https://developark.duckdns.org/api_wonderland/image/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -208,7 +208,7 @@ const ContinueStoryPage = () => {
         throw new Error('이미지 URL 응답이 올바르지 않습니다');
       }
 
-      const urls = data.imageUrls.map((path) => `http://localhost:8080${path}`);
+      const urls = data.imageUrls.map((path) => `https://developark.duckdns.org/api_wonderland${path}`);
 
       // 5) 생성된 이미지 상태 저장
       setGeneratedImages((prev) => {
@@ -220,7 +220,7 @@ const ContinueStoryPage = () => {
       // 6) DB에 이미지 URL도 같이 저장
       if (currentStoryId) {
         const saveRes = await fetch(
-          'http://localhost:8080/api/story/image/save',
+          'https://developark.duckdns.org/api_wonderland/story/image/save',
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -255,6 +255,38 @@ const ContinueStoryPage = () => {
       setIsLoading(false);
     }
   };
+  
+  const handleTempSave = async () => {
+    if (!title.trim()) {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+
+    const nonEmptyPages = pages.filter(p => p.text?.trim());
+    if (nonEmptyPages.length === 0) {
+      alert('최소 한 페이지 이상의 내용이 필요합니다.');
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        'https://developark.duckdns.org/api_wonderland/story/create',
+        { storyId, title, genre, pages, selectedImages },
+        { withCredentials: true }
+      );
+
+      if (res.status === 200) {
+        alert('임시 저장되었습니다!');
+        navigate('/my-library');
+      } else {
+        throw new Error('임시 저장 실패');
+      }
+    } catch (err) {
+      console.error('임시 저장 오류:', err);
+      alert('임시 저장 중 오류가 발생했습니다.');
+    }
+  };
+  
   const handleCreateStory = async () => {
     if (!title.trim()) {
       alert('제목을 입력해주세요.');
@@ -323,12 +355,13 @@ const ContinueStoryPage = () => {
         if (!proceed) return; // 사용자가 아니오(N) 클릭한 경우 함수 종료
       }
     }
+    
 
     const storyData = { storyId, title, genre, pages, selectedImages };
 
     try {
       // StoryDB_Controller -> create
-      const res = await fetch('http://localhost:8080/api/story/create', {
+      const res = await fetch('https://developark.duckdns.org/api_wonderland/story/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -466,6 +499,15 @@ const ContinueStoryPage = () => {
       <div className="text-center">
         <Button variant="primary" onClick={handleCreateStory}>
           이야기 생성
+        </Button>
+      </div>
+
+      <br/>
+
+      {/* 임시저장 버튼 */}
+      <div className="text-center">
+        <Button variant="primary" onClick={handleTempSave}>
+          이야기 임시저장
         </Button>
       </div>
 

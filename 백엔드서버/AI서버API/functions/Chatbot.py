@@ -8,7 +8,7 @@ model = None
 def load_model():
     global model, tokenizer
     if model is None or tokenizer is None:
-        model_path = "Qwen/Qwen3-4B"
+        model_path = "Qwen/Qwen3-1.7B"
         tokenizer = AutoTokenizer.from_pretrained(model_path)
         model = AutoModelForCausalLM.from_pretrained(
             model_path,

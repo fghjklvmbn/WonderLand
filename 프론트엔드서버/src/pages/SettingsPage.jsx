@@ -10,7 +10,7 @@ const SettingsPage = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8080/api/mypage/myinfo', { withCredentials: true })
+      .get('https://developark.duckdns.org/api_wonderland/mypage/myinfo', { withCredentials: true })
       .then((res) => {
         setUserInfo(res.data);
         setNickname(res.data.nickname || '');
@@ -23,7 +23,7 @@ const SettingsPage = () => {
   const handleNicknameUpdate = async () => {
     try {
       await axios.put(
-        'http://localhost:8080/api/users/me/nickname',
+        'https://developark.duckdns.org/api_wonderland/users/me/nickname',
         { nickname },
         { withCredentials: true }
       );
@@ -36,7 +36,7 @@ const SettingsPage = () => {
   const handlePasswordChange = async () => {
     try {
       await axios.put(
-        'http://localhost:8080/api/users/me/password',
+        'https://developark.duckdns.org/api_wonderland/users/me/password',
         passwords,
         { withCredentials: true }
       );
