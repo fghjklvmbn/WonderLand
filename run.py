@@ -50,14 +50,17 @@ def stop_all():
             print(f"종료 실패: {e}")
 
 try:
-    # AI 서버 실행
+    # AI 서버 실행 포트 3000번
     run_command("python run.py", cwd="백엔드서버/AI서버API")
 
-    # 이미지 서버 실행
+    # 이미지 서버 실행 포트 5000번
     run_command("python app.py", cwd="백엔드서버/이미지API")
 
-    # 프론트 실행
+    # 프론트 실행 포트 3001번
     run_command("npm start", cwd="프론트엔드서버")
+
+    # 음성 합성 서버 실행 포트 6000번
+    run_command("python APIServer.py", cwd="백엔드서버/음성합성API")
 
     # 무한 대기 (Ctrl+C 받기)
     while True:
