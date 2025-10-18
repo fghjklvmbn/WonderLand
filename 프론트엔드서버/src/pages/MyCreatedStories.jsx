@@ -110,7 +110,7 @@ const MyCreatedStories = () => {
     {stories.length === 0 ? (
           <p className="text-muted">아직 작성한 작품이 없습니다.</p>
         ) : (
-        <Row className="row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <Row xs={1} sm={2} md={3} lg={4} className="g-4 mt-2">
           {stories.map((story) => (
             <Col key={story.storyId}>
               <Card>
