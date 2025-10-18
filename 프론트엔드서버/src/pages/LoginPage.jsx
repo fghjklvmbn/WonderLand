@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Container, Form, Button, Card } from 'react-bootstrap';
 
 const LoginPage = () => {
-  const navigate = useNavigate();
   const { login } = useAuth();
-
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [ formData, setFormData ] = useState({ email: '', password: '' });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,30 +14,10 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        // UserController -> login
-        'https://developark.duckdns.org/api_wonderland/users/login',
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
-
-      // 백엔드에서 200 OK만 반환될 때만 로그인 성공
-      // 성공시 엔드포인트를 이용해서 alert으로 닉네임 출력
-      if (res.status === 200) {
-        login(); // context 로그인 처리
-        const res = await axios.post(
-          'https://developark.duckdns.org/api_wonderland/mypage/myinfo',
-          {},
-          { withCredentials: true }
-        );
-        alert('로그인이 되었습니다! 안녕하세요 ' + res.data.nickname + " 님");
-        navigate('/');
-      }
+      login(formData);
     } catch (err) {
-      // status가 401일 경우 여기로 떨어짐
-      alert('로그인 실패: 아이디 또는 비밀번호를 확인하세요.');
+      // 그 외 오류
+      alert('로그인 실패: 서버 연결이 실패하였습니다.');
     }
   };
 

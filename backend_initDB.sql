@@ -39,3 +39,14 @@ CREATE TABLE Image (
     FOREIGN KEY (user_id) REFERENCES User(user_id),
     FOREIGN KEY (story_id) REFERENCES Story(story_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_bin;
+
+CREATE TABLE User_Story_View (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    story_id BIGINT NOT NULL,
+    viewed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    view_count INT DEFAULT 1,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (story_id) REFERENCES Story(story_id) ON DELETE CASCADE,
+    UNIQUE KEY (user_id, story_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

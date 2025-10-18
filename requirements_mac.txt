@@ -11,3 +11,6 @@ jsonify
 requests
 bitsandbytes
 mlx_lm
+dotenv
+elevenlabs
+pymysql

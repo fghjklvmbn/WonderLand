@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useNavigate } from 'react';
 import { Tabs, Tab, Container, Spinner } from 'react-bootstrap';
 import axiosInstance from '../api/axiosInstance';
 import MyCreatedStories from './MyCreatedStories';
+import LastWatched from './lastWatched';
+
 
 const MyLibraryTabs = () => {
   const [nickname, setNickname] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosInstance.get('/users/me')
-      .then(res => {
-        setNickname(res.data.nickname || res.data.name || '사용자');
-        setLoading(false);
-      })
-      .catch(() => {
-        setNickname('사용자');
-        setLoading(false);
-      });
+    if(sessionStorage.getItem('nickname')){
+      setNickname(sessionStorage.getItem('nickname'));
+      setLoading(false);
+    }else {
+      setNickname('사용자');
+      setLoading(false);
+    }
   }, []);
 
   if (loading) {
@@ -34,7 +34,7 @@ const MyLibraryTabs = () => {
 
         <Tabs defaultActiveKey="created" id="mylibrary-tabs" className="mb-3" fill>
           <Tab eventKey="recent" title="📖 최근 본 이야기">
-            <p>최근 본 이미지 기능은 아직 준비 중입니다.</p>
+            <LastWatched />
           </Tab>
           <Tab eventKey="created" title="✍️ 내가 만든 이야기">
             <MyCreatedStories />

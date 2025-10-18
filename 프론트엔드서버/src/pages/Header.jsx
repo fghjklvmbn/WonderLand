@@ -1,4 +1,11 @@
-import React, { useEffect, useState } from 'react';
+/*
+ * 헤더
+ * 기여자 : 박경환, 정우빈, 정현호
+ * 수정일 : 2025-10-19 00:10
+ * 설명 : 세션 기반 로그인 상태 확인, 사용자 이메일 표시, 세션 자동 연장 (5분)
+*/
+
+import { useEffect } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../images/Logo_ver2.0.png';
@@ -8,37 +15,34 @@ import axios from 'axios';
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isLoggedIn, logout } = useAuth();
-  const [nickname, setNickname] = useState('');
-
+  const { logout, extendSession, checkSession } = useAuth();
+  const isLoggedIn = sessionStorage.getItem('isLoggedIn');
   const hideExtras =
     location.pathname === '/login' || location.pathname === '/register';
 
-  const isWritePage = ['/write', '/write_manual', '/write_ai'].some((path) =>
-    location.pathname.startsWith(path)
-  );
-
-  // ✅ 닉네임 불러오기 (POST /mypage/myinfo 로 변경됨)
+  // ✅ 로그인 상태 확인 및 사용자 이메일 가져오기
   useEffect(() => {
-    const fetchNickname = async () => {
-      try {
-        const res = await axios.post(
-          'https://developark.duckdns.org/api_wonderland/mypage/myinfo',
-          {},
-          { withCredentials: true }
-        );
-        if (res.data && res.data.nickname) {
-          setNickname(res.data.nickname);
-        }
-      } catch (err) {
-        console.warn('닉네임 가져오기 실패', err);
+    const fetchUserInfo = async () => {
+      if (checkSession) {
+
+      } else {
+        alert("로그인 정보가 만료되었습니다. 다시 로그인 해주세요")
+        logout();
+        navigate('/');
       }
     };
 
-    if (isLoggedIn) {
-      fetchNickname();
-    }
-  }, [isLoggedIn]);
+    if (isLoggedIn) fetchUserInfo();
+  }, [isLoggedIn, logout, navigate]);
+
+  // ✅ 세션 자동 연장 (4분 40초마다)
+  // 로그아웃 코드 주입
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    extendSession();
+    const interval = setInterval(extendSession, 5 * 58 * 1000); // 5분 타이머 -> 함수실행
+    return () => clearInterval(interval);
+  }, [isLoggedIn, logout, navigate]);
 
   // ✅ 로그아웃
   const handleLogout = async () => {
@@ -49,7 +53,7 @@ const Header = () => {
         { withCredentials: true }
       );
       logout();
-      alert("로그아웃이 되었습니다.");
+      alert('로그아웃 되었습니다.');
       navigate('/');
     } catch (err) {
       console.error('로그아웃 실패:', err);
@@ -87,11 +91,10 @@ const Header = () => {
 
             {/* 우측 유저 메뉴 */}
             <div className="d-flex align-items-center gap-2">
-              {' '}
               {isLoggedIn ? (
                 <>
                   <button
-                    onClick={() => navigate('/Write')}
+                    onClick={() => navigate('/write')}
                     className="btn btn-light fw-bold px-4 rounded-pill"
                   >
                     글쓰기
@@ -102,7 +105,9 @@ const Header = () => {
                       id="dropdown-profile"
                       className="d-flex align-items-center gap-2"
                     >
-                      <span className="d-none d-md-inline">{nickname}</span>
+                      <span className="d-none d-md-inline">
+                        {sessionStorage.getItem('nickname') || '사용자'}
+                      </span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item as={Link} to="/my-library">

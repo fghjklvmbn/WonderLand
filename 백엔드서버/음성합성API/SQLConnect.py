@@ -1,107 +1,144 @@
 import os
-import sqlite3
-from typing import Optional, List, Dict, Any, Tuple
+import pymysql
+from typing import Optional, List, Dict, Any
 from contextlib import closing
 
-#DB 저장 경로 지정
-DB_PATH = "data/tts.db"
+# =====================================================
+# ✅ MySQL 서버 설정 (.env 환경변수 기반)
+# =====================================================
+def get_db_config() -> Dict[str, Any]:
+    """환경 변수에서 DB 설정을 읽어옴. None일 경우 예외 발생 방지."""
+    try:
+        return {
+            "host": os.getenv("DBHost", "localhost"),
+            "port": int(os.getenv("DBPort", "3306")),
+            "user": os.getenv("DBUser", "root"),
+            "password": os.getenv("DBPassword", ""),
+            "database": os.getenv("DBDatabase", "tts_system"),
+            "charset": os.getenv("DBCharset", "utf8mb4"),
+            "cursorclass": pymysql.cursors.DictCursor
+        }
+    except ValueError as e:
+        raise RuntimeError(f"[Config Error] DBPort must be an integer: {e}")
 
 
-def showModels():
-    db_connect = sqlite3.connect(DB_PATH)
-    db_connect.row_factory = sqlite3.Row
-    with closing (db_connect.cursor()) as db_cursor:
-        db_cursor.execute("""
-            SELECT id, model_name, voice_code, status, created_at
-            FROM tts_models
-            ORDER BY id DESC
-                          """)
-        rows = db_cursor.fetchall()
-        return [dict(r) for r in rows]
+# =====================================================
+# ✅ DB 연결 헬퍼
+# =====================================================
+def get_connection():
+    config = get_db_config()
+    try:
+        return pymysql.connect(**config)
+    except Exception as e:
+        raise ConnectionError(f"[DB Connection Failed] {e}")
 
+
+# =====================================================
+# ✅ 테이블 초기 설정
+# =====================================================
 def defaultSetting():
-    os.makedirs("data", exist_ok=True)
-    db_connect = sqlite3.connect(DB_PATH)
-    db_cursor = db_connect.cursor()
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS tts_models (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        model_name VARCHAR(255) NOT NULL UNIQUE,
+                        voice_code VARCHAR(255) NOT NULL,
+                        status ENUM('Done','Process','Fail') NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                """)
+            conn.commit()
+        print("[MySQL] ✅ tts_models table ready.")
+    except Exception as e:
+        print(f"[MySQL] ❌ Error initializing table: {e}")
 
-    db_cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='tts_models';")
-    exists = db_cursor.fetchone()
 
-    if not exists:
-        db_cursor.executescript("""
-         CREATE TABLE tts_models (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            model_name TEXT NOT NULL UNIQUE,
-            voice_code TEXT NOT NULL,
-            status TEXT NOT NULL CHECK(status IN ('Done','Process','Fail')),
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );                       
-        """)
-        print("[SQLite] new created  database !")
-    else:
-        print("[SQLite] complete database !")
-    db_connect.commit()
-    db_connect.close()
+# =====================================================
+# ✅ 모델 목록 조회
+# =====================================================
+def showModels() -> List[Dict[str, Any]]:
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("""
+                    SELECT id, model_name, voice_code, status, created_at
+                    FROM tts_models
+                    ORDER BY id DESC;
+                """)
+                return cursor.fetchall()
+    except Exception as e:
+        print(f"[MySQL] ❌ showModels error: {e}")
+        return []
 
-### MODEL CREATE , UPDATE
 
-def createModel(model_name:str, voice_code:str, status:str): #모델 생성, 존재할시 status 변경
+# =====================================================
+# ✅ 모델 생성 / 갱신
+# =====================================================
+def createModel(model_name: str, voice_code: str, status: str):
     if status not in ("Done", "Process", "Fail"):
-        raise ValueError("status 상태가 부적절합니다.")
-    with sqlite3.connect(DB_PATH) as db_connect:
-        db_connect.execute(
-            """
-            INSERT INTO tts_models(model_name, voice_code, status) VALUES(?,?,?)
-            ON CONFLICT (model_name)
-            DO UPDATE SET
-                voice_code = excluded.voice_code,
-                status = excluded.status
-            """,
-            (model_name, voice_code, status)
-        )
+        raise ValueError("status 상태가 부적절합니다. ('Done', 'Process', 'Fail' 중 하나)")
 
-def debug_createModel(model_name:str, voice_code:str, status:str):
-    with sqlite3.connect(DB_PATH) as db_connect:
-        db_connect.execute(
-            """
-            INSERT INTO tts_models(model_name, voice_code, status) VALUES(?,?,?)
-            ON CONFLICT (model_name)
-            DO UPDATE SET
-                voice_code = excluded.voice_code,
-                status = excluded.status
-            """,
-            (model_name, voice_code, status)
-        )
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO tts_models (model_name, voice_code, status)
+                    VALUES (%s, %s, %s)
+                    ON DUPLICATE KEY UPDATE
+                        voice_code = VALUES(voice_code),
+                        status = VALUES(status);
+                """, (model_name, voice_code, status))
+            conn.commit()
+        print(f"[MySQL] ✅ Model '{model_name}' created/updated ({status})")
+    except Exception as e:
+        print(f"[MySQL] ❌ createModel error: {e}")
 
-###  MODEL DELETE
 
-def deleteModel(model_name) -> bool:
+def debug_createModel(model_name: str, voice_code: str, status: str):
+    """디버깅용 동일 동작"""
+    createModel(model_name, voice_code, status)
+
+
+# =====================================================
+# ✅ 모델 삭제
+# =====================================================
+def deleteModel(model_name: str) -> bool:
     if not model_name:
         raise ValueError("model_name이 비어 있습니다.")
 
-    with sqlite3.connect(DB_PATH) as db_connect:
-        db_cursor = db_connect.execute(
-            "DELETE FROM tts_models WHERE model_name =?",
-            (model_name,),
-        )
-        return db_cursor.rowcount > 0
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("DELETE FROM tts_models WHERE model_name = %s;", (model_name,))
+                deleted = cursor.rowcount > 0
+            conn.commit()
+        if deleted:
+            print(f"[MySQL] 🗑️ Model '{model_name}' deleted.")
+        else:
+            print(f"[MySQL] ⚠️ Model '{model_name}' not found.")
+        return deleted
+    except Exception as e:
+        print(f"[MySQL] ❌ deleteModel error: {e}")
+        return False
 
-def checkModel(model_name:str): #검색된 모델이 없을시 None 반환 있을시 Status 반환
+
+# =====================================================
+# ✅ 모델 상태 확인
+# =====================================================
+def checkModel(model_name: str) -> Optional[str]:
     if not model_name:
         raise ValueError("model_name이 비어 있습니다.")
-    
-    db_connect = sqlite3.connect(DB_PATH)
-    db_connect.row_factory = sqlite3.Row
-    with closing(db_connect.cursor()) as db_cursor:
-        db_cursor.execute(
-            "SELECT status FROM tts_models WHERE model_name = ? LIMIT 1",
-            (model_name,),
-        )
-        row = db_cursor.fetchone()
-    db_connect.close()
 
-    if row:
-        return row["status"]
-    else:
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    "SELECT status FROM tts_models WHERE model_name = %s LIMIT 1;", (model_name,)
+                )
+                row = cursor.fetchone()
+                return row["status"] if row else None
+    except Exception as e:
+        print(f"[MySQL] ❌ checkModel error: {e}")
         return None
-        

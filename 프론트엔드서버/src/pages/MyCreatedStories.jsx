@@ -1,3 +1,10 @@
+/*
+ * 헤더
+ * 기여자 : 박경환, 정우빈, 정현호
+ * 수정일 : 2025-10-19 00:10
+ * 설명 : 작성한 스토리 표시여부, 삭제, 수정 등 관리
+*/
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Row, Col, Card, Modal, Form } from 'react-bootstrap';
@@ -97,59 +104,63 @@ const MyCreatedStories = () => {
       })
       .catch((err) => console.error('수정 실패:', err));
   };
-
+// div를 통해 lastwatched 통일
   return (
-    <>
-      <Row className="row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {stories.map((story) => (
-          <Col key={story.storyId}>
-            <Card>
-              <Card.Img
-                variant="top"
-                src={story.thumbnail || 'https://developark.duckdns.org/webdav/bucket/imageholder/place.jpg'}
-                onClick={() => handleClick(story.storyId)}
-                style={{ cursor: 'pointer' }}
-              />
-              <Card.Body>
-                <Card.Title>{story.title}</Card.Title>
-                <Card.Text className="text-muted">{story.genre}</Card.Text>
-                <div className="d-flex gap-2">
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    onClick={() => navigate(`/continue/${story.storyId}`)}
-                  >
-                    이어쓰기
-                  </Button>
-                  <Button
-                    variant="outline-secondary"
-                    size="sm"
-                    onClick={() => handleEdit(story)}
-                  >
-                    수정
-                  </Button>
-                  <Button
-                    variant={story.isShared ? 'secondary' : 'success'}
-                    onClick={() =>
-                      handleToggleShare(story.storyId, story.isShared)
-                    }
-                  >
-                    {story.isShared ? '공유 취소' : '공유'}
-                  </Button>
+    <div className="d-flex flex-column">
+    {stories.length === 0 ? (
+          <p className="text-muted">아직 작성한 작품이 없습니다.</p>
+        ) : (
+        <Row className="row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          {stories.map((story) => (
+            <Col key={story.storyId}>
+              <Card>
+                <Card.Img
+                  variant="top"
+                  src={story.thumbnail || 'https://developark.duckdns.org/webdav/bucket/imageholder/place.jpg'}
+                  onClick={() => handleClick(story.storyId)}
+                  style={{ cursor: 'pointer' }}
+                />
+                <Card.Body>
+                  <Card.Title>{story.title}</Card.Title>
+                  <Card.Text className="text-muted">{story.genre}</Card.Text>
+                  <div className="d-flex gap-2">
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={() => navigate(`/continue/${story.storyId}`)}
+                    >
+                      이어쓰기
+                    </Button>
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => handleEdit(story)}
+                    >
+                      수정
+                    </Button>
+                    <Button
+                      variant={story.isShared ? 'secondary' : 'success'}
+                      onClick={() =>
+                        handleToggleShare(story.storyId, story.isShared)
+                      }
+                    >
+                      {story.isShared ? '공유 취소' : '공유'}
+                    </Button>
 
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={() => handleDelete(story.storyId)}
-                  >
-                    삭제
-                  </Button>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={() => handleDelete(story.storyId)}
+                    >
+                      삭제
+                    </Button>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+        )}
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -208,7 +219,7 @@ const MyCreatedStories = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 };
 
