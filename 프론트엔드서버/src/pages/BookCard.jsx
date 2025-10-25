@@ -1,40 +1,57 @@
-import React, { useState } from 'react';
+/*
+ * 컨텐츠(책) 정보
+ * 기여자 : 박경환, 정현호, 정우빈
+ * 수정일 : 2025-10-25 23:06
+ * 설명 : 책 정보 확인, 최근 본 작품기록 갱신로직, 좋아요 기능 핵심로직
+*/
+
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const BookCard = ({ storyId, image, title, author, likes }) => {
+const BookCard = ({ storyId, image, title, author, likes, onLikeUpdate }) => {
   const navigate = useNavigate();
   const [isLoggedIn] = useState(() => sessionStorage.getItem('isLoggedIn'));
+  const [localLikes, setLocalLikes] = useState(likes);
 
-   // ✅ async 함수로 변경
   const handleClick = async () => {
-      if(isLoggedIn){
-        try {
-          // 최근 본 작품 기록 API 호출
-          await axios.post(
-            `https://developark.duckdns.org/api_wonderland/story/recent/${storyId}`,
-            {},
-            { withCredentials: true }
-          );
+    if (isLoggedIn) {
+      try {
+        await axios.post(
+          `https://developark.duckdns.org/api_wonderland/story/recent/${storyId}`,
+          {},
+          { withCredentials: true }
+        );
+      } catch (error) {
+        console.error('최근 본 작품 기록 실패:', error);
+      }
+    }
+    navigate(`/story/${storyId}`);
+  };
 
-          // ✅ 성공하면 작품 상세 페이지로 이동
-          navigate(`/story/${storyId}`);
-        } catch (error) {
-          console.error("최근 본 작품 기록 실패:", error);
-          // 그래도 상세 페이지로 이동 (API 실패해도 UX 방해 최소화)
-          navigate(`/story/${storyId}`);
-        }
-      }
-      else {
-        navigate(`/story/${storyId}`);
-      }
+  const handleLike = async () => {
+    if (!isLoggedIn) {
+      alert('로그인 후 이용 가능합니다.');
+      return;
+    }
+    try {
+      await axios.post(
+        'https://developark.duckdns.org/api_wonderland/story/like',
+        { storyId },
+        { withCredentials: true }
+      );
+      // 좋아요 후 즉시 반영
+      setLocalLikes((prev) => prev + 1);
+      if (onLikeUpdate) onLikeUpdate(storyId);
+    } catch (error) {
+      alert('좋아요에 실패하였습니다.');
+    }
   };
 
   return (
     <div
       className="text-center small"
       style={{ maxWidth: '100%', cursor: 'pointer' }}
-      onClick={handleClick}
     >
       <img
         src={image}
@@ -45,11 +62,12 @@ const BookCard = ({ storyId, image, title, author, likes }) => {
           objectFit: 'cover',
           borderRadius: '10px',
         }}
+        onClick={handleClick}
       />
-      <div className="fw-semibold">{title}</div>
+      <div className="fw-semibold" onClick={handleClick}>{title}</div>
       <div className="text-muted small">{author}</div>
-      <div className="text-secondary">
-        <i className="fas fa-heart text-danger"></i> {likes}
+      <div className="text-secondary" onClick={handleLike}>
+        <i className="fas fa-heart text-danger"></i> {localLikes}
       </div>
     </div>
   );

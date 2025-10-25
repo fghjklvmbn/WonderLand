@@ -1,7 +1,7 @@
 /*
  * 헤더
  * 기여자 : 박경환, 정우빈, 정현호
- * 수정일 : 2025-10-19 00:10
+ * 수정일 : 2025-10-26 03:15
  * 설명 : 작성한 스토리 표시여부, 삭제, 수정 등 관리
 */
 
@@ -166,26 +166,6 @@ const MyCreatedStories = () => {
         <Modal.Header closeButton>
           <Modal.Title>이야기 수정</Modal.Title>
         </Modal.Header>
-        {/* <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>이야기 제목</Form.Label>
-              <Form.Control
-                type="text"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>장르</Form.Label>
-              <Form.Control
-                type="text"
-                value={editGenre}
-                onChange={(e) => setEditGenre(e.target.value)}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body> */}
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">

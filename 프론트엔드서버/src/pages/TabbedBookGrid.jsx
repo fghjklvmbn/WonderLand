@@ -1,3 +1,10 @@
+/*
+ * 컨텐츠(책) 정보 그리드(탭 구현)
+ * 기여자 : 박경환, 정현호, 정우빈
+ * 수정일 : 2025-10-26 03:20
+ * 설명 : 책 정보 확인 로직, 최근 본 작품기록 표시 로직, 좋아요 기능 조회로직
+*/
+
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Tabs, Tab, Spinner } from 'react-bootstrap';
 import BookCard from './BookCard';
@@ -7,30 +14,76 @@ const TabbedBookGrid = () => {
   const [latestStories, setLatestStories] = useState([]);
   const [genreStories, setGenreStories] = useState({});
   const [genres, setGenres] = useState([]);
+  const [likes, setLikes] = useState({});
   const [activeKey, setActiveKey] = useState('latest');
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // 장르 리스트 가져오기
-    axios.get('https://developark.duckdns.org/api_wonderland/stories/genres').then((res) => {
-      setGenres(res.data);
-      res.data.forEach((genre) => {
-        axios
-          .get(`https://developark.duckdns.org/api_wonderland/stories/genre/${genre}`)
-          .then((res) => {
-            setGenreStories((prev) => ({ ...prev, [genre]: res.data }));
-          });
-      });
-    });
+  // ✅ 좋아요 수 불러오기 함수 (Promise.all로 병렬처리)
+  const fetchLikeCounts = async (stories) => {
+    const results = await Promise.all(
+      stories.map(async (story) => {
+        try {
+          const res = await axios.get(
+            `https://developark.duckdns.org/api_wonderland/story/likeCount/${story.storyId}`
+          );
+          return { storyId: story.storyId, count: res.data };
+        } catch {
+          return { storyId: story.storyId, count: 0 };
+        }
+      })
+    );
 
-    // 최신 스토리 가져오기
-    axios.get('https://developark.duckdns.org/api_wonderland/stories/latest').then((res) => {
-      setLatestStories(res.data);
-      setLoading(false);
+    setLikes((prev) => {
+      const updated = { ...prev };
+      results.forEach(({ storyId, count }) => {
+        updated[storyId] = count;
+      });
+      return updated;
     });
+  };
+
+  // ✅ 데이터 불러오기
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const genreRes = await axios.get('https://developark.duckdns.org/api_wonderland/stories/genres');
+        setGenres(genreRes.data);
+
+        // 최신 스토리
+        const latestRes = await axios.get('https://developark.duckdns.org/api_wonderland/stories/latest');
+        setLatestStories(latestRes.data);
+        await fetchLikeCounts(latestRes.data);
+
+        // 장르별 스토리
+        const genreData = {};
+        for (const genre of genreRes.data) {
+          const res = await axios.get(`https://developark.duckdns.org/api_wonderland/stories/genre/${genre}`);
+          genreData[genre] = res.data;
+          await fetchLikeCounts(res.data);
+        }
+        setGenreStories(genreData);
+
+        setLoading(false);
+      } catch (err) {
+        console.error('데이터 불러오기 실패:', err);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  // ─── 스토리 그리드 렌더링 ───
+  // ✅ 좋아요 후 갱신 콜백
+  const handleLikeUpdate = async (storyId) => {
+    try {
+      const res = await axios.get(
+        `https://developark.duckdns.org/api_wonderland/story/likeCount/${storyId}`
+      );
+      setLikes((prev) => ({ ...prev, [storyId]: res.data }));
+    } catch (err) {
+      console.error('좋아요 수 갱신 실패:', err);
+    }
+  };
+
   const renderGrid = (stories) => (
     <Row xs={2} md={3} lg={5} className="g-3 py-4">
       {stories.map((story) => (
@@ -40,7 +93,8 @@ const TabbedBookGrid = () => {
             image={story.image || 'https://developark.duckdns.org/webdav/bucket/imageholder/place.jpg'}
             title={story.title}
             author={story.author}
-            likes={story.likes}
+            likes={likes[story.storyId] ?? 0}
+            onLikeUpdate={handleLikeUpdate}
           />
         </Col>
       ))}
@@ -66,28 +120,13 @@ const TabbedBookGrid = () => {
         ))}
       </Tabs>
 
-      {/* ─── 로딩 오버레이 ─── */}
-      {loading && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-          }}
-        >
-          <Spinner animation="border" variant="light" />
+      {loading ? (
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '60vh' }}>
+          <Spinner animation="border" />
         </div>
+      ) : (
+        renderGrid(getCurrentStories())
       )}
-
-      {/* ─── 스토리 그리드 ─── */}
-      {!loading && renderGrid(getCurrentStories())}
     </div>
   );
 };

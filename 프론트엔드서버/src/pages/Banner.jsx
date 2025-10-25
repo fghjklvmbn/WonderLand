@@ -1,3 +1,10 @@
+/*
+ * 배너
+ * 기여자 : 박경환, 정우빈, 정현호
+ * 수정일 : 2025-10-26 03:28
+ * 설명 : 배너부분 목업 로직(TODO : API 호환 로직 첨가 필요)
+*/
+
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 

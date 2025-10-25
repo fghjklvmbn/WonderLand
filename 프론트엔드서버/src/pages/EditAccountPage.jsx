@@ -1,3 +1,10 @@
+/*
+ * 사용자 정보 수정 페이지
+ * 기여자 : 박경환, 정우빈, 정현호
+ * 수정일 : 2025-10-26 03:30
+ * 설명 : 사용자 정보 수정 로직(비밀번호, 닉네임 변경)
+*/
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Form, Button, Card, Alert } from 'react-bootstrap';

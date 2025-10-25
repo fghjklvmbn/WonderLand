@@ -1,3 +1,10 @@
+/*
+ * 이메일(아이디) 찾기 페이지
+ * 기여자 : 박경환, 정우빈, 정현호
+ * 수정일 : 2025-10-26 03:32
+ * 설명 : 이메일 검증 및 회원정보 찾기 로직들
+*/
+
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';

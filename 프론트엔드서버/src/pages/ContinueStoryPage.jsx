@@ -1,3 +1,10 @@
+/*
+ * 스토리 표시 페이지
+ * 기여자 : 박경환, 정우빈, 정현호
+ * 수정일 : 2025-10-26 03:28
+ * 설명 : 스토리 로드 및 렌더링 로직
+*/
+
 import React, { useEffect, useState } from 'react';
 import { Container, Form, Button, Row, Col, Modal } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
