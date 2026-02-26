@@ -11,6 +11,10 @@
  - git 최신버전
  - python 3.10 버전 권장
 
+## 아나콘다 설치 및 활성화 명령어
+ - conda create -y --name Wonderland python=3.10
+ - conda activate Wonderland
+
 ## 통합 설치
 일반버전 : python install.py
 <br>
