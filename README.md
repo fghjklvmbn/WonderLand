@@ -1,12 +1,15 @@
 # WonderLand
 
 ## 사전 환경
-0. 64기가 이상 저장공간 소요
-1. node.js 설치
-2. Microsoft C++ Build Tools 설치(C++환경)
-3. anaconda 설치후 가상환경 조성(anaconda prompt를 이용해서 진행, python 3.10버전, 테스트 완료)
-4. 램 32GB 혹은 그래픽 램 12GB 이상 필요
-5. git 설치
+ - 64기가 이상 저장공간 소요
+ - AI 사용시 램 32GB 혹은 그래픽 램 12GB 이상 필요
+
+## 설치 필요
+ - node.js 22 버전 권장
+ - Microsoft C++ Build Tools 최신버전
+ - anaconda(miniconda로 대체 가능)
+ - git 최신버전
+ - python 3.10 버전 권장
 
 ## 통합 설치
 일반버전 : python install.py
