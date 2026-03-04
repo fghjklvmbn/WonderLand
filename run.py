@@ -60,7 +60,7 @@ try:
     run_command("npm start", cwd="프론트엔드서버")
 
     # 음성 합성 서버 실행 포트 6000번
-    run_command("python APIServer.py", cwd="백엔드서버/음성합성API")
+    # run_command("python APIServer.py", cwd="백엔드서버/음성합성API")
 
     # 무한 대기 (Ctrl+C 받기)
     while True:
