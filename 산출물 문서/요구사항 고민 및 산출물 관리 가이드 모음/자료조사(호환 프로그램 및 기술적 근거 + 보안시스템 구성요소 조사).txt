@@ -1,0 +1,85 @@
+자료조사(범위정하기)
+
+ - IP 방어체계 관련
+모니터링 도구 : SpiderFoot
+SpiderFoot : 오픈소스 ip 추적 대시보드
+SpiderFoot -> SIEM 연계 사용
+
+ - 대략적인 로직 : SpiderFoot
+[SpiderFoot] ── OSINT
+[WAF Logs]
+[Auth Logs]
+[API Logs]
+      ↓
+   (수집)
+      ↓
+[SIEM]
+ ├─ 로그 정규화
+ ├─ 상관 분석
+ ├─ 룰 기반 탐지
+ ├─ 위험 점수
+ └─ 알림/이벤트
+      ↓
+(수동 승인 or SOAR)
+      ↓
+[Firewall / Rate Limit / 차단]
+
+체계 후보 
+1. 탐지 대시보드 : spiderfoot
+2. SIEM : ELK, Wazuh, 
+3. 차단 여부 : 자체 구현
+
+
+전체 구조 
+[SpiderFoot]
+   ↓ (악성 IP, 평판)
+[Threat Intel Feed]
+   ↓
+[Wazuh Manager]
+   ↓
+[Correlation Rule]
+   ↓
+[Security Alert]
+   ↓
+[Dashboard]
+   ↓
+[관리자 수동 승인]
+   ↓
+[Active Response / 방화벽]
+
+상세 구조(API)
+spiderfoot
+{
+  "source": "spiderfoot",
+  "ip": "185.XX.XX.12",
+  "threat": "malicious_ip",
+  "confidence": 0.82
+}
+
+악성 IP 탐지
+->
+Wazuh 으로 서버 로그 전달 및 표시
+-> 
+위협 표시시 관리자에게 전달하고 경고 표시하기
+->
+최종 경고시 IP 밴으로 영구접속 차단
+
+
+Wazuh 구조
+[Wazuh Agent]
+   └─ 서버/앱 로그 수집
+
+[Wazuh Manager]   ← 핵심
+ ├─ 로그 분석
+ ├─ Rule Engine
+ ├─ Correlation
+ ├─ Alert 생성
+ └─ Active Response 트리거
+
+[Indexer (OpenSearch)]
+ └─ 이벤트 저장
+
+[Dashboard]
+ └─ 시각화 / 수동 판단
+
+
