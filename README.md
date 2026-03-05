@@ -4,7 +4,9 @@
 
 캡스톤디자인 2 팀 원더랜드 결과물 저장소 / capstone design 2 Team:WonderLand's results
 
-브랜치 : 산출물(main), 백엔드(backend), 프론트엔드(frontend)
+브랜치 : 산출물(main), 프론트엔드(beta), 각 모듈별 브랜치(AI, AI_DIFF, AI_translate, STT), (구)백엔드, (구)프론트엔드, ho(통합 프로젝트)  
+
+
 ## Figma
 [피그마 주소](https://www.figma.com/design/u6YK03mZF5mum4Gvrbcv9v/WonderLand?node-id=0-1&t=JByndxUTiUFZwHn8-1)
 
@@ -33,7 +35,7 @@
 
 # ERD
 
-## ver0.2(수정 중)
+## ver0.2
 ![원더랜드 ERD ver0 2](https://github.com/user-attachments/assets/ea5a864a-2b0a-4b8a-a8ea-287accd866cc)
 
 ## ver0.1

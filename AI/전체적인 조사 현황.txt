@@ -1,9 +1,8 @@
-//qwen 조사
+ - qwen 버전 선정
+qwen 2.5 -> qwen3:4b
 
-qwen 2.5 
 
-fine-tuning 준비
-
+ - fine-tuning 준비 과정
 1. 데이터셋 준비
 1-1. 데이터 셋 토크나이징 과정 시행
 2. 사전 학습(전처리)
@@ -13,14 +12,14 @@ fine-tuning 준비
 6. 완료
 
 
-데이터 셋 준비
+ - 데이터 셋 준비 과정
 
 1. 데이터 수집
-
 2. 데이터 전처리
-
 3. 토크나이징
 
+
+ - AI 도움 생성 코드
 // 데이터셋 생성
 import torch
 from transformers import BertTokenizer, DataCollatorWithPadding
